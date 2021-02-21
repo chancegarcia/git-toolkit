@@ -38,6 +38,33 @@ class ChangeLog extends Command
     // the name of the command (the part after "bin/console")
     protected static $defaultName = 'version:changelog';
 
+    /**
+     * @var GitLogParser
+     */
+    private $gitLogParser;
+
+    private $changeLogFileName;
+
+    private $changeLogFilePath;
+
+    private $mainHeaderName;
+
+    /**
+     * @return GitLogParser
+     */
+    public function getGitLogParser(): GitLogParser
+    {
+        return $this->gitLogParser;
+    }
+
+    /**
+     * @param GitLogParser $gitLogParser
+     */
+    public function setGitLogParser(GitLogParser $gitLogParser): void
+    {
+        $this->gitLogParser = $gitLogParser;
+    }
+
     protected function configure()
     {
         $this
@@ -52,10 +79,27 @@ class ChangeLog extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // ... put here the code to create the user
+        // $testTags = array_slice(getGitTags(), 0, 5);
+        $tags = $this->gitLogParser->getGitTags();
+        $file = fopen('changelog.md', 'wb+');
 
-        // this method must return an integer number with the "exit status code"
-        // of the command.
+        fwrite($file, "# Core Bundle\n\n");
+
+        for ($i = 0, $iMax = count($tags); $i < $iMax; $i++) {
+            if ($i + 1 === $iMax) {
+                [$current] = array_slice($tags, $i, 1);
+                $previous = $this->gitLogParser->getFirstCommit();
+            } else {
+                [$current, $previous] = array_slice($tags, $i, 2);
+            }
+
+            $commits = $this->gitLogParser->escapeCommits($this->gitLogParser->getCommits($previous, $current));
+
+            fwrite($file, sprintf("## %s\n", $current));
+            fwrite($file, sprintf("%s\n", $commits));
+        }
+
+        fclose($file);
 
         // return this if there was no problem running the command
         return 0;

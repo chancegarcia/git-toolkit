@@ -35,7 +35,9 @@ use Symfony\Component\Console\Application;
 
 $application = new Application();
 
-// ... register commands
-$application->add(new ChangeLog());
+$gitLogParser = new GitLogParser();
+$changeLogCommand = new ChangeLog();
+$changeLogCommand->setGitLogParser($gitLogParser);
+$application->add($changeLogCommand);
 
 $application->run();
