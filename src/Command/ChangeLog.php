@@ -33,7 +33,9 @@ namespace Chance\Version\Command;
 
 use Chance\Version\GitUtil;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ChangeLog extends Command
@@ -125,6 +127,8 @@ class ChangeLog extends Command
             // the full command description shown when running the command with
             // the "--help" option
             ->setHelp('This command allows you to generate a changelog from your git commit history')
+            ->addArgument('header', InputArgument::OPTIONAL, 'main file header in output; default: Projecty McProjectFace')
+            ->addOption('new-tag', null, InputOption::VALUE_REQUIRED, 'label the current `HEAD` as NEW-TAG on output')
         ;
     }
 
@@ -135,6 +139,12 @@ class ChangeLog extends Command
         $tags = $this->gitLogUtil->getGitTags();
         $fullPath = $this->changeLogFilePath . $this->changeLogFileName;
         $file = fopen($fullPath, 'wb+');
+
+        $mainHeaderName = $input->getArgument('header');
+
+        if (is_string($mainHeaderName)) {
+            $this->mainHeaderName = $mainHeaderName;
+        }
 
         fwrite($file, sprintf("# %s\n\n", $this->mainHeaderName));
 
