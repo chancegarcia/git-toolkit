@@ -31,7 +31,7 @@
 
 namespace Chance\Version\Command;
 
-use Chance\Version\GitLogUtil;
+use Chance\Version\GitUtil;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -46,11 +46,11 @@ class ChangeLog extends Command
      */
     private $gitLogUtil;
 
-    private $changeLogFileName;
+    private $changeLogFileName = 'changelog.md';
 
-    private $changeLogFilePath;
+    private $changeLogFilePath = '';
 
-    private $mainHeaderName;
+    private $mainHeaderName = 'Projecty McProjectFace';
 
     /**
      * @return GitUtil
@@ -68,6 +68,54 @@ class ChangeLog extends Command
         $this->gitLogUtil = $gitLogUtil;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getChangeLogFileName()
+    {
+        return $this->changeLogFileName;
+    }
+
+    /**
+     * @param mixed $changeLogFileName
+     */
+    public function setChangeLogFileName($changeLogFileName): void
+    {
+        $this->changeLogFileName = $changeLogFileName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getChangeLogFilePath()
+    {
+        return $this->changeLogFilePath;
+    }
+
+    /**
+     * @param mixed $changeLogFilePath
+     */
+    public function setChangeLogFilePath($changeLogFilePath): void
+    {
+        $this->changeLogFilePath = $changeLogFilePath;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMainHeaderName()
+    {
+        return $this->mainHeaderName;
+    }
+
+    /**
+     * @param mixed $mainHeaderName
+     */
+    public function setMainHeaderName($mainHeaderName): void
+    {
+        $this->mainHeaderName = $mainHeaderName;
+    }
+
     protected function configure()
     {
         $this
@@ -82,11 +130,13 @@ class ChangeLog extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        // todo gather data via questions (project name/main title)
         // $testTags = array_slice(getGitTags(), 0, 5);
         $tags = $this->gitLogUtil->getGitTags();
-        $file = fopen('changelog.md', 'wb+');
+        $fullPath = $this->changeLogFilePath . $this->changeLogFileName;
+        $file = fopen($fullPath, 'wb+');
 
-        fwrite($file, "# Core Bundle\n\n");
+        fwrite($file, sprintf("# %s\n\n", $this->mainHeaderName));
 
         for ($i = 0, $iMax = count($tags); $i < $iMax; $i++) {
             if ($i + 1 === $iMax) {
