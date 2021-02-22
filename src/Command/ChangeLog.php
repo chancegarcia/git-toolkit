@@ -138,7 +138,7 @@ class ChangeLog extends Command
         // $testTags = array_slice(getGitTags(), 0, 5);
         $tags = $this->gitLogUtil->getGitTags();
         $fullPath = $this->changeLogFilePath . $this->changeLogFileName;
-        $file = fopen($fullPath, 'wb+');
+        $file = new \SplFileObject($fullPath, 'wb+');
 
         $mainHeaderName = $input->getArgument('header');
 
@@ -146,11 +146,11 @@ class ChangeLog extends Command
             $this->mainHeaderName = $mainHeaderName;
         }
 
-        fwrite($file, sprintf("# %s\n\n", $this->mainHeaderName));
+        $file->fwrite(sprintf("# %s\n\n", $this->mainHeaderName));
 
         $newTag = $input->getOption('new-tag');
         if (is_string($newTag)) {
-            $file = $this->writeNewTag($file, $newTag);
+            $this->writeNewTag($file, $newTag);
         }
 
         for ($i = 0, $iMax = count($tags); $i < $iMax; $i++) {
@@ -172,7 +172,8 @@ class ChangeLog extends Command
             $this->writeTag($file, $tagName, $commits);
         }
 
-        fclose($file);
+        // close file (https://stackoverflow.com/questions/22449822/how-to-close-a-splfileobject-file-handler/22822981)
+        $file = null;
 
         // return this if there was no problem running the command
         return 0;
@@ -182,31 +183,23 @@ class ChangeLog extends Command
     }
 
     /**
-     * @param $file file resource
+     * @param \SplFileObject $file file resource
      * @param string $tagName
      * @param string $commits
-     *
-     * @return resource file resource
      */
-    private function writeTag($file, string $tagName, string $commits)
+    private function writeTag(\SplFileObject $file, string $tagName, string $commits)
     {
-        fwrite($file, sprintf("## %s\n", $tagName));
-        fwrite($file, sprintf("%s\n", $commits));
-
-        return $file;
+        $file->fwrite(sprintf("## %s\n", $tagName));
+        $file->fwrite(sprintf("%s\n", $commits));
     }
 
     /**
-     * @param resource $file file resource
+     * @param \SplFileObject $file file resource
      * @param string $newTag
-     *
-     * @return resource file resource
      */
-    private function writeNewTag($file, string $newTag)
+    private function writeNewTag(\SplFileObject $file, string $newTag)
     {
         $latestCommits = $this->gitLogUtil->escapeCommits($this->gitLogUtil->getNewCommits());
         $this->writeTag($file, $newTag, $latestCommits);
-
-        return $file;
     }
 }
