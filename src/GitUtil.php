@@ -50,7 +50,7 @@ class GitUtil
     ];
 
     /**
-     * @return array list of current tags
+     * @return array|string[] list of current tags
      */
     public function getGitTags() : array
     {
@@ -91,16 +91,30 @@ class GitUtil
      */
     public function getCommits(string $previous, string $current) : string
     {
-        $cmd = sprintf('git log --format="%%B" --no-merges %s..%s', $previous, $current);
-        $commits = shell_exec($cmd);
+        $commits = $this->getCommitBodies($previous, $current, true);
 
         if (!is_string($commits)) {
-            $cmd = sprintf('git log --format="%%B" %s..%s', $previous, $current);
-            $commits = shell_exec($cmd);
+            $commits = $this->getCommitBodies($previous, $current);
         }
 
         return is_string($commits) ? $commits : sprintf("- no changes from version %s to %s\n", $previous, $current);
 
+    }
+
+    /**
+     * @param string $previous
+     * @param string $current
+     * @param bool $noMerges add `--no-merges` option to log call
+     *
+     * @return string
+     */
+    public function getCommitBodies(string $previous, string $current, bool $noMerges = false)
+    {
+        $mergeOption = ($noMerges) ? ' --no-merges' : '';
+        $cmd = sprintf('git log --format="%%B"%s %s..%s', $mergeOption, $previous, $current);
+        $commits = shell_exec($cmd);
+
+        return is_string($commits) ? $commits : sprintf("- no changes from version %s to %s\n", $previous, $current);
     }
 
     /**
@@ -124,6 +138,28 @@ class GitUtil
         }
 
         return implode("\n", $arr);
+    }
+
+    /**
+     * @return string
+     */
+    public function getNewCommits() : string
+    {
+        return $this->getCommitBodies($this->getLatestReleaseTag(), $this->getCurrentCommit(), true);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLatestReleaseTag() : ?string
+    {
+        $tags = $this->getGitTags();
+
+        if (count($tags) > 0) {
+            return array_shift($tags);
+        }
+
+        return null;
     }
 
 }

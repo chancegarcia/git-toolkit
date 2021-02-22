@@ -148,6 +148,11 @@ class ChangeLog extends Command
 
         fwrite($file, sprintf("# %s\n\n", $this->mainHeaderName));
 
+        $newTag = $input->getOption('new-tag');
+        if (is_string($newTag)) {
+            $file = $this->writeNewTag($file, $newTag);
+        }
+
         for ($i = 0, $iMax = count($tags); $i < $iMax; $i++) {
             if ($i + 1 === $iMax) {
                 [$current] = array_slice($tags, $i, 1);
@@ -164,8 +169,7 @@ class ChangeLog extends Command
                 $tagName = sprintf('empty tag \(latest commit: %s\)', $currentCommit);
             }
 
-            fwrite($file, sprintf("## %s\n", $tagName));
-            fwrite($file, sprintf("%s\n", $commits));
+            $this->writeTag($file, $tagName, $commits);
         }
 
         fclose($file);
@@ -175,5 +179,34 @@ class ChangeLog extends Command
 
         // or return this if some error happened during the execution
         // return 1;
+    }
+
+    /**
+     * @param $file file resource
+     * @param string $tagName
+     * @param string $commits
+     *
+     * @return resource file resource
+     */
+    private function writeTag($file, string $tagName, string $commits)
+    {
+        fwrite($file, sprintf("## %s\n", $tagName));
+        fwrite($file, sprintf("%s\n", $commits));
+
+        return $file;
+    }
+
+    /**
+     * @param resource $file file resource
+     * @param string $newTag
+     *
+     * @return resource file resource
+     */
+    private function writeNewTag($file, string $newTag)
+    {
+        $latestCommits = $this->gitLogUtil->escapeCommits($this->gitLogUtil->getNewCommits());
+        $this->writeTag($file, $newTag, $latestCommits);
+
+        return $file;
     }
 }
