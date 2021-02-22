@@ -29,6 +29,9 @@
  *
  */
 
+namespace Chance\Version\Command;
+
+use Chance\Version\GitLogUtil;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -39,9 +42,9 @@ class ChangeLog extends Command
     protected static $defaultName = 'version:changelog';
 
     /**
-     * @var GitLogParser
+     * @var GitLogUtil
      */
-    private $gitLogParser;
+    private $gitLogUtil;
 
     private $changeLogFileName;
 
@@ -50,19 +53,19 @@ class ChangeLog extends Command
     private $mainHeaderName;
 
     /**
-     * @return GitLogParser
+     * @return GitLogUtil
      */
-    public function getGitLogParser(): GitLogParser
+    public function getGitLogUtil(): GitLogUtil
     {
-        return $this->gitLogParser;
+        return $this->gitLogUtil;
     }
 
     /**
-     * @param GitLogParser $gitLogParser
+     * @param GitLogUtil $gitLogUtil
      */
-    public function setGitLogParser(GitLogParser $gitLogParser): void
+    public function setGitLogUtil(GitLogUtil $gitLogUtil): void
     {
-        $this->gitLogParser = $gitLogParser;
+        $this->gitLogUtil = $gitLogUtil;
     }
 
     protected function configure()
@@ -80,7 +83,7 @@ class ChangeLog extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         // $testTags = array_slice(getGitTags(), 0, 5);
-        $tags = $this->gitLogParser->getGitTags();
+        $tags = $this->gitLogUtil->getGitTags();
         $file = fopen('changelog.md', 'wb+');
 
         fwrite($file, "# Core Bundle\n\n");
@@ -88,14 +91,20 @@ class ChangeLog extends Command
         for ($i = 0, $iMax = count($tags); $i < $iMax; $i++) {
             if ($i + 1 === $iMax) {
                 [$current] = array_slice($tags, $i, 1);
-                $previous = $this->gitLogParser->getFirstCommit();
+                $previous = $this->gitLogUtil->getFirstCommit();
             } else {
                 [$current, $previous] = array_slice($tags, $i, 2);
             }
 
-            $commits = $this->gitLogParser->escapeCommits($this->gitLogParser->getCommits($previous, $current));
+            $commits = $this->gitLogUtil->escapeCommits($this->gitLogUtil->getCommits($previous, $current));
 
-            fwrite($file, sprintf("## %s\n", $current));
+            $tagName = $current;
+            if ("" === $tagName) {
+                $currentCommit = $this->gitLogUtil->getCurrentCommit();
+                $tagName = sprintf('empty tag \(latest commit: %s\)', $currentCommit);
+            }
+
+            fwrite($file, sprintf("## %s\n", $tagName));
             fwrite($file, sprintf("%s\n", $commits));
         }
 

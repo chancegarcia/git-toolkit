@@ -1,6 +1,30 @@
 {
+    "name": "chancegarcia/git-version-manager",
+    "description": "manage change log based on git commit history; auto-version (using git tags) based on commit history",
+    "minimum-stability": "dev",
+    "license": "MIT",
     "require": {
         "php" : ">=7.3",
         "symfony/console": "^4.4"
-    }
+    },
+    "authors": [
+        {
+            "name": "chance garcia",
+            "email": "develop@chancegarcia.com"
+        }
+    ],
+    "require-dev": {
+        "roave/security-advisories": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Chance\\Version\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Chance\\Version\\Test\\": "tests"
+        }
+    },
+    "bin": ["bin/version.php"]
 }

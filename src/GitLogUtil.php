@@ -29,7 +29,9 @@
  *
  */
 
-class GitLogParser
+namespace Chance\Version;
+
+class GitLogUtil
 {
     public const MARKDOWN_RESERVED_CHARACTERS = [
         '*',
@@ -48,7 +50,7 @@ class GitLogParser
     ];
 
     /**
-     * @return array
+     * @return array list of current tags
      */
     public function getGitTags() : array
     {
@@ -58,11 +60,19 @@ class GitLogParser
     }
 
     /**
-     * @return string
+     * @return string id of first commit
      */
     public function getFirstCommit() : string
     {
         return trim(shell_exec('git rev-list --max-parents=0 HEAD'));
+    }
+
+    /**
+     * @return string id of current commit
+     */
+    public function getCurrentCommit() : string
+    {
+        return trim(shell_exec('git rev-parse HEAD'));
     }
 
     /**
@@ -107,4 +117,5 @@ class GitLogParser
 
         return implode("\n", $arr);
     }
+
 }

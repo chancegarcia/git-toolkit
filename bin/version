@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 /**
  * @package
@@ -29,15 +30,17 @@
  *
  */
 
-require __DIR__.'../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 use Symfony\Component\Console\Application;
+use Chance\Version\GitLogUtil;
+use Chance\Version\Command\ChangeLog;
 
 $application = new Application();
 
-$gitLogParser = new GitLogParser();
+$gitLogUtil = new GitLogUtil();
 $changeLogCommand = new ChangeLog();
-$changeLogCommand->setGitLogParser($gitLogParser);
+$changeLogCommand->setGitLogUtil($gitLogUtil);
 $application->add($changeLogCommand);
 
 $application->run();
