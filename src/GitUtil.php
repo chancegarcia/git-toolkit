@@ -64,7 +64,15 @@ class GitUtil
      */
     public function getFirstCommit() : string
     {
-        return trim(shell_exec('git rev-list --max-parents=0 HEAD'));
+        $shellOutput = shell_exec('git rev-list --max-parents=0 HEAD');
+
+        $commits = explode("\n", $shellOutput);
+
+        if (count($commits) > 1) {
+            return trim(array_pop($commits));
+        }
+
+        return trim($shellOutput);
     }
 
     /**
