@@ -31,7 +31,7 @@
 
 namespace Chance\Version\Command;
 
-use Chance\Version\GitUtil;
+use Chance\Version\GitInformation;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -44,9 +44,9 @@ class ChangeLog extends Command
     protected static $defaultName = 'version:changelog';
 
     /**
-     * @var GitUtil
+     * @var GitInformation
      */
-    private $gitLogUtil;
+    private $gitInformation;
 
     private $changeLogFileName = 'changelog.md';
 
@@ -55,19 +55,19 @@ class ChangeLog extends Command
     private $mainHeaderName = 'Projecty McProjectFace';
 
     /**
-     * @return GitUtil
+     * @return GitInformation
      */
-    public function getGitLogUtil(): GitUtil
+    public function getGitInformation(): GitInformation
     {
-        return $this->gitLogUtil;
+        return $this->gitInformation;
     }
 
     /**
-     * @param GitUtil $gitLogUtil
+     * @param GitInformation $gitInformation
      */
-    public function setGitLogUtil(GitUtil $gitLogUtil): void
+    public function setGitInformation(GitInformation $gitInformation): void
     {
-        $this->gitLogUtil = $gitLogUtil;
+        $this->gitInformation = $gitInformation;
     }
 
     /**
@@ -136,7 +136,7 @@ class ChangeLog extends Command
     {
         // todo gather data via questions (project name/main title)
         // $testTags = array_slice(getGitTags(), 0, 5);
-        $tags = $this->gitLogUtil->getGitTags();
+        $tags = $this->gitInformation->getGitTags();
         $fullPath = $this->changeLogFilePath . $this->changeLogFileName;
         $file = new \SplFileObject($fullPath, 'wb+');
 
@@ -156,16 +156,16 @@ class ChangeLog extends Command
         for ($i = 0, $iMax = count($tags); $i < $iMax; $i++) {
             if ($i + 1 === $iMax) {
                 [$current] = array_slice($tags, $i, 1);
-                $previous = $this->gitLogUtil->getFirstCommit();
+                $previous = $this->gitInformation->getFirstCommit();
             } else {
                 [$current, $previous] = array_slice($tags, $i, 2);
             }
 
-            $commits = $this->gitLogUtil->escapeCommits($this->gitLogUtil->getCommits($previous, $current));
+            $commits = $this->gitInformation->escapeCommitsForMarkdown($this->gitInformation->getCommits($previous, $current));
 
             $tagName = $current;
             if ("" === $tagName) {
-                $currentCommit = $this->gitLogUtil->getCurrentCommit();
+                $currentCommit = $this->gitInformation->getCurrentCommit();
                 $tagName = sprintf('empty tag \(latest commit: %s\)', $currentCommit);
             }
 
@@ -199,7 +199,7 @@ class ChangeLog extends Command
      */
     private function writeNewTag(\SplFileObject $file, string $newTag)
     {
-        $latestCommits = $this->gitLogUtil->escapeCommits($this->gitLogUtil->getNewCommits());
+        $latestCommits = $this->gitInformation->escapeCommitsForMarkdown($this->gitInformation->getNewCommits());
         $this->writeTag($file, $newTag, $latestCommits);
     }
 }

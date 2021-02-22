@@ -31,7 +31,7 @@
 
 namespace Chance\Version;
 
-class GitUtil
+class GitInformation
 {
     public const MARKDOWN_RESERVED_CHARACTERS = [
         '*',
@@ -122,7 +122,7 @@ class GitUtil
      *
      * @return string
      */
-    public function escapeCommits(string $commits) : string
+    public function escapeCommitsForMarkdown(string $commits): string
     {
         foreach (self::MARKDOWN_RESERVED_CHARACTERS as $reservedChar) {
             $commits = str_replace($reservedChar, sprintf('\%s', $reservedChar), $commits);

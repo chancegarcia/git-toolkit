@@ -33,14 +33,14 @@
 require __DIR__ . '/../vendor/autoload.php';
 
 use Symfony\Component\Console\Application;
-use Chance\Version\GitUtil;
+use Chance\Version\GitInformation;
 use Chance\Version\Command\ChangeLog;
 
 $application = new Application();
 
-$gitLogUtil = new GitUtil();
+$giInformation = new GitInformation();
 $changeLogCommand = new ChangeLog();
-$changeLogCommand->setGitLogUtil($gitLogUtil);
+$changeLogCommand->setGitInformation($giInformation);
 $application->add($changeLogCommand);
 
 $application->run();
