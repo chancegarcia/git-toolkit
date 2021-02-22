@@ -42,7 +42,7 @@ class ChangeLog extends Command
     protected static $defaultName = 'version:changelog';
 
     /**
-     * @var GitLogUtil
+     * @var GitUtil
      */
     private $gitLogUtil;
 
@@ -53,17 +53,17 @@ class ChangeLog extends Command
     private $mainHeaderName;
 
     /**
-     * @return GitLogUtil
+     * @return GitUtil
      */
-    public function getGitLogUtil(): GitLogUtil
+    public function getGitLogUtil(): GitUtil
     {
         return $this->gitLogUtil;
     }
 
     /**
-     * @param GitLogUtil $gitLogUtil
+     * @param GitUtil $gitLogUtil
      */
-    public function setGitLogUtil(GitLogUtil $gitLogUtil): void
+    public function setGitLogUtil(GitUtil $gitLogUtil): void
     {
         $this->gitLogUtil = $gitLogUtil;
     }

@@ -31,7 +31,7 @@
 
 namespace Chance\Version;
 
-class GitLogUtil
+class GitUtil
 {
     public const MARKDOWN_RESERVED_CHARACTERS = [
         '*',
