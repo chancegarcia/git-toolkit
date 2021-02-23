@@ -31,6 +31,9 @@
 
 namespace Chance\Version;
 
+use Cz\Git\GitException;
+use Cz\Git\GitRepository;
+
 class GitInformation
 {
     public const MARKDOWN_RESERVED_CHARACTERS = [
@@ -50,13 +53,42 @@ class GitInformation
     ];
 
     /**
+     * @var GitRepository
+     */
+    private $gitRepo;
+
+    /**
+     * GitInformation constructor.
+     *
+     * @param GitRepository $gitRepo
+     */
+    public function __construct(GitRepository $gitRepo)
+    {
+        $this->gitRepo = $gitRepo;
+    }
+
+    /**
+     * @return GitRepository
+     */
+    public function getGitRepo(): GitRepository
+    {
+        return $this->gitRepo;
+    }
+
+    /**
+     * @param GitRepository $gitRepo
+     */
+    public function setGitRepo(GitRepository $gitRepo): void
+    {
+        $this->gitRepo = $gitRepo;
+    }
+
+    /**
      * @return array|string[] list of current tags
      */
-    public function getGitTags() : array
+    public function getGitTags(): array
     {
-        $tagString = shell_exec('git tag -l --sort=-v:refname');
-
-        return explode("\n", trim($tagString));
+        return $this->gitRepo->execute(['tag', '-l', '--sort=-v:refname']);
     }
 
     /**
@@ -64,41 +96,20 @@ class GitInformation
      */
     public function getFirstCommit() : string
     {
-        $shellOutput = shell_exec('git rev-list --max-parents=0 HEAD');
+        $commits = $this->gitRepo->execute(['rev-list', '--max-parents=0', 'HEAD']);
 
-        $commits = explode("\n", $shellOutput);
-
-        if (count($commits) > 1) {
-            return trim(array_pop($commits));
-        }
-
-        return trim($shellOutput);
+        return trim(array_pop($commits));
     }
 
     /**
-     * @return string id of current commit
+     * @return string|null id of current commit
+     *
+     * @throws GitException
      */
     public function getCurrentCommit() : string
     {
-        return trim(shell_exec('git rev-parse HEAD'));
-    }
-
-    /**
-     * @param string $previous
-     * @param string $current
-     *
-     * @return string
-     */
-    public function getCommits(string $previous, string $current) : string
-    {
-        $commits = $this->getCommitBodies($previous, $current, true);
-
-        if (!is_string($commits)) {
-            $commits = $this->getCommitBodies($previous, $current);
-        }
-
-        return is_string($commits) ? $commits : sprintf("- no changes from version %s to %s\n", $previous, $current);
-
+        // executing `git rev-parse HEAD` would also work
+        return $this->gitRepo->getLastCommitId();
     }
 
     /**
@@ -106,46 +117,61 @@ class GitInformation
      * @param string $current
      * @param bool $noMerges add `--no-merges` option to log call
      *
-     * @return string
+     * @return array
      */
-    public function getCommitBodies(string $previous, string $current, bool $noMerges = false)
+    public function getCommits(string $previous, string $current, bool $noMerges = false): array
     {
-        $mergeOption = ($noMerges) ? ' --no-merges' : '';
-        $cmd = sprintf('git log --format="%%B"%s %s..%s', $mergeOption, $previous, $current);
-        $commits = shell_exec($cmd);
+        $range = sprintf('%s..%s', $previous, $current);
+        $commandArray = [
+            'log',
+            '--format=%B',
+            $range,
+        ];
 
-        return is_string($commits) ? $commits : sprintf("- no changes from version %s to %s\n", $previous, $current);
+        if ($noMerges) {
+            $commandArray[] = '--no-merges';
+        }
+
+        return $this->gitRepo->execute($commandArray);
     }
 
     /**
-     * @param string $commits
+     * @param array|string[] $commits
      *
-     * @return string
+     * @return array|string[]
+     * @todo: this probably belongs in a different class
      */
-    public function escapeCommitsForMarkdown(string $commits): string
+    public static function escapeCommitsForMarkdown(array $commits): array
     {
-        foreach (self::MARKDOWN_RESERVED_CHARACTERS as $reservedChar) {
-            $commits = str_replace($reservedChar, sprintf('\%s', $reservedChar), $commits);
-        }
-
-        $arr = explode("\n", $commits);
-
-        foreach ($arr as $i => $commitMsg) {
+        foreach ($commits as $i => $commitMsg) {
             // remove empty list items
             if (preg_match('/^-\s*$/', $commitMsg)) {
-                unset($arr[$i]);
+                unset($commits[$i]);
             }
         }
 
-        return implode("\n", $arr);
+        $stringCommits = implode("\n", $commits);
+
+        foreach (self::MARKDOWN_RESERVED_CHARACTERS as $reservedChar) {
+            $stringCommits = str_replace($reservedChar, sprintf('\%s', $reservedChar), $stringCommits);
+        }
+
+        return explode("\n", $stringCommits);
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getNewCommits() : string
+    public function getNewCommits(): array
     {
-        return $this->getCommitBodies($this->getLatestReleaseTag(), $this->getCurrentCommit(), true);
+        $latestReleaseTag = $this->getLatestReleaseTag();
+        if (null === $latestReleaseTag) {
+            $previous = $this->getFirstCommit();
+        } else {
+            $previous = $latestReleaseTag;
+        }
+
+        return $this->getCommits($previous, $this->getCurrentCommit(), true);
     }
 
     /**

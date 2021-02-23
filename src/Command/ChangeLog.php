@@ -161,7 +161,8 @@ class ChangeLog extends Command
                 [$current, $previous] = array_slice($tags, $i, 2);
             }
 
-            $commits = $this->gitInformation->escapeCommitsForMarkdown($this->gitInformation->getCommits($previous, $current));
+            $commits = GitInformation::escapeCommitsForMarkdown($this->gitInformation->getCommits($previous, $current, true));
+            $commitString = implode("\n", $commits);
 
             $tagName = $current;
             if ("" === $tagName) {
@@ -169,7 +170,7 @@ class ChangeLog extends Command
                 $tagName = sprintf('empty tag \(latest commit: %s\)', $currentCommit);
             }
 
-            $this->writeTag($file, $tagName, $commits);
+            $this->writeTag($file, $tagName, $commitString);
         }
 
         // close file (https://stackoverflow.com/questions/22449822/how-to-close-a-splfileobject-file-handler/22822981)
@@ -199,7 +200,8 @@ class ChangeLog extends Command
      */
     private function writeNewTag(\SplFileObject $file, string $newTag)
     {
-        $latestCommits = $this->gitInformation->escapeCommitsForMarkdown($this->gitInformation->getNewCommits());
-        $this->writeTag($file, $newTag, $latestCommits);
+        $latestCommits = GitInformation::escapeCommitsForMarkdown($this->gitInformation->getNewCommits());
+        $latestCommitsString = implode("\n", $latestCommits);
+        $this->writeTag($file, $newTag, $latestCommitsString);
     }
 }

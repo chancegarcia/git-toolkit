@@ -30,17 +30,25 @@
  *
  */
 
-require __DIR__ . '/../vendor/autoload.php';
+$currentDir = getcwd();
+$dir = $currentDir;
+if (false !== strpos($currentDir, 'bin')) {
+    $dir = $currentDir . '/..';
+}
+
+require $dir . '/vendor/autoload.php';
 
 use Symfony\Component\Console\Application;
 use Chance\Version\GitInformation;
 use Chance\Version\Command\ChangeLog;
+use Cz\Git\GitRepository;
 
 $application = new Application();
 
-$giInformation = new GitInformation();
+$gitRepo = new GitRepository($dir);
+$gitInformation = new GitInformation($gitRepo);
 $changeLogCommand = new ChangeLog();
-$changeLogCommand->setGitInformation($giInformation);
+$changeLogCommand->setGitInformation($gitInformation);
 $application->add($changeLogCommand);
 
 $application->run();
