@@ -185,9 +185,14 @@ class ChangeLogService
         $file = null;
     }
 
+    public function getFullPath()
+    {
+        return $this->changeLogFilePath . $this->changeLogFileName;
+    }
+
     public function getSplFileObject(): \SplFileObject
     {
-        $fullPath = $this->changeLogFilePath . $this->changeLogFileName;
+        $fullPath = $this->getFullPath();
 
         return new \SplFileObject($fullPath, 'wb+');
     }

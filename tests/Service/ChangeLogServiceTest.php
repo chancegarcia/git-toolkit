@@ -296,4 +296,45 @@ class ChangeLogServiceTest extends TestCase
         // test/mock writeTag called?
         // test current tag is blank?
     }
+
+    public function testWriteChangeLogNoNewTagWithNoHistory()
+    {
+        $commits = [
+            "perf: made this better",
+            "refactor: also patch a thing ",
+            "fix: some sort of patch\n\n- we have additional notes in the body here",
+            "feature: initial commit",
+        ];
+
+        // @formatter:off
+        $repoMock = $this->repoMockBuilder->getMock();
+        $infoMock = $this->gitInfoMockBuilder->enableOriginalConstructor()->setConstructorArgs([$repoMock])->getMock();
+
+        $infoMock->expects(self::once())
+            ->method('getCurrentCommit')
+        ;
+
+        $infoMock->expects(self::atLeastOnce())
+                 ->method('getGitTags')
+                 ->willReturn([])
+        ;
+
+        // writes the main header once then 2 writes for the new tag name and the commits
+        $expectedWrites = 3;
+        $splFileObjectMock = $this->splFileObjectMockBuilder->getMock();
+        $splFileObjectMock->expects(self::exactly($expectedWrites))
+                          ->method('fwrite')
+        ;
+
+        // @formatter:on
+
+        $service = new ChangeLogService($infoMock);
+        $service->writeChangeLog($splFileObjectMock);
+
+        // test/mock info::getGitTags called
+        // test info::getFirstCommit called
+        // test writeNewTag called?
+        // test/mock writeTag called?
+        // test current tag is blank?
+    }
 }
