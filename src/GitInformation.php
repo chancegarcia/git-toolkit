@@ -76,14 +76,6 @@ class GitInformation
     }
 
     /**
-     * @param GitRepository $gitRepo
-     */
-    public function setGitRepo(GitRepository $gitRepo): void
-    {
-        $this->gitRepo = $gitRepo;
-    }
-
-    /**
      * @return array|string[] list of current tags
      */
     public function getGitTags(): array

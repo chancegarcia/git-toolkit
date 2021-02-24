@@ -138,11 +138,12 @@ class GitInformationTest extends TestCase
         self::assertEquals(array_pop($commits), $gitInfo->getFirstCommit());
     }
 
-    public function testGetCommitsNoMerges()
+    public function testGetCommitsWithMerges()
     {
         $repoMock = $this->repoMockBuilder->getMock();
         // @formatter:off
-        $repoMock->method('execute')
+        $repoMock->expects(self::once())
+                 ->method('execute')
                  ->with(self::callback(function ($cmdArray) {
                         return !in_array('--no-merges', $cmdArray);
                     }))
@@ -156,15 +157,14 @@ class GitInformationTest extends TestCase
         } catch (ExpectationFailedException $e) {
             self::fail('"--no-merges" option unexpectedly called for this method');
         }
-
-        $this->expectNotToPerformAssertions();
     }
 
-    public function testGetCommitsWithMerges()
+    public function testGetCommitsNoMerges()
     {
         $repoMock = $this->repoMockBuilder->getMock();
         // @formatter:off
-        $repoMock->method('execute')
+        $repoMock->expects(self::once())
+                 ->method('execute')
                  ->with(self::callback(function ($cmdArray) {
                         return in_array('--no-merges', $cmdArray);
                     }))
@@ -178,8 +178,6 @@ class GitInformationTest extends TestCase
         } catch (ExpectationFailedException $e) {
             self::fail('"--no-merges" was not called for this method');
         }
-
-        $this->expectNotToPerformAssertions();
     }
 
     public function testEscapeCommitsForMarkdown()
@@ -306,13 +304,29 @@ class GitInformationTest extends TestCase
         self::assertSame($commits, $newCommits);
     }
 
-    // test repo getter/setter
+    public function testGitRepo()
+    {
+        $repoMock = $this->repoMockBuilder->getMock();
+
+        $info = new GitInformation($repoMock);
+
+        self::assertEquals($repoMock, $info->getGitRepo());
+    }
 
     // test get current commit
     // mock expect repo getLastCommitId is call
+    public function testCurrentCommit()
+    {
+        $repoMock = $this->repoMockBuilder->getMock();
 
-    // test getCommits no merges
-    // check execute is without `--no-merges` array value
-    // test getCommits merges
-    // check execute is with `--no-merges` array value
+        // @formatter:off
+        $repoMock->expects(self::once())
+                 ->method('getLastCommitId')
+                 ->willReturn('foo')
+        ;
+        // @formatter:on
+
+        $info = new GitInformation($repoMock);
+        $info->getCurrentCommit();
+    }
 }
