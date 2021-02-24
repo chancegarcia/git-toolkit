@@ -40,7 +40,7 @@ use PHPUnit\TestFixture\Mockable;
 class GitInformationTest extends TestCase
 {
     /**
-     * @var \PHPUnit\Framework\MockObject\MockBuilder
+     * @var \PHPUnit\Framework\MockObject\MockBuilder|GitRepository
      */
     private $repoMockBuilder;
 
@@ -61,7 +61,11 @@ class GitInformationTest extends TestCase
     {
         $tags = ['4.1.3', '4.1.2', '4.1.1', '4.1.0',];
         $repoMock = $this->repoMockBuilder->getMock();
-        $repoMock->method('execute')->willReturn($tags);
+        // @formatter:off
+        $repoMock->method('execute')
+                 ->willReturn($tags)
+        ;
+        // @formatter:on
 
         $gitInfo = new GitInformation($repoMock);
 
@@ -72,7 +76,11 @@ class GitInformationTest extends TestCase
     {
         $expectedTags = [];
         $repoMock = $this->repoMockBuilder->getMock();
-        $repoMock->method('execute')->willReturn($expectedTags);
+        // @formatter:off
+        $repoMock->method('execute')
+                 ->willReturn($expectedTags)
+        ;
+        // @formatter:on
 
         $gitInfo = new GitInformation($repoMock);
 
@@ -85,7 +93,11 @@ class GitInformationTest extends TestCase
     {
         $expectedTags = ['4.1.3', '4.1.2', '4.1.1', '4.1.0',];
         $repoMock = $this->repoMockBuilder->getMock();
-        $repoMock->method('execute')->willReturn($expectedTags);
+        // @formatter:off
+        $repoMock->method('execute')
+                 ->willReturn($expectedTags)
+        ;
+        // @formatter:on
 
         $gitInfo = new GitInformation($repoMock);
 
@@ -96,7 +108,11 @@ class GitInformationTest extends TestCase
     {
         $repoMock = $this->repoMockBuilder->getMock();
         $commitId = 'fa6b87bdd2d3a3b1abcc79a50401be3f6b71e713';
-        $repoMock->method('execute')->willReturn([$commitId]);
+        // @formatter:off
+        $repoMock->method('execute')
+                 ->willReturn([$commitId])
+        ;
+        // @formatter:on
 
         $gitInfo = new GitInformation($repoMock);
 
@@ -111,7 +127,11 @@ class GitInformationTest extends TestCase
         ];
 
         $repoMock = $this->repoMockBuilder->getMock();
-        $repoMock->method('execute')->willReturn($commits);
+        // @formatter:off
+        $repoMock->method('execute')
+                 ->willReturn($commits)
+        ;
+        // @formatter:on
 
         $gitInfo = new GitInformation($repoMock);
 
@@ -121,10 +141,14 @@ class GitInformationTest extends TestCase
     public function testGetCommitsNoMerges()
     {
         $repoMock = $this->repoMockBuilder->getMock();
-        $repoMock->method('execute')->with(self::callback(function ($cmdArray) {
-                return !in_array('--no-merges', $cmdArray);
-            }))->willReturn([])
+        // @formatter:off
+        $repoMock->method('execute')
+                 ->with(self::callback(function ($cmdArray) {
+                        return !in_array('--no-merges', $cmdArray);
+                    }))
+                 ->willReturn([])
         ;
+        // @formatter:on
 
         $gitInfo = new GitInformation($repoMock);
         try {
@@ -139,10 +163,14 @@ class GitInformationTest extends TestCase
     public function testGetCommitsWithMerges()
     {
         $repoMock = $this->repoMockBuilder->getMock();
-        $repoMock->method('execute')->with(self::callback(function ($cmdArray) {
-                return in_array('--no-merges', $cmdArray);
-            }))->willReturn([])
+        // @formatter:off
+        $repoMock->method('execute')
+                 ->with(self::callback(function ($cmdArray) {
+                        return in_array('--no-merges', $cmdArray);
+                    }))
+                 ->willReturn([])
         ;
+        // @formatter:on
 
         $gitInfo = new GitInformation($repoMock);
         try {
@@ -172,7 +200,11 @@ class GitInformationTest extends TestCase
     {
         $tags = ['4.1.3', '4.1.2', '4.1.1', '4.1.0',];
         $repoMock = $this->repoMockBuilder->getMock();
-        $repoMock->method('execute')->willReturn($tags);
+        // @formatter:off
+        $repoMock->method('execute')
+                 ->willReturn($tags)
+        ;
+        // @formatter:on
 
         $gitInfo = new GitInformation($repoMock);
 
@@ -186,7 +218,11 @@ class GitInformationTest extends TestCase
     {
         $tags = [];
         $repoMock = $this->repoMockBuilder->getMock();
-        $repoMock->method('execute')->willReturn($tags);
+        // @formatter:off
+        $repoMock->method('execute')
+                 ->willReturn($tags)
+        ;
+        // @formatter:on
 
         $gitInfo = new GitInformation($repoMock);
 
@@ -201,19 +237,72 @@ class GitInformationTest extends TestCase
      * @depends testGetCommitsNoMerges
      * @depends testGetCommitsWithMerges
      */
+    public function testNewCommitsNoTagsCallsFirstCommit()
+    {
+        $repoMock = $this->getMockBuilder(GitRepository::class)->disableOriginalConstructor()->getMock();
+
+        // mock for previous tag value and for getCommits value
+        // @formatter:off
+        $repoMock->method('getLastCommitId')
+                 ->willReturn('bar')
+        ;
+
+        $infoMock = $this->getMockBuilder(GitInformation::class)->setConstructorArgs([$repoMock])->onlyMethods(['getLatestReleaseTag', 'getFirstCommit', 'getGitTags', 'getCurrentCommit', 'getCommits'])->getMock();
+        $infoMock->expects(self::atLeastOnce())
+                 ->method('getFirstCommit')
+                 ->willReturn('baz')
+        ;
+
+        $infoMock->expects(self::once())
+                 ->method('getLatestReleaseTag')
+                 ->willReturn(null)
+        ;
+
+        $infoMock->method('getGitTags')
+                 ->willReturn([])
+        ;
+        // @formatter:on
+
+        $infoMock->getNewCommits();
+    }
+
+    /**
+     * depends testNewCommitsNoTagsCallsFirstCommit
+     */
     public function testNewCommits()
     {
         $commits = ['- msg 1', '- msg 2'];
 
-        $repoMock = $this->getMockBuilder(GitRepository::class)->disableOriginalConstructor()->getMock();
+        $repoMock = $this->repoMockBuilder->getMock();
 
+        // @formatter:off
         // mock for previous tag value and for getCommits value
-        $repoMock->expects(self::atLeastOnce())->method('execute')->willReturnOnConsecutiveCalls(['foo'], $commits);
-        $repoMock->method('getLastCommitId')->willReturn('bar');
+        $repoMock->method('getLastCommitId')
+                 ->willReturn('bar')
+        ;
 
-        $gitInfo = new GitInformation($repoMock);
-        $newCommits = $gitInfo->getNewCommits();
+        $infoMock = $this->getMockBuilder(GitInformation::class)->setConstructorArgs([$repoMock])->onlyMethods(['getLatestReleaseTag', 'getFirstCommit', 'getGitTags', 'getCurrentCommit', 'getCommits'])->getMock();
+        $infoMock->expects(self::never())
+                 ->method('getFirstCommit')
+        ;
 
-        self::assertEquals($commits, $newCommits);
+        $infoMock->expects(self::once())
+                 ->method('getLatestReleaseTag')
+                 ->willReturn('foo1')
+        ;
+
+        $infoMock->method('getGitTags')
+                 ->willReturn(['bar1', 'bar2'])
+        ;
+
+        $infoMock->expects(self::atLeastOnce())
+                 ->method('getCommits')
+                 ->willReturn($commits)
+        ;
+        // @formatter:on
+
+        $newCommits = $infoMock->getNewCommits();
+
+        self::assertSame($commits, $newCommits);
     }
 }

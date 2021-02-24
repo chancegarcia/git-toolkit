@@ -32,6 +32,7 @@
 namespace Chance\Version\Command;
 
 use Chance\Version\GitInformation;
+use Chance\Version\Service\ChangeLogService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -44,78 +45,24 @@ class ChangeLog extends Command
     protected static $defaultName = 'version:changelog';
 
     /**
-     * @var GitInformation
+     * @var ChangeLogService
      */
-    private $gitInformation;
-
-    private $changeLogFileName = 'changelog.md';
-
-    private $changeLogFilePath = '';
-
-    private $mainHeaderName = 'Projecty McProjectFace';
+    private $changeLogService;
 
     /**
-     * @return GitInformation
+     * @return ChangeLogService
      */
-    public function getGitInformation(): GitInformation
+    public function getChangeLogService(): ChangeLogService
     {
-        return $this->gitInformation;
+        return $this->changeLogService;
     }
 
     /**
-     * @param GitInformation $gitInformation
+     * @param ChangeLogService $changeLogService
      */
-    public function setGitInformation(GitInformation $gitInformation): void
+    public function setChangeLogService(ChangeLogService $changeLogService): void
     {
-        $this->gitInformation = $gitInformation;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getChangeLogFileName()
-    {
-        return $this->changeLogFileName;
-    }
-
-    /**
-     * @param mixed $changeLogFileName
-     */
-    public function setChangeLogFileName($changeLogFileName): void
-    {
-        $this->changeLogFileName = $changeLogFileName;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getChangeLogFilePath()
-    {
-        return $this->changeLogFilePath;
-    }
-
-    /**
-     * @param mixed $changeLogFilePath
-     */
-    public function setChangeLogFilePath($changeLogFilePath): void
-    {
-        $this->changeLogFilePath = $changeLogFilePath;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getMainHeaderName()
-    {
-        return $this->mainHeaderName;
-    }
-
-    /**
-     * @param mixed $mainHeaderName
-     */
-    public function setMainHeaderName($mainHeaderName): void
-    {
-        $this->mainHeaderName = $mainHeaderName;
+        $this->changeLogService = $changeLogService;
     }
 
     protected function configure()
@@ -127,7 +74,7 @@ class ChangeLog extends Command
             // the full command description shown when running the command with
             // the "--help" option
             ->setHelp('This command allows you to generate a changelog from your git commit history')
-            ->addArgument('header', InputArgument::OPTIONAL, 'main file header in output; default: Projecty McProjectFace')
+            ->addArgument('header', InputArgument::OPTIONAL, 'main file header in output; default: ' . ChangeLogService::DEFAULT_MAIN_HEADER_NAME)
             ->addOption('new-tag', null, InputOption::VALUE_REQUIRED, 'label the current `HEAD` as NEW-TAG on output')
         ;
     }
@@ -136,45 +83,14 @@ class ChangeLog extends Command
     {
         // todo gather data via questions (project name/main title)
         // $testTags = array_slice(getGitTags(), 0, 5);
-        $tags = $this->gitInformation->getGitTags();
-        $fullPath = $this->changeLogFilePath . $this->changeLogFileName;
-        $file = new \SplFileObject($fullPath, 'wb+');
 
         $mainHeaderName = $input->getArgument('header');
+        $this->changeLogService->setMainHeaderName($mainHeaderName);
 
-        if (is_string($mainHeaderName)) {
-            $this->mainHeaderName = $mainHeaderName;
-        }
-
-        $file->fwrite(sprintf("# %s\n\n", $this->mainHeaderName));
 
         $newTag = $input->getOption('new-tag');
-        if (is_string($newTag)) {
-            $this->writeNewTag($file, $newTag);
-        }
+        $this->changeLogService->writeChangeLog($newTag);
 
-        for ($i = 0, $iMax = count($tags); $i < $iMax; $i++) {
-            if ($i + 1 === $iMax) {
-                [$current] = array_slice($tags, $i, 1);
-                $previous = $this->gitInformation->getFirstCommit();
-            } else {
-                [$current, $previous] = array_slice($tags, $i, 2);
-            }
-
-            $commits = GitInformation::escapeCommitsForMarkdown($this->gitInformation->getCommits($previous, $current, true));
-            $commitString = implode("\n", $commits);
-
-            $tagName = $current;
-            if ("" === $tagName) {
-                $currentCommit = $this->gitInformation->getCurrentCommit();
-                $tagName = sprintf('empty tag \(latest commit: %s\)', $currentCommit);
-            }
-
-            $this->writeTag($file, $tagName, $commitString);
-        }
-
-        // close file (https://stackoverflow.com/questions/22449822/how-to-close-a-splfileobject-file-handler/22822981)
-        $file = null;
 
         // return this if there was no problem running the command
         return 0;

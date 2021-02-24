@@ -41,14 +41,17 @@ require $dir . '/vendor/autoload.php';
 use Symfony\Component\Console\Application;
 use Chance\Version\GitInformation;
 use Chance\Version\Command\ChangeLog;
+use Chance\Version\Service\ChangeLogService;
 use Cz\Git\GitRepository;
 
 $application = new Application();
 
 $gitRepo = new GitRepository($dir);
 $gitInformation = new GitInformation($gitRepo);
+$changeLogService = new ChangeLogService($gitInformation);
+
 $changeLogCommand = new ChangeLog();
-$changeLogCommand->setGitInformation($gitInformation);
+$changeLogCommand->setChangeLogService($changeLogService);
 $application->add($changeLogCommand);
 
 $application->run();
