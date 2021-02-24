@@ -173,6 +173,7 @@ class ChangeLogServiceTest extends TestCase
             '4.1.2',
             '4.1.1',
             '4.1.0',
+            "",
             ];
 
         $commits = [
@@ -199,6 +200,10 @@ class ChangeLogServiceTest extends TestCase
         $infoMock->expects(self::atLeastOnce())
             ->method('getCommits')
             ->willReturn($commits)
+        ;
+
+        $infoMock->expects(self::once())
+            ->method('getCurrentCommit')
         ;
 
         // writes the main header once then 2 writes per tag (tag name and commit string)
