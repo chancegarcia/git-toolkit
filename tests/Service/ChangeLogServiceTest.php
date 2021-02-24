@@ -33,6 +33,7 @@ namespace Chance\Version\Test\Service;
 
 use Chance\Version\GitInformation;
 use Chance\Version\Service\ChangeLogService;
+use Cz\Git\GitRepository;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\MockObject\MockBuilder;
 use PHPUnit\Framework\TestCase;
@@ -48,6 +49,11 @@ class ChangeLogServiceTest extends TestCase
      */
     private $gitInfoMockBuilder;
 
+    /**
+     * @var \PHPUnit\Framework\MockObject\MockBuilder|GitRepository
+     */
+    private $repoMockBuilder;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -56,13 +62,19 @@ class ChangeLogServiceTest extends TestCase
         $this->splFileObjectMockBuilder = $this->getMockBuilder(\SplFileObject::class)->setConstructorArgs(['php://memory']);
 
         $this->gitInfoMockBuilder = $this->getMockBuilder(GitInformation::class)->disableOriginalConstructor();
+
+        $this->repoMockBuilder = $this->getMockBuilder(GitRepository::class)->disableOriginalConstructor();
+
         // @formatter:on
+
     }
 
     public function tearDown(): void
     {
         parent::tearDown();
         $this->splFileObjectMockBuilder = null;
+        $this->gitInfoMockBuilder = null;
+        $this->repoMockBuilder = null;
     }
 
     public function testMainHeaderName()
@@ -122,6 +134,7 @@ class ChangeLogServiceTest extends TestCase
     }
 
     /**
+     * @depends testWriteTag
      */
     public function testWriteNewTag()
     {
@@ -150,14 +163,71 @@ class ChangeLogServiceTest extends TestCase
         $service->writeNewTag($fileMock, '0.1.0');
     }
 
-    public function testWriteChangeLog()
+    /**
+     * @depends testWriteTag
+     */
+    public function testWriteChangeLogNoNewTagWithExistingHistory()
     {
-        // test/mock info::getGitTags called
-        // test writeNewTag called
-        // test writeNewTag not called
-        // test/mock getSplFileObject
-        // test getFirstCommit called
-        // test/mock writeTag called
+        $tags = [
+            '4.1.3',
+            '4.1.2',
+            '4.1.1',
+            '4.1.0',
+            ];
+
+        $commits = [
+            "perf: made this better",
+            "refactor: also patch a thing ",
+            "fix: some sort of patch\n\n- we have additional notes in the body here",
+            "feature: initial commit",
+        ];
+
+        // @formatter:off
+        $repoMock = $this->repoMockBuilder->getMock();
+        $infoMock = $this->gitInfoMockBuilder->enableOriginalConstructor()->setConstructorArgs([$repoMock])->getMock();
+
+        $infoMock->expects(self::atLeastOnce())
+            ->method('getGitTags')
+            ->willReturn($tags)
+        ;
+
+        $infoMock->expects(self::atLeastOnce())
+            ->method('getFirstCommit')
+            ->willReturn($tags[count($tags) - 1])
+        ;
+
+        $infoMock->expects(self::atLeastOnce())
+            ->method('getCommits')
+            ->willReturn($commits)
+        ;
+
+        // writes the main header once then 2 writes per tag (tag name and commit string)
+        $expectedWrites = (count($tags) * 2) + 1;
+        $splFileObjectMock = $this->splFileObjectMockBuilder->getMock();
+        $splFileObjectMock->expects(self::exactly($expectedWrites))
+            ->method('fwrite')
+        ;
+
+        $serviceMock = $this->getMockBuilder(ChangeLogService::class)
+                            ->setConstructorArgs([$infoMock])
+                            ->onlyMethods(['getSplFileObject', 'writeNewTag', 'writeTag', 'writeChangeLog'] )
+                            ->getMock()
+        ;
+
+        // $serviceMock->expects(self::never())
+        //     ->method('writeNewTag')
+        // ;
+        // $serviceMock->expects(self::atLeastOnce())
+        //     ->method('writeTag')
+        // ;
+        //
+        // $serviceMock->writeChangeLog($splFileObjectMock);
+
+        // @formatter:on
+
+        $service = new ChangeLogService($infoMock);
+        $service->writeChangeLog($splFileObjectMock);
+
         // test current tag is blank?
     }
 }

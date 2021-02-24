@@ -88,7 +88,8 @@ class ChangeLog extends Command
         $this->changeLogService->setMainHeaderName($mainHeaderName);
 
         $newTag = $input->getOption('new-tag');
-        $this->changeLogService->writeChangeLog($newTag);
+        $file = $this->changeLogService->getSplFileObject();
+        $this->changeLogService->writeChangeLog($file, $newTag);
 
         // return this if there was no problem running the command
         return 0;

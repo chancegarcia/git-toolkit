@@ -134,13 +134,16 @@ class ChangeLogService
         }
     }
 
-    public function writeChangeLog(string $newTag = null)
+    /**
+     * @param \SplFileObject $file
+     * @param string|null $newTag
+     *
+     * @throws \Cz\Git\GitException
+     */
+    public function writeChangeLog(\SplFileObject $file, string $newTag = null)
     {
         $tags = $this->gitInformation->getGitTags();
         $tagCount = count($tags);
-
-        $fullPath = $this->changeLogFilePath . $this->changeLogFileName;
-        $file = $this->getSplFileObject($fullPath);
 
         $file->fwrite(sprintf("# %s\n\n", $this->mainHeaderName));
 
@@ -183,8 +186,10 @@ class ChangeLogService
         $file = null;
     }
 
-    public function getSplFileObject(string $fullPath): \SplFileObject
+    public function getSplFileObject(): \SplFileObject
     {
+        $fullPath = $this->changeLogFilePath . $this->changeLogFileName;
+
         return new \SplFileObject($fullPath, 'wb+');
     }
 
