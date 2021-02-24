@@ -170,8 +170,7 @@ class ChangeLogService
                 $commits = GitInformation::escapeCommitsForMarkdown($this->gitInformation->getCommits($previous, $current, true));
                 $commitString = implode("\n", $commits);
 
-
-                if (!$hasNewTag && '' !== $commitString) {
+                if ('' !== $commitString) {
                     $tagName = $current;
                     if ("" === $tagName) {
                         $currentCommit = $this->gitInformation->getCurrentCommit();

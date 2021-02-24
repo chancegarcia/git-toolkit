@@ -230,4 +230,70 @@ class ChangeLogServiceTest extends TestCase
 
         // test current tag is blank?
     }
+
+    public function testWriteChangeLogNewTagWithExistingHistory()
+    {
+        $tags = [
+            '4.1.3',
+            '4.1.2',
+            '4.1.1',
+            '4.1.0',
+        ];
+
+        $commits = [
+            "perf: made this better",
+            "refactor: also patch a thing ",
+            "fix: some sort of patch\n\n- we have additional notes in the body here",
+            "feature: initial commit",
+        ];
+
+        $newCommits = [
+            'fix: something after 4.1.3',
+            'fix: another thing after 4.1.3',
+            'fix: last thing after 4.1.3',
+        ];
+
+        // @formatter:off
+        $repoMock = $this->repoMockBuilder->getMock();
+        $infoMock = $this->gitInfoMockBuilder->enableOriginalConstructor()->setConstructorArgs([$repoMock])->getMock();
+
+        $infoMock->expects(self::atLeastOnce())
+            ->method('getGitTags')
+            ->willReturn($tags)
+        ;
+
+        $infoMock->expects(self::atLeastOnce())
+                 ->method('getGitTags')
+                 ->willReturn($tags)
+        ;
+
+        $infoMock->expects(self::atLeastOnce())
+                 ->method('getFirstCommit')
+                 ->willReturn($tags[count($tags) - 1])
+        ;
+
+        $infoMock->expects(self::atLeastOnce())
+                 ->method('getCommits')
+                 ->willReturn($commits)
+        ;
+
+        $infoMock->expects(self::atLeastOnce())
+            ->method('getNewCommits')
+        ;
+
+        // writes the main header once then 2 writes per tag (tag name and commit string) plus new commit tag name and it's header
+        $expectedWrites = (count($tags) * 2) + 3;
+        $splFileObjectMock = $this->splFileObjectMockBuilder->getMock();
+        $splFileObjectMock->expects(self::exactly($expectedWrites))
+                          ->method('fwrite')
+        ;
+
+        // @formatter:on
+        $service = new ChangeLogService($infoMock);
+        $service->writeChangeLog($splFileObjectMock, "4.1.4");
+
+        // test writeNewTag called?
+        // test/mock writeTag called?
+        // test current tag is blank?
+    }
 }
