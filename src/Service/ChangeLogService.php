@@ -36,6 +36,8 @@ use Chance\Version\GitInformation;
 class ChangeLogService
 {
     public const DEFAULT_MAIN_HEADER_NAME = 'Projecty McProjectFace';
+    public const DEFAULT_FILE_NAME = 'changelog.md';
+    public const DEFAULT_FILE_PATH = '';
     /**
      * @var GitInformation
      */
@@ -44,12 +46,12 @@ class ChangeLogService
     /**
      * @var string
      */
-    private $changeLogFileName = 'changelog.md';
+    private $changeLogFileName = self::DEFAULT_FILE_NAME;
 
     /**
      * @var string
      */
-    private $changeLogFilePath = '';
+    private $changeLogFilePath = self::DEFAULT_FILE_PATH;
 
     /**
      * @var string
@@ -75,14 +77,6 @@ class ChangeLogService
     }
 
     /**
-     * @param GitInformation $gitInformation
-     */
-    public function setGitInformation(GitInformation $gitInformation): void
-    {
-        $this->gitInformation = $gitInformation;
-    }
-
-    /**
      * @return string
      */
     public function getChangeLogFileName(): string
@@ -93,7 +87,7 @@ class ChangeLogService
     /**
      * @param string $changeLogFileName
      */
-    public function setChangeLogFileName($changeLogFileName): void
+    public function setChangeLogFileName(string $changeLogFileName): void
     {
         $this->changeLogFileName = $changeLogFileName;
     }
@@ -109,7 +103,7 @@ class ChangeLogService
     /**
      * @param string $changeLogFilePath
      */
-    public function setChangeLogFilePath($changeLogFilePath): void
+    public function setChangeLogFilePath(string $changeLogFilePath): void
     {
         $this->changeLogFilePath = $changeLogFilePath;
     }

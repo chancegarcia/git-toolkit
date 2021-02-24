@@ -363,24 +363,73 @@ class ChangeLogServiceTest extends TestCase
         // test current tag is blank?
     }
 
-    // test write changelog calls other writeNewTag and writeTag?
 
-    // $serviceMock = $this->getMockBuilder(ChangeLogService::class)
-    //                     ->setConstructorArgs([$infoMock])
-    //                     ->onlyMethods(['getSplFileObject', 'writeNewTag', 'writeTag', 'writeChangeLog'] )
-    //                     ->getMock()
-    // ;
+    public function testFilePath()
+    {
+        $infoMock = $this->gitInfoMockBuilder->getMock();
 
-    // $serviceMock->expects(self::never())
-    //     ->method('writeNewTag')
-    // ;
-    // $serviceMock->expects(self::atLeastOnce())
-    //     ->method('writeTag')
-    // ;
-    //
-    // $serviceMock->writeChangeLog($splFileObjectMock);
+        $service = new ChangeLogService($infoMock);
 
-    // @formatter:on
+        self::assertSame(ChangeLogService::DEFAULT_FILE_PATH, $service->getChangeLogFilePath());
 
-    // test getters and setters?
+        $path = '/tmp/';
+        $service->setChangeLogFilePath($path);
+
+        self::assertSame($path, $service->getChangeLogFilePath());
+    }
+
+    public function testFileName()
+    {
+        $infoMock = $this->gitInfoMockBuilder->getMock();
+
+        $service = new ChangeLogService($infoMock);
+
+        self::assertSame(ChangeLogService::DEFAULT_FILE_NAME, $service->getChangeLogFileName());
+
+        $filename = 'somefile.md';
+        $service->setChangeLogFileName($filename);
+
+        self::assertSame($filename, $service->getChangeLogFileName());
+    }
+
+    /**
+     * @depends testFilePath
+     * @depends testFileName
+     */
+    public function testFullPath()
+    {
+        $infoMock = $this->gitInfoMockBuilder->getMock();
+
+        $service = new ChangeLogService($infoMock);
+
+        $defaultFullPath = ChangeLogService::DEFAULT_FILE_PATH . ChangeLogService::DEFAULT_FILE_NAME;
+
+        self::assertSame($defaultFullPath, $service->getFullPath());
+    }
+
+    /**
+     * @depends testFullPath
+     */
+    public function testGetSplFileObject()
+    {
+        $infoMock = $this->gitInfoMockBuilder->getMock();
+
+        $service = new ChangeLogService($infoMock);
+        $service->setChangeLogFilePath('php://');
+        $service->setChangeLogFileName('memory');
+
+        $file = $service->getSplFileObject();
+
+        // no need to assert instance type because of return type declaration
+        self::assertSame($service->getFullPath(), $file->getPathname());
+    }
+
+    public function testGitInformation()
+    {
+        $infoMock = $this->gitInfoMockBuilder->getMock();
+
+        $service = new ChangeLogService($infoMock);
+
+        self::assertSame($infoMock, $service->getGitInformation());
+    }
 }
