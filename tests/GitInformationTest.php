@@ -305,4 +305,14 @@ class GitInformationTest extends TestCase
 
         self::assertSame($commits, $newCommits);
     }
+
+    // test repo getter/setter
+
+    // test get current commit
+    // mock expect repo getLastCommitId is call
+
+    // test getCommits no merges
+    // check execute is without `--no-merges` array value
+    // test getCommits merges
+    // check execute is with `--no-merges` array value
 }

@@ -87,37 +87,13 @@ class ChangeLog extends Command
         $mainHeaderName = $input->getArgument('header');
         $this->changeLogService->setMainHeaderName($mainHeaderName);
 
-
         $newTag = $input->getOption('new-tag');
         $this->changeLogService->writeChangeLog($newTag);
-
 
         // return this if there was no problem running the command
         return 0;
 
         // or return this if some error happened during the execution
         // return 1;
-    }
-
-    /**
-     * @param \SplFileObject $file file resource
-     * @param string $tagName
-     * @param string $commits
-     */
-    private function writeTag(\SplFileObject $file, string $tagName, string $commits)
-    {
-        $file->fwrite(sprintf("## %s\n", $tagName));
-        $file->fwrite(sprintf("%s\n", $commits));
-    }
-
-    /**
-     * @param \SplFileObject $file file resource
-     * @param string $newTag
-     */
-    private function writeNewTag(\SplFileObject $file, string $newTag)
-    {
-        $latestCommits = GitInformation::escapeCommitsForMarkdown($this->gitInformation->getNewCommits());
-        $latestCommitsString = implode("\n", $latestCommits);
-        $this->writeTag($file, $newTag, $latestCommitsString);
     }
 }
