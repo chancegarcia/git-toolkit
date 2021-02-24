@@ -208,21 +208,6 @@ class ChangeLogServiceTest extends TestCase
             ->method('fwrite')
         ;
 
-        $serviceMock = $this->getMockBuilder(ChangeLogService::class)
-                            ->setConstructorArgs([$infoMock])
-                            ->onlyMethods(['getSplFileObject', 'writeNewTag', 'writeTag', 'writeChangeLog'] )
-                            ->getMock()
-        ;
-
-        // $serviceMock->expects(self::never())
-        //     ->method('writeNewTag')
-        // ;
-        // $serviceMock->expects(self::atLeastOnce())
-        //     ->method('writeTag')
-        // ;
-        //
-        // $serviceMock->writeChangeLog($splFileObjectMock);
-
         // @formatter:on
 
         $service = new ChangeLogService($infoMock);
@@ -263,11 +248,6 @@ class ChangeLogServiceTest extends TestCase
         ;
 
         $infoMock->expects(self::atLeastOnce())
-                 ->method('getGitTags')
-                 ->willReturn($tags)
-        ;
-
-        $infoMock->expects(self::atLeastOnce())
                  ->method('getFirstCommit')
                  ->willReturn($tags[count($tags) - 1])
         ;
@@ -292,8 +272,6 @@ class ChangeLogServiceTest extends TestCase
         $service = new ChangeLogService($infoMock);
         $service->writeChangeLog($splFileObjectMock, "4.1.4");
 
-        // test writeNewTag called?
-        // test/mock writeTag called?
         // test current tag is blank?
     }
 
@@ -331,10 +309,63 @@ class ChangeLogServiceTest extends TestCase
         $service = new ChangeLogService($infoMock);
         $service->writeChangeLog($splFileObjectMock);
 
-        // test/mock info::getGitTags called
-        // test info::getFirstCommit called
-        // test writeNewTag called?
-        // test/mock writeTag called?
         // test current tag is blank?
     }
+
+    public function testWriteChangeLogNewTagWithNoHistory()
+    {
+        $commits = [
+            "perf: made this better",
+            "refactor: also patch a thing ",
+            "fix: some sort of patch\n\n- we have additional notes in the body here",
+            "feature: initial commit",
+        ];
+
+        // @formatter:off
+        $repoMock = $this->repoMockBuilder->getMock();
+        $infoMock = $this->gitInfoMockBuilder->enableOriginalConstructor()->setConstructorArgs([$repoMock])->getMock();
+
+        $infoMock->expects(self::atLeastOnce())
+                 ->method('getGitTags')
+                 ->willReturn($commits);
+
+        $infoMock->expects(self::atLeastOnce())
+                 ->method('getNewCommits')
+                 ->willReturn($commits)
+        ;
+
+        // writes the main header once then 2 writes for the new tag name and the commits
+        $expectedWrites = 3;
+        $splFileObjectMock = $this->splFileObjectMockBuilder->getMock();
+        $splFileObjectMock->expects(self::exactly($expectedWrites))
+                          ->method('fwrite')
+        ;
+
+        // @formatter:on
+
+        $service = new ChangeLogService($infoMock);
+        $service->writeChangeLog($splFileObjectMock, '1.0.0');
+
+        // test current tag is blank?
+    }
+
+    // test write changelog calls other writeNewTag and writeTag?
+
+    // $serviceMock = $this->getMockBuilder(ChangeLogService::class)
+    //                     ->setConstructorArgs([$infoMock])
+    //                     ->onlyMethods(['getSplFileObject', 'writeNewTag', 'writeTag', 'writeChangeLog'] )
+    //                     ->getMock()
+    // ;
+
+    // $serviceMock->expects(self::never())
+    //     ->method('writeNewTag')
+    // ;
+    // $serviceMock->expects(self::atLeastOnce())
+    //     ->method('writeTag')
+    // ;
+    //
+    // $serviceMock->writeChangeLog($splFileObjectMock);
+
+    // @formatter:on
+
 }
