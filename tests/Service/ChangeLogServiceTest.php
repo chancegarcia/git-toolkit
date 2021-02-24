@@ -221,6 +221,9 @@ class ChangeLogServiceTest extends TestCase
         // test current tag is blank?
     }
 
+    /**
+     * @depends testWriteNewTag
+     */
     public function testWriteChangeLogNewTagWithExistingHistory()
     {
         $tags = [
@@ -280,6 +283,9 @@ class ChangeLogServiceTest extends TestCase
         // test current tag is blank?
     }
 
+    /**
+     * @depends testWriteTag
+     */
     public function testWriteChangeLogNoNewTagWithNoHistory()
     {
         $commits = [
@@ -317,6 +323,9 @@ class ChangeLogServiceTest extends TestCase
         // test current tag is blank?
     }
 
+    /**
+     * @depends testWriteNewTag
+     */
     public function testWriteChangeLogNewTagWithNoHistory()
     {
         $commits = [
@@ -373,4 +382,5 @@ class ChangeLogServiceTest extends TestCase
 
     // @formatter:on
 
+    // test getters and setters?
 }
