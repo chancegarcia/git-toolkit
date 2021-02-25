@@ -1,6 +1,22 @@
 # Chance Git-Toolkit
 
+## 1.0.1
+docs: update `readme.md` with build status
+
+build: make sure dependencies are installed?
+
+build: specify os and dist; and php version
+
+build: use simple config
+
+since we copypasta'd ramsey's config, we might be missing something or mis-understanding what config things do...
+
+build: add requirements for travis config
+
+chore: cleanup and organize the `composer.json` file; add more meta information and correct bin definition
+
 ## 1.0.0
+chore: dogfooding to create our initial release changelog
 
 chore: update lock for testing
 
@@ -57,8 +73,7 @@ feat: test `GitInformation` class; add git repo client dependency
 
 - version script determines current directory
 - method `escapeCommitsForMarkdown` is now static
-- use git repo client instead of our `shell_exec` calls; repo client has it's own tests so we don't have to concern
-  ourselves with testing `shell_exec`
+- use git repo client instead of our `shell_exec` calls; repo client has it's own tests so we don't have to concern ourselves with testing `shell_exec`
 
 refactor: clearer object and method names
 
@@ -66,8 +81,7 @@ refactor: use `\SPLFileObject` instead of resource
 
 feat: add ability to write latest commits as a tag
 
-- of the `new-tag` option is given, we find all the latest commits by finding all commits between the current commit
-  hash and the last release tag known
+- of the `new-tag` option is given, we find all the latest commits by finding all commits between the current commit hash and the last release tag known
 
 feat: allow customization of the initial project header of the changelog file
 
