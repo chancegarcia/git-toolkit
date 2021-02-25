@@ -1,24 +1,24 @@
 {
-  "_readme": [
-    "This file locks the dependencies of your project to a known state",
-    "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
-    "This file is @generated automatically"
-  ],
-  "content-hash": "6a8c221c721572255bd6ea2c244a6fa6",
-  "packages": [
-    {
-      "name": "czproject/git-php",
-      "version": "v3.18.2",
-      "source": {
-        "type": "git",
-        "url": "https://github.com/czproject/git-php.git",
-        "reference": "cb3bfc6f1e487e572870afae5d52ef3c7d250d8a"
-      },
-      "dist": {
-        "type": "zip",
-        "url": "https://api.github.com/repos/czproject/git-php/zipball/cb3bfc6f1e487e572870afae5d52ef3c7d250d8a",
-        "reference": "cb3bfc6f1e487e572870afae5d52ef3c7d250d8a",
-        "shasum": ""
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "1ec822d41f9f191c5c360f24317a6c34",
+    "packages": [
+        {
+            "name": "czproject/git-php",
+            "version": "v3.18.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/czproject/git-php.git",
+                "reference": "cb3bfc6f1e487e572870afae5d52ef3c7d250d8a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/czproject/git-php/zipball/cb3bfc6f1e487e572870afae5d52ef3c7d250d8a",
+                "reference": "cb3bfc6f1e487e572870afae5d52ef3c7d250d8a",
+                "shasum": ""
             },
             "require": {
                 "php": ">=5.4.0"
@@ -103,12 +103,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "3650057f1c18dea3cfffdcf2f7c5e39215dcd7b8"
+                "reference": "c98349bda966c70d6c08b4cd8658377c94166492"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/3650057f1c18dea3cfffdcf2f7c5e39215dcd7b8",
-                "reference": "3650057f1c18dea3cfffdcf2f7c5e39215dcd7b8",
+                "url": "https://api.github.com/repos/symfony/console/zipball/c98349bda966c70d6c08b4cd8658377c94166492",
+                "reference": "c98349bda966c70d6c08b4cd8658377c94166492",
                 "shasum": ""
             },
             "require": {
@@ -181,7 +181,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-02-16T11:16:02+00:00"
+            "time": "2021-02-22T18:44:15+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -1281,12 +1281,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "d44db0df749e7a1567f385d566ce732a24c8c1c3"
+                "reference": "8a67777bbe4e190e5c3ced10fa7972a7915aba06"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/d44db0df749e7a1567f385d566ce732a24c8c1c3",
-                "reference": "d44db0df749e7a1567f385d566ce732a24c8c1c3",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/8a67777bbe4e190e5c3ced10fa7972a7915aba06",
+                "reference": "8a67777bbe4e190e5c3ced10fa7972a7915aba06",
                 "shasum": ""
             },
             "require": {
@@ -1372,7 +1372,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-02-21T06:28:47+00:00"
+            "time": "2021-02-23T15:50:39+00:00"
         },
         {
             "name": "roave/security-advisories",
