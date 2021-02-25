@@ -29,7 +29,7 @@
  *
  */
 
-namespace Chance\Version;
+namespace Chance\GitToolkit;
 
 use Cz\Git\GitException;
 use Cz\Git\GitRepository;

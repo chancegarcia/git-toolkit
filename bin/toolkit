@@ -39,9 +39,9 @@ if (false !== strpos($currentDir, 'bin')) {
 require $dir . '/vendor/autoload.php';
 
 use Symfony\Component\Console\Application;
-use Chance\Version\GitInformation;
-use Chance\Version\Command\ChangeLog;
-use Chance\Version\Service\ChangeLogService;
+use Chance\GitToolkit\GitInformation;
+use Chance\GitToolkit\Command\ChangeLog;
+use Chance\GitToolkit\Service\ChangeLogService;
 use Cz\Git\GitRepository;
 
 $application = new Application();

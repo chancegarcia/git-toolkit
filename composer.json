@@ -20,13 +20,15 @@
     },
     "autoload": {
         "psr-4": {
-            "Chance\\Version\\": "src"
+            "Chance\\GitToolkit\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Chance\\Version\\Test\\": "tests"
+            "Chance\\GitToolkit\\Test\\": "tests"
         }
     },
-    "bin": ["bin/version.php"]
+    "bin": [
+        "bin/version"
+    ]
 }

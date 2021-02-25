@@ -29,9 +29,9 @@
  *
  */
 
-namespace Chance\Version\Test;
+namespace Chance\GitToolkit\Test;
 
-use Chance\Version\GitInformation;
+use Chance\GitToolkit\GitInformation;
 use Cz\Git\GitRepository;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;

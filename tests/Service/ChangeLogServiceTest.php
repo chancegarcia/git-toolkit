@@ -29,10 +29,10 @@
  *
  */
 
-namespace Chance\Version\Test\Service;
+namespace Chance\GitToolkit\Test\Service;
 
-use Chance\Version\GitInformation;
-use Chance\Version\Service\ChangeLogService;
+use Chance\GitToolkit\GitInformation;
+use Chance\GitToolkit\Service\ChangeLogService;
 use Cz\Git\GitRepository;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\MockObject\MockBuilder;

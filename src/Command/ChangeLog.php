@@ -29,10 +29,10 @@
  *
  */
 
-namespace Chance\Version\Command;
+namespace Chance\GitToolkit\Command;
 
-use Chance\Version\GitInformation;
-use Chance\Version\Service\ChangeLogService;
+use Chance\GitToolkit\GitInformation;
+use Chance\GitToolkit\Service\ChangeLogService;
 use Cz\Git\GitException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -43,7 +43,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ChangeLog extends Command
 {
     // the name of the command (the part after "bin/console")
-    protected static $defaultName = 'version:changelog';
+    protected static $defaultName = 'toolkit:changelog';
 
     /**
      * @var ChangeLogService

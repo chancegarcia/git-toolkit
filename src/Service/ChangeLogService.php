@@ -29,9 +29,9 @@
  *
  */
 
-namespace Chance\Version\Service;
+namespace Chance\GitToolkit\Service;
 
-use Chance\Version\GitInformation;
+use Chance\GitToolkit\GitInformation;
 
 class ChangeLogService
 {
