@@ -1,5 +1,9 @@
 # Git Toolkit
 
+main: [![Build Status](https://travis-ci.com/chancegarcia/git-toolkit.svg?branch=main)](https://travis-ci.com/chancegarcia/git-toolkit)
+
+develop: [![Build Status](https://travis-ci.com/chancegarcia/git-toolkit.svg?branch=develop)](https://travis-ci.com/chancegarcia/git-toolkit)
+
 This toolkit only contains one tool currently. That tool will create a `changelog.md` for a project using the git
 repository tags and the git commit history.
 
