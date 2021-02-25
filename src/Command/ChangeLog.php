@@ -33,6 +33,7 @@ namespace Chance\Version\Command;
 
 use Chance\Version\GitInformation;
 use Chance\Version\Service\ChangeLogService;
+use Cz\Git\GitException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -85,21 +86,22 @@ class ChangeLog extends Command
         // $testTags = array_slice(getGitTags(), 0, 5);
 
         $mainHeaderName = $input->getArgument('header');
-        $this->changeLogService->setMainHeaderName($mainHeaderName);
-
+        $newTag = $input->getOption('new-tag');
         // for path option, make sure that there is a trailing slash, if not, add one
 
-        $newTag = $input->getOption('new-tag');
-        $file = $this->changeLogService->getSplFileObject();
+        try {
+            $this->changeLogService->setMainHeaderName($mainHeaderName);
+            $file = $this->changeLogService->getSplFileObject();
+            $this->changeLogService->writeChangeLog($file, $newTag);// write success
+            $output->writeln(sprintf("success: file '%s' has been created", $this->changeLogService->getFullPath()));// return this if there was no problem running the command
 
-        $this->changeLogService->writeChangeLog($file, $newTag);
+            return 0;
+        } catch (GitException $e) {
+            // or return this if some error happened during the execution
+            $output->writeln(sprintf('error: file "%s" was not written or maybe partially written.', $this->changeLogService->getFullPath()));
+            $output->writeln(sprintf('error message: %s (line: %s)', $e->getMessage(), $e->getLine()));
 
-        // return this if there was no problem running the command
-        // write success
-
-        return 0;
-
-        // or return this if some error happened during the execution
-        // return 1;
+            return 1;
+        }
     }
 }

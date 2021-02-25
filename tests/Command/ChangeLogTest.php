@@ -35,18 +35,20 @@ use Chance\Version\Command\ChangeLog;
 use Chance\Version\GitInformation;
 use Chance\Version\Service\ChangeLogService;
 use Composer\Console\Application;
+use Cz\Git\GitException;
 use PHPUnit\Framework\MockObject\MockBuilder;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class ChangeLogTest extends TestCase
 {
     /**
-     * @var ChangeLogService|MockBuilder
+     * @var MockBuilder|ChangeLogService
      */
     private $serviceMockBuilder;
     /**
-     * @var MockBuilder||\SplFileObject
+     * @var \SplFileObject|MockBuilder
      */
     private $splFileObjectMockBuilder;
 
@@ -54,14 +56,28 @@ class ChangeLogTest extends TestCase
     {
         $fileMock = $this->splFileObjectMockBuilder->getMock();
 
+        // @formatter:off
+        /**
+         * @var ChangeLogService|MockObject $changeLogServiceMock
+         */
         $changeLogServiceMock = $this->serviceMockBuilder->getMock();
 
-        $changeLogServiceMock->expects(self::once())->method('setMainHeaderName');
-        $changeLogServiceMock->expects(self::once())->method('getSplFileObject')->willReturn($fileMock);
-        $changeLogServiceMock->expects(self::once())->method('writeChangeLog')
-                             ->with(self::isInstanceOf(\SplFileObject::class), self::isNull())
+        $changeLogServiceMock->expects(self::once())
+                             ->method('setMainHeaderName')
+        ;
+        $changeLogServiceMock->expects(self::once())
+                             ->method('getSplFileObject')
+                             ->willReturn($fileMock)
+        ;
+        $changeLogServiceMock->expects(self::once())
+                             ->method('writeChangeLog')
+                             ->with(
+                                 self::isInstanceOf(\SplFileObject::class),
+                                 self::isNull()
+                             )
         ;
 
+        // @formatter:on
 
         $changeLogCommand = new ChangeLog();
         $changeLogCommand->setChangeLogService($changeLogServiceMock);
@@ -75,16 +91,54 @@ class ChangeLogTest extends TestCase
     /**
      * @depends testExecute
      */
+    public function testExecuteSuccessMessage()
+    {
+        $fileMock = $this->splFileObjectMockBuilder->getMock();
+
+        // @formatter:off
+        /**
+         * @var ChangeLogService|MockObject $changeLogServiceMock
+         */
+        $changeLogServiceMock = $this->serviceMockBuilder->getMock();
+
+        $changeLogServiceMock->expects(self::once())
+                             ->method('getSplFileObject')
+                             ->willReturn($fileMock)
+        ;
+
+        // @formatter:on
+
+        $changeLogCommand = new ChangeLog();
+        $changeLogCommand->setChangeLogService($changeLogServiceMock);
+
+        $commandTester = new CommandTester($changeLogCommand);
+        $commandTester->execute([]);
+
+        // the output of the command in the console
+        $output = $commandTester->getDisplay();
+        self::assertEquals(sprintf("success: file '%s' has been created\n", $changeLogServiceMock->getFullPath()), $output);
+    }
+
+    /**
+     * @depends testExecute
+     */
     public function testExecuteWithHeaderArgument()
     {
         $headerValue = 'Toolkit Test';
 
+        // @formatter:off
         $fileMock = $this->splFileObjectMockBuilder->getMock();
         $changeLogServiceMock = $this->serviceMockBuilder->getMock();
 
-        $changeLogServiceMock->expects(self::once())->method('getSplFileObject')->willReturn($fileMock);
+        $changeLogServiceMock->expects(self::once())
+                             ->method('getSplFileObject')
+                             ->willReturn($fileMock)
+        ;
 
-        $changeLogServiceMock->expects(self::once())->method('setMainHeaderName')->with(self::equalTo($headerValue));
+        $changeLogServiceMock->expects(self::once())
+                             ->method('setMainHeaderName')
+                             ->with(self::equalTo($headerValue))
+        ;
 
         $changeLogCommand = new ChangeLog();
         $changeLogCommand->setChangeLogService($changeLogServiceMock);
@@ -93,6 +147,8 @@ class ChangeLogTest extends TestCase
         $commandTester->execute([
             'header' => $headerValue,
         ]);
+
+        // @formatter:on
     }
 
     /**
@@ -102,13 +158,21 @@ class ChangeLogTest extends TestCase
     {
         $tagName = '0.3.1';
 
+        // @formatter:off
         $fileMock = $this->splFileObjectMockBuilder->getMock();
         $changeLogServiceMock = $this->serviceMockBuilder->getMock();
 
-        $changeLogServiceMock->expects(self::once())->method('getSplFileObject')->willReturn($fileMock);
+        $changeLogServiceMock->expects(self::once())
+                             ->method('getSplFileObject')
+                             ->willReturn($fileMock)
+        ;
 
-        $changeLogServiceMock->expects(self::once())->method('writeChangeLog')
-                             ->with(self::isInstanceOf(\SplFileObject::class), self::equalTo($tagName))
+        $changeLogServiceMock->expects(self::once())
+                             ->method('writeChangeLog')
+                             ->with(
+                                 self::isInstanceOf(\SplFileObject::class),
+                                 self::equalTo($tagName)
+                             )
         ;
 
 
@@ -119,6 +183,46 @@ class ChangeLogTest extends TestCase
         $commandTester->execute([
             '--new-tag' => $tagName,
         ]);
+
+        // @formatter:on
+    }
+
+    /**
+     * @depends testExecute
+     */
+    public function testExecuteWithGitException()
+    {
+        $fileMock = $this->splFileObjectMockBuilder->getMock();
+
+        // @formatter:off
+        /**
+         * @var ChangeLogService|MockObject $changeLogServiceMock
+         */
+        $changeLogServiceMock = $this->serviceMockBuilder->getMock();
+
+        $changeLogServiceMock->expects(self::once())
+                             ->method('getSplFileObject')
+                             ->willReturn($fileMock)
+        ;
+        $changeLogServiceMock->expects(self::once())
+                             ->method('writeChangeLog')
+                             ->willThrowException(new GitException('some git error happened'))
+        ;
+
+        // @formatter:on
+
+        $changeLogCommand = new ChangeLog();
+        $changeLogCommand->setChangeLogService($changeLogServiceMock);
+
+        self::assertSame($changeLogServiceMock, $changeLogCommand->getChangeLogService());
+
+        $commandTester = new CommandTester($changeLogCommand);
+        $commandTester->execute([]);
+
+        // the output of the command in the console
+        $output = $commandTester->getDisplay();
+        self::assertStringContainsString('error:', $output);
+        self::assertStringContainsString('error message:', $output);
     }
 
     protected function setUp(): void

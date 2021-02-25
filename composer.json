@@ -1,6 +1,6 @@
 {
-    "name": "chancegarcia/git-version-manager",
-    "description": "manage change log based on git commit history; auto-version (using conventional commits) based on commit history",
+    "name": "chancegarcia/git-toolkit",
+    "description": "create a change log based on your commit history and tags",
     "minimum-stability": "dev",
     "license": "MIT",
     "require": {
