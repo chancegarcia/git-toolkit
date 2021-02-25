@@ -87,11 +87,16 @@ class ChangeLog extends Command
         $mainHeaderName = $input->getArgument('header');
         $this->changeLogService->setMainHeaderName($mainHeaderName);
 
+        // for path option, make sure that there is a trailing slash, if not, add one
+
         $newTag = $input->getOption('new-tag');
         $file = $this->changeLogService->getSplFileObject();
+
         $this->changeLogService->writeChangeLog($file, $newTag);
 
         // return this if there was no problem running the command
+        // write success
+
         return 0;
 
         // or return this if some error happened during the execution

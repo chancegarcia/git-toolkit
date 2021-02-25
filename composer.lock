@@ -1,24 +1,24 @@
 {
-    "_readme": [
-        "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
-        "This file is @generated automatically"
-    ],
-    "content-hash": "600974b46513c5f75debfc9d91aed4e0",
-    "packages": [
-        {
-            "name": "czproject/git-php",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/czproject/git-php.git",
-                "reference": "cb3bfc6f1e487e572870afae5d52ef3c7d250d8a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/czproject/git-php/zipball/cb3bfc6f1e487e572870afae5d52ef3c7d250d8a",
-                "reference": "cb3bfc6f1e487e572870afae5d52ef3c7d250d8a",
-                "shasum": ""
+  "_readme": [
+    "This file locks the dependencies of your project to a known state",
+    "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+    "This file is @generated automatically"
+  ],
+  "content-hash": "6a8c221c721572255bd6ea2c244a6fa6",
+  "packages": [
+    {
+      "name": "czproject/git-php",
+      "version": "v3.18.2",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/czproject/git-php.git",
+        "reference": "cb3bfc6f1e487e572870afae5d52ef3c7d250d8a"
+      },
+      "dist": {
+        "type": "zip",
+        "url": "https://api.github.com/repos/czproject/git-php/zipball/cb3bfc6f1e487e572870afae5d52ef3c7d250d8a",
+        "reference": "cb3bfc6f1e487e572870afae5d52ef3c7d250d8a",
+        "shasum": ""
             },
             "require": {
                 "php": ">=5.4.0"
@@ -2777,7 +2777,6 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "czproject/git-php": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": false,
