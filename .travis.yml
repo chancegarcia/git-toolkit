@@ -29,8 +29,9 @@ install:
 before_script:
   - mkdir -p build/logs
   - composer install
+  - cp phpunit.xml.dist phpunit.xml
 
 script:
   - ./vendor/bin/parallel-lint src tests
   - ./vendor/bin/phpcs src tests --standard=psr12 -sp
-  - ./vendor/bin/phpunit --verbose --coverage-clover build/logs/clover.xml
+  - ./vendor/bin/phpunit --verbose

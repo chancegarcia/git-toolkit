@@ -1,6 +1,21 @@
 # Chance Git-Toolkit
 
+## 1.0.2
+
+ci: use non-abandoned lint and console highlighter
+
+test: update phpunit config and dist file
+
+style: run code beautify fixer and also manually fix code smells
+
+ci: add more to the jobs and build testing
+
+ci: add new php versions to test against
+
 ## 1.0.1
+
+chore: update changelog for v1.0.1
+
 docs: update `readme.md` with build status
 
 build: make sure dependencies are installed?
