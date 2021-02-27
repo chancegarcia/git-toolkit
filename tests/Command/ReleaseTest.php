@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package
  * @subpackage
@@ -61,8 +62,7 @@ class ReleaseTest extends TestCase
         // @formatter:off
     }
 
-    protected function tearDown() : void
+    protected function tearDown(): void
     {
-
     }
 }

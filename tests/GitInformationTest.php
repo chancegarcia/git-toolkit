@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package
  * @subpackage
@@ -146,7 +147,7 @@ class GitInformationTest extends TestCase
                  ->method('execute')
                  ->with(self::callback(function ($cmdArray) {
                         return !in_array('--no-merges', $cmdArray);
-                    }))
+                 }))
                  ->willReturn([])
         ;
         // @formatter:on
@@ -167,7 +168,7 @@ class GitInformationTest extends TestCase
                  ->method('execute')
                  ->with(self::callback(function ($cmdArray) {
                         return in_array('--no-merges', $cmdArray);
-                    }))
+                 }))
                  ->willReturn([])
         ;
         // @formatter:on
@@ -182,9 +183,26 @@ class GitInformationTest extends TestCase
 
     public function testEscapeCommitsForMarkdown()
     {
-        $commitText = 'the following are reserved characters that must be escaped:' . "\n" . '* [ ] ( ) # + !' . "\n" . 'Next we test an empty list item' . "\n" . '-' . "\n" . '- not empty second line';
+        // @formatter:off
+        $commitText = 'the following are reserved characters that must be escaped:'
+            . "\n" . '* [ ] ( ) # + !'
+            . "\n"
+            . 'Next we test an empty list item'
+            . "\n"
+            . '-'
+            . "\n"
+            . '- not empty second line'
+        ;
 
-        $expectedText = 'the following are reserved characters that must be escaped:' . "\n" . '\\* \\[ \\] \( \\) \\# \\+ \\!' . "\n" . 'Next we test an empty list item' . "\n" . '- not empty second line';
+        $expectedText = 'the following are reserved characters that must be escaped:'
+            . "\n"
+            . '\\* \\[ \\] \( \\) \\# \\+ \\!'
+            . "\n"
+            . 'Next we test an empty list item'
+            . "\n"
+            . '- not empty second line'
+        ;
+        // @formatter:on
 
         $expectedArray = explode("\n", $expectedText);
         $commitsArray = explode("\n", $commitText);
@@ -245,7 +263,16 @@ class GitInformationTest extends TestCase
                  ->willReturn('bar')
         ;
 
-        $infoMock = $this->getMockBuilder(GitInformation::class)->setConstructorArgs([$repoMock])->onlyMethods(['getLatestReleaseTag', 'getFirstCommit', 'getGitTags', 'getCurrentCommit', 'getCommits'])->getMock();
+        $infoMock = $this->getMockBuilder(GitInformation::class)
+                         ->setConstructorArgs([$repoMock])
+                         ->onlyMethods([
+                            'getLatestReleaseTag',
+                            'getFirstCommit',
+                            'getGitTags',
+                            'getCurrentCommit',
+                            'getCommits'
+                            ])
+                         ->getMock();
         $infoMock->expects(self::atLeastOnce())
                  ->method('getFirstCommit')
                  ->willReturn('baz')
@@ -279,7 +306,16 @@ class GitInformationTest extends TestCase
                  ->willReturn('bar')
         ;
 
-        $infoMock = $this->getMockBuilder(GitInformation::class)->setConstructorArgs([$repoMock])->onlyMethods(['getLatestReleaseTag', 'getFirstCommit', 'getGitTags', 'getCurrentCommit', 'getCommits'])->getMock();
+        $infoMock = $this->getMockBuilder(GitInformation::class)
+                         ->setConstructorArgs([$repoMock])
+                         ->onlyMethods([
+                               'getLatestReleaseTag',
+                               'getFirstCommit',
+                               'getGitTags',
+                               'getCurrentCommit',
+                               'getCommits'
+                           ])
+                         ->getMock();
         $infoMock->expects(self::never())
                  ->method('getFirstCommit')
         ;

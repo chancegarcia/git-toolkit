@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package
  * @subpackage
@@ -161,7 +162,9 @@ class ChangeLogService
                     [$current, $previous] = array_slice($tags, $i, 2);
                 }
 
-                $commits = GitInformation::escapeCommitsForMarkdown($this->gitInformation->getCommits($previous, $current, true));
+                $commits = GitInformation::escapeCommitsForMarkdown(
+                    $this->gitInformation->getCommits($previous, $current, true)
+                );
                 $commitString = implode("\n", $commits);
 
                 if ('' !== $commitString) {

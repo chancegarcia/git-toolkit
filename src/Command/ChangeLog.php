@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package
  * @subpackage
@@ -74,8 +75,11 @@ class ChangeLog extends Command
 
             // the full command description shown when running the command with
             // the "--help" option
-            ->setHelp('This command allows you to generate a changelog from your git commit history')
-            ->addArgument('header', InputArgument::OPTIONAL, 'main file header in output; default: ' . ChangeLogService::DEFAULT_MAIN_HEADER_NAME)
+            ->setHelp('This command allows you to generate a changelog from your git commit history')->addArgument(
+                'header',
+                InputArgument::OPTIONAL,
+                'main file header in output; default: ' . ChangeLogService::DEFAULT_MAIN_HEADER_NAME
+            )
             ->addOption('new-tag', null, InputOption::VALUE_REQUIRED, 'label the current `HEAD` as NEW-TAG on output')
         ;
     }
@@ -93,12 +97,18 @@ class ChangeLog extends Command
             $this->changeLogService->setMainHeaderName($mainHeaderName);
             $file = $this->changeLogService->getSplFileObject();
             $this->changeLogService->writeChangeLog($file, $newTag);// write success
-            $output->writeln(sprintf("success: file '%s' has been created", $this->changeLogService->getFullPath()));// return this if there was no problem running the command
+            $output->writeln(sprintf("success: file '%s' has been created", $this->changeLogService->getFullPath()));
 
+            // return this if there was no problem running the command
             return 0;
         } catch (GitException $e) {
             // or return this if some error happened during the execution
-            $output->writeln(sprintf('error: file "%s" was not written or maybe partially written.', $this->changeLogService->getFullPath()));
+            $output->writeln(
+                sprintf(
+                    'error: file "%s" was not written or maybe partially written.',
+                    $this->changeLogService->getFullPath()
+                )
+            );
             $output->writeln(sprintf('error message: %s (line: %s)', $e->getMessage(), $e->getLine()));
 
             return 1;

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package
  * @subpackage
@@ -116,7 +117,13 @@ class ChangeLogTest extends TestCase
 
         // the output of the command in the console
         $output = $commandTester->getDisplay();
-        self::assertEquals(sprintf("success: file '%s' has been created\n", $changeLogServiceMock->getFullPath()), $output);
+        self::assertEquals(
+            sprintf(
+                "success: file '%s' has been created\n",
+                $changeLogServiceMock->getFullPath()
+            ),
+            $output
+        );
     }
 
     /**
@@ -239,7 +246,7 @@ class ChangeLogTest extends TestCase
         // @formatter:off
     }
 
-    protected function tearDown() : void
+    protected function tearDown(): void
     {
         $this->serviceMockBuilder = null;
         $this->splFileObjectMockBuilder = null;

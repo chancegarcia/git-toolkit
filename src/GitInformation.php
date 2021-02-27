@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package
  * @subpackage
@@ -86,7 +87,7 @@ class GitInformation
     /**
      * @return string id of first commit
      */
-    public function getFirstCommit() : string
+    public function getFirstCommit(): string
     {
         $commits = $this->gitRepo->execute(['rev-list', '--max-parents=0', 'HEAD']);
 
@@ -98,7 +99,7 @@ class GitInformation
      *
      * @throws GitException
      */
-    public function getCurrentCommit() : string
+    public function getCurrentCommit(): string
     {
         // executing `git rev-parse HEAD` would also work
         return $this->gitRepo->getLastCommitId();
@@ -169,7 +170,7 @@ class GitInformation
     /**
      * @return string|null
      */
-    public function getLatestReleaseTag() : ?string
+    public function getLatestReleaseTag(): ?string
     {
         $tags = $this->getGitTags();
 
@@ -179,5 +180,4 @@ class GitInformation
 
         return null;
     }
-
 }

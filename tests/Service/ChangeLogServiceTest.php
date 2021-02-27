@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package
  * @subpackage
@@ -59,14 +60,15 @@ class ChangeLogServiceTest extends TestCase
         parent::setUp();
 
         // @formatter:off
-        $this->splFileObjectMockBuilder = $this->getMockBuilder(\SplFileObject::class)->setConstructorArgs(['php://memory']);
+        $this->splFileObjectMockBuilder = $this->getMockBuilder(\SplFileObject::class)
+                                               ->setConstructorArgs(['php://memory'])
+        ;
 
         $this->gitInfoMockBuilder = $this->getMockBuilder(GitInformation::class)->disableOriginalConstructor();
 
         $this->repoMockBuilder = $this->getMockBuilder(GitRepository::class)->disableOriginalConstructor();
 
         // @formatter:on
-
     }
 
     public function tearDown(): void
@@ -97,14 +99,19 @@ class ChangeLogServiceTest extends TestCase
 
         // this will make sure we do not have the default name. so we can test changing back to the default;
         self::assertSame('foo', $service->getMainHeaderName());
-        // no need to test for `foo` value being set correctly because of test dependency for this method already confirming that it will set as expected
 
+        // no need to test for `foo` value being set correctly because of test dependency
+        // for this method already confirming that it will set as expected
         $service->setMainHeaderName(null);
 
         try {
             self::assertSame(ChangeLogService::DEFAULT_MAIN_HEADER_NAME, $service->getMainHeaderName());
         } catch (ExpectationFailedException $e) {
-            $msg = sprintf('main header name not set to "%s" when passing null explictly to %s::setMainHeaderName()', ChangeLogService::DEFAULT_MAIN_HEADER_NAME, ChangeLogService::class);
+            $msg = sprintf(
+                'main header name not set to "%s" when passing null explictly to %s::setMainHeaderName()',
+                ChangeLogService::DEFAULT_MAIN_HEADER_NAME,
+                ChangeLogService::class
+            );
             self::fail($msg);
         }
     }
@@ -130,7 +137,6 @@ class ChangeLogServiceTest extends TestCase
         } catch (ExpectationFailedException $e) {
             self::fail($e->getMessage());
         }
-
     }
 
     /**
@@ -269,7 +275,8 @@ class ChangeLogServiceTest extends TestCase
             ->method('getNewCommits')
         ;
 
-        // writes the main header once then 2 writes per tag (tag name and commit string) plus new commit tag name and it's header
+        // writes the main header once then 2 writes per tag (tag name and commit string)
+        // plus new commit tag name and it's header
         $expectedWrites = (count($tags) * 2) + 3;
         $splFileObjectMock = $this->splFileObjectMockBuilder->getMock();
         $splFileObjectMock->expects(self::exactly($expectedWrites))
