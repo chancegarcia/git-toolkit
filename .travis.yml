@@ -3,6 +3,7 @@ os: linux
 dist: bionic
 
 jobs:
+  fast_finish: true
   include:
     - php: 7.3
     - php: 7.3
