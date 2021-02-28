@@ -84,12 +84,12 @@ class ChangeLog extends Command
                 'output-dir',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'Write changelog to this directory. default is the current working directory.'
+                'Write changelog to this directory. default is the value set in the change log service'
             )->addOption(
                 'filename',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'Write changelog to this filename. default is "changelog.md"'
+                'Write changelog to this filename. default is the value set in the change log service'
             )
         ;
     }
@@ -100,15 +100,21 @@ class ChangeLog extends Command
         // $testTags = array_slice(getGitTags(), 0, 5);
 
         $mainHeaderName = $input->getArgument('header');
+        if (is_string($mainHeaderName)) {
+            $this->changeLogService->setMainHeaderName($mainHeaderName);
+        }
         $newTag = $input->getOption('new-tag');
         $filePath = $input->getOption('output-dir');
+        if (is_string($filePath)) {
+            $this->changeLogService->setChangeLogFilePath($filePath);
+        }
         $fileName = $input->getOption('filename');
+        if (is_string($fileName)) {
+            $this->changeLogService->setChangeLogFileName($fileName);
+        }
         // for path option, make sure that there is a trailing slash, if not, add one
 
         try {
-            $this->changeLogService->setMainHeaderName($mainHeaderName);
-            $this->changeLogService->setChangeLogFilePath($filePath);
-            $this->changeLogService->setChangeLogFileName($fileName);
             $file = $this->changeLogService->getSplFileObject();
             $this->changeLogService->writeChangeLog($file, $newTag);// write success
             $output->writeln(sprintf("success: file '%s' has been created", $this->changeLogService->getFullPath()));

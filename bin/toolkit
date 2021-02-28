@@ -31,9 +31,39 @@
  */
 
 $currentDir = getcwd();
-$dir = $currentDir;
-if (false !== strpos($currentDir, 'bin')) {
-    $dir = $currentDir . '/..';
+
+$configFile = $currentDir . '/config/chancegarcia_git_toolkit.php';
+$dirConfigExists = false;
+$projectName = null;
+$outputFilename = null;
+$outputPath = null;
+
+if (file_exists($configFile)) {
+    /**
+     * @var array $config
+     */
+    $config = require $configFile;
+    $dirConfigExists = array_key_exists('project_root', $config);
+    if (array_key_exists('project_name', $config)) {
+        $projectName = $config['project_name'];
+    }
+
+    if (array_key_exists('filename', $config)) {
+        $outputFilename = $config['filename'];
+    }
+
+    if (array_key_exists('output_directory', $config)) {
+        $outputPath = $config['output_directory'];
+    }
+}
+
+if ($dirConfigExists) {
+    $dir = $config['project_root'];
+} else {
+    $dir = $currentDir;
+    if (false !== strpos($currentDir, 'bin')) {
+        $dir = $currentDir . '/..';
+    }
 }
 
 require $dir . '/vendor/autoload.php';
@@ -49,6 +79,9 @@ $application = new Application();
 $gitRepo = new GitRepository($dir);
 $gitInformation = new GitInformation($gitRepo);
 $changeLogService = new ChangeLogService($gitInformation);
+$changeLogService->setChangeLogFileName($outputFilename);
+$changeLogService->setChangeLogFilePath($outputPath);
+$changeLogService->setMainHeaderName($projectName);
 
 $changeLogCommand = new ChangeLog();
 $changeLogCommand->setChangeLogService($changeLogService);

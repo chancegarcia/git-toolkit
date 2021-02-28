@@ -63,13 +63,13 @@ class ChangeLogTest extends TestCase
          */
         $changeLogServiceMock = $this->serviceMockBuilder->getMock();
 
-        $changeLogServiceMock->expects(self::once())
+        $changeLogServiceMock->expects(self::never())
                              ->method('setMainHeaderName')
         ;
-        $changeLogServiceMock->expects(self::once())
+        $changeLogServiceMock->expects(self::never())
                              ->method('setChangeLogFilePath')
         ;
-        $changeLogServiceMock->expects(self::once())
+        $changeLogServiceMock->expects(self::never())
                              ->method('setChangeLogFileName')
         ;
         $changeLogServiceMock->expects(self::once())
