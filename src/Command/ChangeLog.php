@@ -79,8 +79,18 @@ class ChangeLog extends Command
                 'header',
                 InputArgument::OPTIONAL,
                 'main file header in output; default: ' . ChangeLogService::DEFAULT_MAIN_HEADER_NAME
+            )->addOption('new-tag', null, InputOption::VALUE_REQUIRED, 'label the current `HEAD` as NEW-TAG on output')
+            ->addOption(
+                'output-dir',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Write changelog to this directory. default is the current working directory.'
+            )->addOption(
+                'filename',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Write changelog to this filename. default is "changelog.md"'
             )
-            ->addOption('new-tag', null, InputOption::VALUE_REQUIRED, 'label the current `HEAD` as NEW-TAG on output')
         ;
     }
 
@@ -91,10 +101,14 @@ class ChangeLog extends Command
 
         $mainHeaderName = $input->getArgument('header');
         $newTag = $input->getOption('new-tag');
+        $filePath = $input->getOption('output-dir');
+        $fileName = $input->getOption('filename');
         // for path option, make sure that there is a trailing slash, if not, add one
 
         try {
             $this->changeLogService->setMainHeaderName($mainHeaderName);
+            $this->changeLogService->setChangeLogFilePath($filePath);
+            $this->changeLogService->setChangeLogFileName($fileName);
             $file = $this->changeLogService->getSplFileObject();
             $this->changeLogService->writeChangeLog($file, $newTag);// write success
             $output->writeln(sprintf("success: file '%s' has been created", $this->changeLogService->getFullPath()));

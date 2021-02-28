@@ -67,6 +67,12 @@ class ChangeLogTest extends TestCase
                              ->method('setMainHeaderName')
         ;
         $changeLogServiceMock->expects(self::once())
+                             ->method('setChangeLogFilePath')
+        ;
+        $changeLogServiceMock->expects(self::once())
+                             ->method('setChangeLogFileName')
+        ;
+        $changeLogServiceMock->expects(self::once())
                              ->method('getSplFileObject')
                              ->willReturn($fileMock)
         ;
@@ -189,6 +195,70 @@ class ChangeLogTest extends TestCase
         $commandTester = new CommandTester($changeLogCommand);
         $commandTester->execute([
             '--new-tag' => $tagName,
+        ]);
+
+        // @formatter:on
+    }
+
+    /**
+     * @depends testExecute
+     */
+    public function testExecuteWithOutputDirOption()
+    {
+        $outputDir = '/tmp';
+
+        // @formatter:off
+        $fileMock = $this->splFileObjectMockBuilder->getMock();
+        $changeLogServiceMock = $this->serviceMockBuilder->getMock();
+
+        $changeLogServiceMock->expects(self::once())
+                             ->method('getSplFileObject')
+                             ->willReturn($fileMock)
+        ;
+
+        $changeLogServiceMock->expects(self::once())
+                             ->method('setChangeLogFilePath')
+                             ->with(self::equalTo($outputDir))
+        ;
+
+        $changeLogCommand = new ChangeLog();
+        $changeLogCommand->setChangeLogService($changeLogServiceMock);
+
+        $commandTester = new CommandTester($changeLogCommand);
+        $commandTester->execute([
+            '--output-dir' => $outputDir,
+        ]);
+
+        // @formatter:on
+    }
+
+    /**
+     * @depends testExecute
+     */
+    public function testExecuteWithFileNameOption()
+    {
+        $filename = 'i_am_not_a_cat.md';
+
+        // @formatter:off
+        $fileMock = $this->splFileObjectMockBuilder->getMock();
+        $changeLogServiceMock = $this->serviceMockBuilder->getMock();
+
+        $changeLogServiceMock->expects(self::once())
+                             ->method('getSplFileObject')
+                             ->willReturn($fileMock)
+        ;
+
+        $changeLogServiceMock->expects(self::once())
+                             ->method('setChangeLogFileName')
+                             ->with(self::equalTo($filename))
+        ;
+
+        $changeLogCommand = new ChangeLog();
+        $changeLogCommand->setChangeLogService($changeLogServiceMock);
+
+        $commandTester = new CommandTester($changeLogCommand);
+        $commandTester->execute([
+            '--filename' => $filename,
         ]);
 
         // @formatter:on

@@ -81,8 +81,7 @@ class ChangeLogServiceTest extends TestCase
 
     public function testMainHeaderName()
     {
-        $infoMock = $this->gitInfoMockBuilder->getMock();
-        $service = new ChangeLogService($infoMock);
+        $service = $this->getServiceWithInfoMock();
         $service->setMainHeaderName('foo');
 
         self::assertSame('foo', $service->getMainHeaderName());
@@ -93,8 +92,7 @@ class ChangeLogServiceTest extends TestCase
      */
     public function testSetMainHeaderNullParamaterPassed()
     {
-        $infoMock = $this->gitInfoMockBuilder->getMock();
-        $service = new ChangeLogService($infoMock);
+        $service = $this->getServiceWithInfoMock();
         $service->setMainHeaderName('foo');
 
         // this will make sure we do not have the default name. so we can test changing back to the default;
@@ -128,9 +126,7 @@ class ChangeLogServiceTest extends TestCase
                  ->withAnyParameters()
         ;
 
-        $infoMock = $this->gitInfoMockBuilder->getMock();
-
-        $service = new ChangeLogService($infoMock);
+        $service = $this->getServiceWithInfoMock();
 
         try {
             $service->writeTag($fileMock, $tagName, $commits);
@@ -373,9 +369,7 @@ class ChangeLogServiceTest extends TestCase
 
     public function testFilePath()
     {
-        $infoMock = $this->gitInfoMockBuilder->getMock();
-
-        $service = new ChangeLogService($infoMock);
+        $service = $this->getServiceWithInfoMock();
 
         self::assertSame(ChangeLogService::DEFAULT_FILE_PATH, $service->getChangeLogFilePath());
 
@@ -387,9 +381,7 @@ class ChangeLogServiceTest extends TestCase
 
     public function testFileName()
     {
-        $infoMock = $this->gitInfoMockBuilder->getMock();
-
-        $service = new ChangeLogService($infoMock);
+        $service = $this->getServiceWithInfoMock();
 
         self::assertSame(ChangeLogService::DEFAULT_FILE_NAME, $service->getChangeLogFileName());
 
@@ -405,9 +397,7 @@ class ChangeLogServiceTest extends TestCase
      */
     public function testFullPath()
     {
-        $infoMock = $this->gitInfoMockBuilder->getMock();
-
-        $service = new ChangeLogService($infoMock);
+        $service = $this->getServiceWithInfoMock();
 
         $defaultFullPath = ChangeLogService::DEFAULT_FILE_PATH . ChangeLogService::DEFAULT_FILE_NAME;
 
@@ -419,9 +409,7 @@ class ChangeLogServiceTest extends TestCase
      */
     public function testGetSplFileObject()
     {
-        $infoMock = $this->gitInfoMockBuilder->getMock();
-
-        $service = new ChangeLogService($infoMock);
+        $service = $this->getServiceWithInfoMock();
         $service->setChangeLogFilePath('php://');
         $service->setChangeLogFileName('memory');
 
@@ -434,9 +422,47 @@ class ChangeLogServiceTest extends TestCase
     public function testGitInformation()
     {
         $infoMock = $this->gitInfoMockBuilder->getMock();
-
         $service = new ChangeLogService($infoMock);
 
         self::assertSame($infoMock, $service->getGitInformation());
+    }
+
+    /**
+     * @depends testFilePath
+     */
+    public function testSetFilePathNullPassed()
+    {
+        $service = $this->getServiceWithInfoMock();
+
+        $service->setChangeLogFilePath('/tmp');
+
+        $service->setChangeLogFilePath(null);
+
+        self::assertSame(ChangeLogService::DEFAULT_FILE_PATH, $service->getChangeLogFilePath());
+    }
+
+    /**
+     * @depends testFileName
+     */
+    public function testSetFileNameNullPassed()
+    {
+        $service = $this->getServiceWithInfoMock();
+
+        $service->setChangeLogFileName('kittens.txt');
+
+        $service->setChangeLogFileName(null);
+
+        self::assertSame(ChangeLogService::DEFAULT_FILE_NAME, $service->getChangeLogFileName());
+    }
+
+    /**
+     * @return ChangeLogService
+     */
+    private function getServiceWithInfoMock(): ChangeLogService
+    {
+        $infoMock = $this->gitInfoMockBuilder->getMock();
+        $service = new ChangeLogService($infoMock);
+
+        return $service;
     }
 }
