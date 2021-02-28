@@ -1,6 +1,28 @@
-# Chance Git-Toolkit
+# Git-Toolkit
 
-## 1.0.2
+## 1.1.0
+
+feat: allow configurable values `project_root`, `project_name`, `filename`, `output_directory`
+
+- remove setting of these values from the command object
+- bin executable can now read a set repo \(project_root\). if none is given, then the current working directory is
+  assumed to be the root
+- read in a config array and set `project_name` as the service main header
+- read in a config array and set `filename` as the service filename
+- read in a config array and set `output_directory` as the service file path
+
+ci: add phpcoveralls to after_script
+
+feat: command now has options to set filename and output directory
+
+- passing null to `setChangeLogFileName` or `setChangeLogFilePath` will cause the service to use the default values for
+  those properties
+
+style: add more flair to the `readme.md`
+
+ci: fast finish jobs
+
+ci: use our phpunit.xml.dist for testing config
 
 ci: use non-abandoned lint and console highlighter
 
@@ -13,7 +35,6 @@ ci: add more to the jobs and build testing
 ci: add new php versions to test against
 
 ## 1.0.1
-
 chore: update changelog for v1.0.1
 
 docs: update `readme.md` with build status
