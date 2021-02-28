@@ -1,8 +1,12 @@
 # Git Toolkit
 
-main: [![Build Status](https://travis-ci.com/chancegarcia/git-toolkit.svg?branch=main)](https://travis-ci.com/chancegarcia/git-toolkit)
+[![Build Status](https://travis-ci.com/chancegarcia/git-toolkit.svg?branch=main)](https://travis-ci.com/chancegarcia/git-toolkit) [![Latest Stable Version](https://poser.pugx.org/chancegarcia/git-toolkit/v)](//packagist.org/packages/chancegarcia/git-toolkit) [![Total Downloads](https://poser.pugx.org/chancegarcia/git-toolkit/downloads)](//packagist.org/packages/chancegarcia/git-toolkit) [![Latest Unstable Version](https://poser.pugx.org/chancegarcia/git-toolkit/v/unstable)](//packagist.org/packages/chancegarcia/git-toolkit) [![License](https://poser.pugx.org/chancegarcia/git-toolkit/license)](//packagist.org/packages/chancegarcia/git-toolkit)
 
-develop: [![Build Status](https://travis-ci.com/chancegarcia/git-toolkit.svg?branch=develop)](https://travis-ci.com/chancegarcia/git-toolkit)
+develop branch:
+
+[![Build Status](https://travis-ci.com/chancegarcia/git-toolkit.svg?branch=develop)](https://travis-ci.com/chancegarcia/git-toolkit)
+
+---
 
 This toolkit only contains one tool currently. That tool will create a `changelog.md` for a project using the git
 repository tags and the git commit history.
