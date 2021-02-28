@@ -36,3 +36,6 @@ script:
   - ./vendor/bin/parallel-lint src tests
   - ./vendor/bin/phpcs src tests --standard=psr12 -sp
   - ./vendor/bin/phpunit --verbose
+
+after_script:
+  - travis_retry php vendor/bin/php-coveralls
