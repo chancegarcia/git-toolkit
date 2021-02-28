@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package
  * @subpackage
@@ -62,8 +63,14 @@ class ChangeLogTest extends TestCase
          */
         $changeLogServiceMock = $this->serviceMockBuilder->getMock();
 
-        $changeLogServiceMock->expects(self::once())
+        $changeLogServiceMock->expects(self::never())
                              ->method('setMainHeaderName')
+        ;
+        $changeLogServiceMock->expects(self::never())
+                             ->method('setChangeLogFilePath')
+        ;
+        $changeLogServiceMock->expects(self::never())
+                             ->method('setChangeLogFileName')
         ;
         $changeLogServiceMock->expects(self::once())
                              ->method('getSplFileObject')
@@ -116,7 +123,13 @@ class ChangeLogTest extends TestCase
 
         // the output of the command in the console
         $output = $commandTester->getDisplay();
-        self::assertEquals(sprintf("success: file '%s' has been created\n", $changeLogServiceMock->getFullPath()), $output);
+        self::assertEquals(
+            sprintf(
+                "success: file '%s' has been created\n",
+                $changeLogServiceMock->getFullPath()
+            ),
+            $output
+        );
     }
 
     /**
@@ -190,6 +203,70 @@ class ChangeLogTest extends TestCase
     /**
      * @depends testExecute
      */
+    public function testExecuteWithOutputDirOption()
+    {
+        $outputDir = '/tmp';
+
+        // @formatter:off
+        $fileMock = $this->splFileObjectMockBuilder->getMock();
+        $changeLogServiceMock = $this->serviceMockBuilder->getMock();
+
+        $changeLogServiceMock->expects(self::once())
+                             ->method('getSplFileObject')
+                             ->willReturn($fileMock)
+        ;
+
+        $changeLogServiceMock->expects(self::once())
+                             ->method('setChangeLogFilePath')
+                             ->with(self::equalTo($outputDir))
+        ;
+
+        $changeLogCommand = new ChangeLog();
+        $changeLogCommand->setChangeLogService($changeLogServiceMock);
+
+        $commandTester = new CommandTester($changeLogCommand);
+        $commandTester->execute([
+            '--output-dir' => $outputDir,
+        ]);
+
+        // @formatter:on
+    }
+
+    /**
+     * @depends testExecute
+     */
+    public function testExecuteWithFileNameOption()
+    {
+        $filename = 'i_am_not_a_cat.md';
+
+        // @formatter:off
+        $fileMock = $this->splFileObjectMockBuilder->getMock();
+        $changeLogServiceMock = $this->serviceMockBuilder->getMock();
+
+        $changeLogServiceMock->expects(self::once())
+                             ->method('getSplFileObject')
+                             ->willReturn($fileMock)
+        ;
+
+        $changeLogServiceMock->expects(self::once())
+                             ->method('setChangeLogFileName')
+                             ->with(self::equalTo($filename))
+        ;
+
+        $changeLogCommand = new ChangeLog();
+        $changeLogCommand->setChangeLogService($changeLogServiceMock);
+
+        $commandTester = new CommandTester($changeLogCommand);
+        $commandTester->execute([
+            '--filename' => $filename,
+        ]);
+
+        // @formatter:on
+    }
+
+    /**
+     * @depends testExecute
+     */
     public function testExecuteWithGitException()
     {
         $fileMock = $this->splFileObjectMockBuilder->getMock();
@@ -239,7 +316,7 @@ class ChangeLogTest extends TestCase
         // @formatter:off
     }
 
-    protected function tearDown() : void
+    protected function tearDown(): void
     {
         $this->serviceMockBuilder = null;
         $this->splFileObjectMockBuilder = null;

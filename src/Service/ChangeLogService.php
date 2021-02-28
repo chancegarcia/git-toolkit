@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package
  * @subpackage
@@ -85,11 +86,15 @@ class ChangeLogService
     }
 
     /**
-     * @param string $changeLogFileName
+     * @param string|null $changeLogFileName
      */
-    public function setChangeLogFileName(string $changeLogFileName): void
+    public function setChangeLogFileName(?string $changeLogFileName): void
     {
-        $this->changeLogFileName = $changeLogFileName;
+        if (is_string($changeLogFileName)) {
+            $this->changeLogFileName = $changeLogFileName;
+        } else {
+            $this->changeLogFileName = self::DEFAULT_FILE_NAME;
+        }
     }
 
     /**
@@ -101,11 +106,15 @@ class ChangeLogService
     }
 
     /**
-     * @param string $changeLogFilePath
+     * @param string|null $changeLogFilePath
      */
-    public function setChangeLogFilePath(string $changeLogFilePath): void
+    public function setChangeLogFilePath(?string $changeLogFilePath): void
     {
-        $this->changeLogFilePath = $changeLogFilePath;
+        if (is_string($changeLogFilePath)) {
+            $this->changeLogFilePath = $changeLogFilePath;
+        } else {
+            $this->changeLogFilePath = self::DEFAULT_FILE_PATH;
+        }
     }
 
     /**
@@ -161,7 +170,9 @@ class ChangeLogService
                     [$current, $previous] = array_slice($tags, $i, 2);
                 }
 
-                $commits = GitInformation::escapeCommitsForMarkdown($this->gitInformation->getCommits($previous, $current, true));
+                $commits = GitInformation::escapeCommitsForMarkdown(
+                    $this->gitInformation->getCommits($previous, $current, true)
+                );
                 $commitString = implode("\n", $commits);
 
                 if ('' !== $commitString) {

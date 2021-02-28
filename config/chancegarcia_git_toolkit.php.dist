@@ -1,0 +1,8 @@
+<?php
+
+return [
+    'project_root' => getcwd(),
+    'project_name' => 'Git-Toolkit',
+    'filename' => "Changeloggy McChangeLoggerson.md",
+    'output_directory' => getcwd() . '/tmp/',
+];

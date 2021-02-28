@@ -65,3 +65,4 @@ tmp.*
 
 /tmp/*
 http-client.private.env.json
+/config/chancegarcia_git_toolkit.php

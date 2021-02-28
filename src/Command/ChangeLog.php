@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package
  * @subpackage
@@ -74,9 +75,22 @@ class ChangeLog extends Command
 
             // the full command description shown when running the command with
             // the "--help" option
-            ->setHelp('This command allows you to generate a changelog from your git commit history')
-            ->addArgument('header', InputArgument::OPTIONAL, 'main file header in output; default: ' . ChangeLogService::DEFAULT_MAIN_HEADER_NAME)
-            ->addOption('new-tag', null, InputOption::VALUE_REQUIRED, 'label the current `HEAD` as NEW-TAG on output')
+            ->setHelp('This command allows you to generate a changelog from your git commit history')->addArgument(
+                'header',
+                InputArgument::OPTIONAL,
+                'main file header in output; default: ' . ChangeLogService::DEFAULT_MAIN_HEADER_NAME
+            )->addOption('new-tag', null, InputOption::VALUE_REQUIRED, 'label the current `HEAD` as NEW-TAG on output')
+            ->addOption(
+                'output-dir',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Write changelog to this directory. default is the value set in the change log service'
+            )->addOption(
+                'filename',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Write changelog to this filename. default is the value set in the change log service'
+            )
         ;
     }
 
@@ -86,19 +100,35 @@ class ChangeLog extends Command
         // $testTags = array_slice(getGitTags(), 0, 5);
 
         $mainHeaderName = $input->getArgument('header');
+        if (is_string($mainHeaderName)) {
+            $this->changeLogService->setMainHeaderName($mainHeaderName);
+        }
         $newTag = $input->getOption('new-tag');
+        $filePath = $input->getOption('output-dir');
+        if (is_string($filePath)) {
+            $this->changeLogService->setChangeLogFilePath($filePath);
+        }
+        $fileName = $input->getOption('filename');
+        if (is_string($fileName)) {
+            $this->changeLogService->setChangeLogFileName($fileName);
+        }
         // for path option, make sure that there is a trailing slash, if not, add one
 
         try {
-            $this->changeLogService->setMainHeaderName($mainHeaderName);
             $file = $this->changeLogService->getSplFileObject();
             $this->changeLogService->writeChangeLog($file, $newTag);// write success
-            $output->writeln(sprintf("success: file '%s' has been created", $this->changeLogService->getFullPath()));// return this if there was no problem running the command
+            $output->writeln(sprintf("success: file '%s' has been created", $this->changeLogService->getFullPath()));
 
+            // return this if there was no problem running the command
             return 0;
         } catch (GitException $e) {
             // or return this if some error happened during the execution
-            $output->writeln(sprintf('error: file "%s" was not written or maybe partially written.', $this->changeLogService->getFullPath()));
+            $output->writeln(
+                sprintf(
+                    'error: file "%s" was not written or maybe partially written.',
+                    $this->changeLogService->getFullPath()
+                )
+            );
             $output->writeln(sprintf('error message: %s (line: %s)', $e->getMessage(), $e->getLine()));
 
             return 1;
