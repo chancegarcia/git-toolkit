@@ -181,34 +181,6 @@ class GitInformationTest extends TestCase
         }
     }
 
-    public function testEscapeCommitsForMarkdown()
-    {
-        // @formatter:off
-        $commitText = 'the following are reserved characters that must be escaped:'
-            . "\n" . '* [ ] ( ) # + !'
-            . "\n"
-            . 'Next we test an empty list item'
-            . "\n"
-            . '-'
-            . "\n"
-            . '- not empty second line'
-        ;
-
-        $expectedText = 'the following are reserved characters that must be escaped:'
-            . "\n"
-            . '\\* \\[ \\] \( \\) \\# \\+ \\!'
-            . "\n"
-            . 'Next we test an empty list item'
-            . "\n"
-            . '- not empty second line'
-        ;
-        // @formatter:on
-
-        $expectedArray = explode("\n", $expectedText);
-        $commitsArray = explode("\n", $commitText);
-        self::assertEquals($expectedArray, GitInformation::escapeCommitsForMarkdown($commitsArray));
-    }
-
     /**
      * @depends testGetGitTags
      */

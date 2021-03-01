@@ -32,6 +32,7 @@
 
 namespace Chance\GitToolkit\Service;
 
+use Chance\GitToolkit\Formatter\MarkdownFormatter;
 use Chance\GitToolkit\GitInformation;
 
 class ChangeLogService
@@ -170,7 +171,7 @@ class ChangeLogService
                     [$current, $previous] = array_slice($tags, $i, 2);
                 }
 
-                $commits = GitInformation::escapeCommitsForMarkdown(
+                $commits = MarkdownFormatter::escapeCommitsForMarkdown(
                     $this->gitInformation->getCommits($previous, $current, true)
                 );
                 $commitString = implode("\n", $commits);
@@ -208,7 +209,7 @@ class ChangeLogService
      */
     public function writeNewTag(\SplFileObject $file, string $newTag)
     {
-        $latestCommits = GitInformation::escapeCommitsForMarkdown($this->gitInformation->getNewCommits());
+        $latestCommits = MarkdownFormatter::escapeCommitsForMarkdown($this->gitInformation->getNewCommits());
         $latestCommitsString = implode("\n", $latestCommits);
         $this->writeTag($file, $newTag, $latestCommitsString);
     }
