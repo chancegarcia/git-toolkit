@@ -1,6 +1,11 @@
 # Git-Toolkit
 
 ## 1.1.1
+style: fix to adhere to psr12
+
+## 1.1.1
+docs: final changelog update before release
+
 docs: update changelog for v1.1.1
 
 fix: automatically set trailing slash for file path if it was not set; empty strng is still treated as `./` \(empty string means current working directory\)
