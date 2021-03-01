@@ -1,6 +1,8 @@
 # Git-Toolkit
 
 ## 1.1.1
+docs: update changelog for v1.1.1
+
 fix: automatically set trailing slash for file path if it was not set; empty strng is still treated as `./` \(empty string means current working directory\)
 
 fix: make sure vendor autoload file is loaded from current directory \(previously would try to run from `project_root` directory if that config value was set\)
