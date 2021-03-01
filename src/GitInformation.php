@@ -37,22 +37,6 @@ use Cz\Git\GitRepository;
 
 class GitInformation
 {
-    public const MARKDOWN_RESERVED_CHARACTERS = [
-        '*',
-        // '_',
-        // '{',
-        // '}',
-        '[',
-        ']',
-        '(',
-        ')',
-        '#',
-        '+',
-        // '-',
-        // '.',
-        '!',
-    ];
-
     /**
      * @var GitRepository
      */
@@ -126,30 +110,6 @@ class GitInformation
         }
 
         return $this->gitRepo->execute($commandArray);
-    }
-
-    /**
-     * @param array|string[] $commits
-     *
-     * @return array|string[]
-     * @todo: this probably belongs in a different class
-     */
-    public static function escapeCommitsForMarkdown(array $commits): array
-    {
-        foreach ($commits as $i => $commitMsg) {
-            // remove empty list items
-            if (preg_match('/^-\s*$/', $commitMsg)) {
-                unset($commits[$i]);
-            }
-        }
-
-        $stringCommits = implode("\n", $commits);
-
-        foreach (self::MARKDOWN_RESERVED_CHARACTERS as $reservedChar) {
-            $stringCommits = str_replace($reservedChar, sprintf('\%s', $reservedChar), $stringCommits);
-        }
-
-        return explode("\n", $stringCommits);
     }
 
     /**

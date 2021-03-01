@@ -32,6 +32,7 @@
 
 namespace Chance\GitToolkit\Service;
 
+use Chance\GitToolkit\Formatter\MarkdownFormatter;
 use Chance\GitToolkit\GitInformation;
 
 class ChangeLogService
@@ -110,10 +111,19 @@ class ChangeLogService
      */
     public function setChangeLogFilePath(?string $changeLogFilePath): void
     {
-        if (is_string($changeLogFilePath)) {
-            $this->changeLogFilePath = $changeLogFilePath;
-        } else {
+        if (!is_string($changeLogFilePath)) {
             $this->changeLogFilePath = self::DEFAULT_FILE_PATH;
+        } else {
+            // '' is the same path as './'; empty string is treated as current working directory
+            if ('' === $changeLogFilePath) {
+                $this->changeLogFilePath = $changeLogFilePath;
+            } else {
+                if ('/' === substr($changeLogFilePath, -1)) {
+                    $this->changeLogFilePath = $changeLogFilePath;
+                } else {
+                    $this->changeLogFilePath = $changeLogFilePath . '/';
+                }
+            }
         }
     }
 
@@ -170,7 +180,7 @@ class ChangeLogService
                     [$current, $previous] = array_slice($tags, $i, 2);
                 }
 
-                $commits = GitInformation::escapeCommitsForMarkdown(
+                $commits = MarkdownFormatter::escapeCommitsForMarkdown(
                     $this->gitInformation->getCommits($previous, $current, true)
                 );
                 $commitString = implode("\n", $commits);
@@ -208,7 +218,7 @@ class ChangeLogService
      */
     public function writeNewTag(\SplFileObject $file, string $newTag)
     {
-        $latestCommits = GitInformation::escapeCommitsForMarkdown($this->gitInformation->getNewCommits());
+        $latestCommits = MarkdownFormatter::escapeCommitsForMarkdown($this->gitInformation->getNewCommits());
         $latestCommitsString = implode("\n", $latestCommits);
         $this->writeTag($file, $newTag, $latestCommitsString);
     }

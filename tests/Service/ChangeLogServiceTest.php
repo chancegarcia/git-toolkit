@@ -375,8 +375,14 @@ class ChangeLogServiceTest extends TestCase
 
         $path = '/tmp/';
         $service->setChangeLogFilePath($path);
-
         self::assertSame($path, $service->getChangeLogFilePath());
+
+        $noTrailingSlash = '/tmp';
+        $service->setChangeLogFilePath($noTrailingSlash);
+        self::assertSame($path, $service->getChangeLogFilePath());
+
+        $service->setChangeLogFilePath('');
+        self::assertSame('', $service->getChangeLogFilePath());
     }
 
     public function testFileName()
