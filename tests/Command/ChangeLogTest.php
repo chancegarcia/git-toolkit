@@ -14,7 +14,6 @@ class ChangeLogTest extends TestCase
 {
     private MockObject $changeLogServiceMock;
     private MockObject $splFileObjectMock;
-    private Application $application;
 
     protected function setUp(): void
     {
@@ -22,7 +21,6 @@ class ChangeLogTest extends TestCase
         $this->splFileObjectMock = $this->getMockBuilder(\SplFileObject::class)
             ->setConstructorArgs(['php://memory', 'wb+'])
             ->getMock();
-        $this->application = new Application();
     }
 
     private function getCommandTester(ChangeLog $command): CommandTester

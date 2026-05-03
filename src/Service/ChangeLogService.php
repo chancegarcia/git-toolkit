@@ -90,17 +90,11 @@ class ChangeLogService
         return $this->gitInformation;
     }
 
-    /**
-     * @return string
-     */
     public function getChangeLogFileName(): string
     {
         return $this->changeLogFileName;
     }
 
-    /**
-     * @param string|null $changeLogFileName
-     */
     public function setChangeLogFileName(?string $changeLogFileName): void
     {
         if (is_string($changeLogFileName)) {
@@ -110,17 +104,11 @@ class ChangeLogService
         }
     }
 
-    /**
-     * @return string
-     */
     public function getChangeLogFilePath(): string
     {
         return $this->changeLogFilePath;
     }
 
-    /**
-     * @param string|null $changeLogFilePath
-     */
     public function setChangeLogFilePath(?string $changeLogFilePath): void
     {
         if (null === $changeLogFilePath) {
@@ -136,17 +124,11 @@ class ChangeLogService
         $this->changeLogFilePath = rtrim($changeLogFilePath, '/') . '/';
     }
 
-    /**
-     * @return string
-     */
     public function getMainHeaderName(): string
     {
         return $this->mainHeaderName;
     }
 
-    /**
-     * @param string|null $mainHeaderName
-     */
     public function setMainHeaderName(?string $mainHeaderName): void
     {
         if (is_string($mainHeaderName)) {
@@ -159,14 +141,7 @@ class ChangeLogService
         $this->generator = null;
     }
 
-    /**
-     * @param \SplFileObject $file
-     * @param string|null $newTag
-     * @param string|null $previousTag
-     *
-     * @throws \CzProject\GitPhp\GitException
-     */
-    public function writeChangeLog(SplFileObject $file, ?string $newTag = null, ?string $previousTag = null): void
+    public function writeChangeLog(\SplFileObject $file, ?string $newTag = null, ?string $previousTag = null): void
     {
         $this->getGenerator()->generate($file, $newTag, $previousTag);
     }

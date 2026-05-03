@@ -50,16 +50,11 @@ class MarkdownFormatter
         '!',
     ];
 
-    /**
-     * @param array<string> $commits
-     *
-     * @return array<string>
-     */
     public static function escapeCommitsForMarkdown(array $commits): array
     {
         foreach ($commits as $i => $commitMsg) {
             // remove empty list items
-            if (preg_match('/^-\s*$/', $commitMsg)) {
+            if (preg_match('/^-\s*$/', (string)$commitMsg)) {
                 unset($commits[$i]);
             }
         }
@@ -70,6 +65,9 @@ class MarkdownFormatter
             $stringCommits = str_replace($reservedChar, sprintf('\%s', $reservedChar), $stringCommits);
         }
 
-        return explode("\n", $stringCommits);
+        /** @var array<string> $result */
+        $result = explode("\n", $stringCommits);
+
+        return $result;
     }
 }

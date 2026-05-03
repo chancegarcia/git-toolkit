@@ -48,8 +48,6 @@ class GitInformation
         return $this->gitRepo;
     }
 
-     * @return array<string> list of current tags
-     */
     public function getGitTags(): array
     {
         /** @var array<string> $result */
@@ -77,7 +75,6 @@ class GitInformation
         return $this->gitRepo->getLastCommitId();
     }
 
-    /**
     public function getCommits(string $previous, string $current, bool $noMerges = false): array
     {
         $range = sprintf('%s..%s', $previous, $current);
@@ -97,13 +94,6 @@ class GitInformation
         return $result;
     }
 
-    /**
-     * @param string $previous
-     * @param string $current
-     * @param bool $noMerges add `--no-merges` option to log call
-     *
-     * @return array<string>
-     */
     public function getCommitRange(string $previous, string $current, bool $noMerges = false): array
     {
         return $this->getCommits($previous, $current, $noMerges);
@@ -125,6 +115,8 @@ class GitInformation
         $result = $this->gitRepo->execute($commandArray);
 
         return $result;
+    }
+
     public function getNewCommits(): array
     {
         $latestReleaseTag = $this->getLatestReleaseTag();
@@ -137,9 +129,6 @@ class GitInformation
         return $this->getCommits($previous, $this->getCurrentCommit(), true);
     }
 
-    /**
-     * @return string|null
-     */
     public function getLatestReleaseTag(): ?string
     {
         $tags = $this->getGitTags();
