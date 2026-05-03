@@ -26,21 +26,21 @@ class GitCollector implements CollectorInterface
         if ($newTag !== null) {
             $currentCommit = $this->gitInformation->getCurrentCommit();
             if ($previousTag !== null) {
-                $commits = $this->gitInformation->getCommitRange($previousTag, $currentCommit);
+                $commits = $this->gitInformation->getCommitRange($previousTag, $currentCommit, true);
             } elseif (empty($tags)) {
                 $firstCommit = $this->gitInformation->getFirstCommit();
-                $commits = $this->gitInformation->getCommitRange($firstCommit, $currentCommit);
+                $commits = $this->gitInformation->getCommitRange($firstCommit, $currentCommit, true);
             } else {
-                $commits = $this->gitInformation->getCommitRange($tags[0], $currentCommit);
+                $commits = $this->gitInformation->getCommitRange($tags[0], $currentCommit, true);
             }
             $data[$newTag] = $commits;
         }
 
         foreach ($tags as $i => $tag) {
             if (isset($tags[$i + 1])) {
-                $commits = $this->gitInformation->getCommitRange($tags[$i + 1], $tag);
+                $commits = $this->gitInformation->getCommitRange($tags[$i + 1], $tag, true);
             } else {
-                $commits = $this->gitInformation->getCommitRange($this->gitInformation->getFirstCommit(), $tag);
+                $commits = $this->gitInformation->getCommitsForTag($tag, true);
             }
             $data[$tag] = $commits;
         }

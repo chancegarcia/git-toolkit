@@ -48,22 +48,22 @@ class GitInformation
         return $this->gitRepo;
     }
 
-    /**
      * @return array<string> list of current tags
      */
     public function getGitTags(): array
     {
-        return $this->gitRepo->execute(['tag', '-l', '--sort=-v:refname']);
+        /** @var array<string> $result */
+        $result = $this->gitRepo->execute(['tag', '-l', '--sort=-v:refname']);
+
+        return $result;
     }
 
-    /**
-     * @return string id of first commit
-     */
     public function getFirstCommit(): string
     {
+        /** @var array<string> $commits */
         $commits = $this->gitRepo->execute(['rev-list', '--max-parents=0', 'HEAD']);
 
-        return trim(array_pop($commits));
+        return trim((string)array_pop($commits));
     }
 
     /**
@@ -78,12 +78,6 @@ class GitInformation
     }
 
     /**
-     * @param string $previous
-     * @param string $current
-     * @param bool $noMerges add `--no-merges` option to log call
-     *
-     * @return array<string>
-     */
     public function getCommits(string $previous, string $current, bool $noMerges = false): array
     {
         $range = sprintf('%s..%s', $previous, $current);
@@ -97,7 +91,10 @@ class GitInformation
             $commandArray[] = '--no-merges';
         }
 
-        return $this->gitRepo->execute($commandArray);
+        /** @var array<string> $result */
+        $result = $this->gitRepo->execute($commandArray);
+
+        return $result;
     }
 
     /**
@@ -112,9 +109,22 @@ class GitInformation
         return $this->getCommits($previous, $current, $noMerges);
     }
 
-    /**
-     * @return array<string>
-     */
+    public function getCommitsForTag(string $tag, bool $noMerges = false): array
+    {
+        $commandArray = [
+            'log',
+            '--format=%B',
+            $tag,
+        ];
+
+        if ($noMerges) {
+            $commandArray[] = '--no-merges';
+        }
+
+        /** @var array<string> $result */
+        $result = $this->gitRepo->execute($commandArray);
+
+        return $result;
     public function getNewCommits(): array
     {
         $latestReleaseTag = $this->getLatestReleaseTag();
