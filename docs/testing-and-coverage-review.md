@@ -56,12 +56,12 @@ The current tests are primarily **Unit Tests** with heavy use of mocks. They are
 `ChangeLogServiceTest` because they exercise the interaction between the service and `GitInformation` (often mocked),
 but they mostly isolate the logic.
 
-## Recommendations
+## Recommendations (Addressed)
 
-- **Introduce a Test Repository Fixture**: Use a script to create a temporary Git repository with specific commits and
-  tags for integration testing.
-- **Shift from "Number of Writes" to "Content" Verification**: Use `vfsStream` or similar if needed, or just better mock
-  expectations to verify the actual strings being passed to `fwrite`.
-- **Modernize Mocking**: The tests use PHPUnit's built-in mock builder. Consider if any modern features can simplify the
-  verbose mock setups.
-- **Coverage Tooling**: Configure `php-coveralls` or local HTML reports to identify specific line-by-line gaps in `src`.
+- **Introduce a Test Repository Fixture**: Implemented `GitTestHelper` for creating temporary Git repositories in tests.
+- **Integration Tests**: Added `tests/Integration/ChangeLogIntegrationTest.php` to verify end-to-end functionality.
+- **Content-based Assertions**: Improved tests to verify actual generated Markdown content instead of just call counts.
+- **Git Error Handling**: Added tests for "not a git repo" and improved error messaging in commands.
+- **Configuration Loading**: Added `tests/Integration/ConfigLoadingTest.php` to verify config values are correctly
+  applied.
+- **Modernize Mocking & Types**: Updated codebase and tests to use PHP 8.4 features and strict typing.
