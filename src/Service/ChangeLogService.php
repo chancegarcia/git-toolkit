@@ -46,6 +46,7 @@ class ChangeLogService
     public const string DEFAULT_FILE_NAME = 'changelog.md';
     public const string DEFAULT_FILE_PATH = '';
 
+    private readonly GitInformation $gitInformation;
     private string $changeLogFileName = self::DEFAULT_FILE_NAME;
     private string $changeLogFilePath = self::DEFAULT_FILE_PATH;
     private string $mainHeaderName = self::DEFAULT_MAIN_HEADER_NAME;
@@ -71,6 +72,14 @@ class ChangeLogService
     }
 
     public function setGenerator(GeneratorInterface $generator): void
+    {
+        $this->generator = $generator;
+    }
+
+    /**
+     * @param GeneratorInterface|null $generator
+     */
+    public function injectGenerator(?GeneratorInterface $generator): void
     {
         $this->generator = $generator;
     }
@@ -113,20 +122,17 @@ class ChangeLogService
      */
     public function setChangeLogFilePath(?string $changeLogFilePath): void
     {
-        if (!is_string($changeLogFilePath)) {
+        if (null === $changeLogFilePath) {
             $this->changeLogFilePath = self::DEFAULT_FILE_PATH;
-        } else {
-            // '' is the same path as './'; empty string is treated as current working directory
-            if ('' === $changeLogFilePath) {
-                $this->changeLogFilePath = $changeLogFilePath;
-            } else {
-                if ('/' === substr($changeLogFilePath, -1)) {
-                    $this->changeLogFilePath = $changeLogFilePath;
-                } else {
-                    $this->changeLogFilePath = $changeLogFilePath . '/';
-                }
-            }
+            return;
         }
+
+        if ('' === $changeLogFilePath) {
+            $this->changeLogFilePath = $changeLogFilePath;
+            return;
+        }
+
+        $this->changeLogFilePath = rtrim($changeLogFilePath, '/') . '/';
     }
 
     /**
@@ -155,15 +161,13 @@ class ChangeLogService
     /**
      * @param \SplFileObject $file
      * @param string|null $newTag
+     * @param string|null $previousTag
      *
      * @throws \CzProject\GitPhp\GitException
      */
-    public function writeChangeLog(\SplFileObject $file, ?string $newTag = null): void
+    public function writeChangeLog(SplFileObject $file, ?string $newTag = null, ?string $previousTag = null): void
     {
-        $this->getGenerator()->generate($file, $newTag);
-
-        // close file
-        $file = null;
+        $this->getGenerator()->generate($file, $newTag, $previousTag);
     }
 
     public function getFullPath(): string
