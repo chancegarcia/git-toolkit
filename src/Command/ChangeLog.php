@@ -51,8 +51,7 @@ class ChangeLog
 {
     public function __construct(
         private ChangeLogService $changeLogService
-    )
-    {
+    ) {
     }
 
     public function getChangeLogService(): ChangeLogService

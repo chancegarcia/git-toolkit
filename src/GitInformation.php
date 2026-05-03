@@ -39,8 +39,7 @@ class GitInformation
 {
     public function __construct(
         private readonly GitRepository $gitRepo
-    )
-    {
+    ) {
     }
 
     public function getGitRepo(): GitRepository

@@ -6,8 +6,7 @@ class PromptTemplateLoader
 {
     public function __construct(
         private readonly string $templatePath
-    )
-    {
+    ) {
     }
 
     /**

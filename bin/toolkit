@@ -76,7 +76,7 @@ use Chance\GitToolkit\Service\ChangeLogService;
 use Chance\GitToolkit\Collector\GitCollector;
 use Chance\GitToolkit\Renderer\MarkdownRenderer;
 use Chance\GitToolkit\Generator\DefaultGenerator;
-use Cz\Git\GitRepository;
+use CzProject\GitPhp\GitRepository;
 
 $application = new Application('Chance Git Toolkit', '1.0.0');
 

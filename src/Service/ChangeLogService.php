@@ -54,8 +54,7 @@ class ChangeLogService
 
     public function __construct(
         GitInformation $gitInformation
-    )
-    {
+    ) {
         $this->gitInformation = $gitInformation;
     }
 

@@ -8,8 +8,7 @@ class GitCollector implements CollectorInterface
 {
     public function __construct(
         private readonly GitInformation $gitInformation
-    )
-    {
+    ) {
     }
 
     /**

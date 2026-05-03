@@ -8,11 +8,10 @@ use Chance\GitToolkit\Collector\CollectorInterface;
 class AiGenerator implements GeneratorInterface
 {
     public function __construct(
-        private readonly CollectorInterface   $collector,
-        private readonly AiClientInterface    $aiClient,
+        private readonly CollectorInterface $collector,
+        private readonly AiClientInterface $aiClient,
         private readonly PromptTemplateLoader $promptLoader
-    )
-    {
+    ) {
     }
 
     public function generate(SplFileObject $file, ?string $newTag = null, ?string $previousTag = null): void
