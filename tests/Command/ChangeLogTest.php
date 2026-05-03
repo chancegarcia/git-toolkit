@@ -7,17 +7,30 @@ use Chance\GitToolkit\Service\ChangeLogService;
 use CzProject\GitPhp\GitException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class ChangeLogTest extends TestCase
 {
     private MockObject $changeLogServiceMock;
     private MockObject $splFileObjectMock;
+    private Application $application;
 
     protected function setUp(): void
     {
         $this->changeLogServiceMock = $this->createMock(ChangeLogService::class);
-        $this->splFileObjectMock = $this->createMock(\SplFileObject::class);
+        $this->splFileObjectMock = $this->getMockBuilder(\SplFileObject::class)
+            ->setConstructorArgs(['php://memory', 'wb+'])
+            ->getMock();
+        $this->application = new Application();
+    }
+
+    private function getCommandTester(ChangeLog $command): CommandTester
+    {
+        $wrapper = new \Symfony\Component\Console\Command\Command('toolkit:changelog');
+        $wrapper->setCode($command);
+        $command->configure($wrapper);
+        return new CommandTester($wrapper);
     }
 
     public function testExecute(): void
@@ -33,14 +46,13 @@ class ChangeLogTest extends TestCase
             ->willReturn($this->splFileObjectMock);
         $this->changeLogServiceMock->expects(self::once())
                              ->method('writeChangeLog')
-            ->with($this->isInstanceOf(\SplFileObject::class), null);
+            ->with($this->isInstanceOf(\SplFileObject::class), null, null);
 
-        $changeLogCommand = new ChangeLog();
-        $changeLogCommand->setChangeLogService($this->changeLogServiceMock);
+        $changeLogCommand = new ChangeLog($this->changeLogServiceMock); // @phpstan-ignore-line
 
         self::assertSame($this->changeLogServiceMock, $changeLogCommand->getChangeLogService());
 
-        $commandTester = new CommandTester($changeLogCommand);
+        $commandTester = $this->getCommandTester($changeLogCommand);
         $commandTester->execute([]);
     }
 
@@ -54,10 +66,9 @@ class ChangeLogTest extends TestCase
             ->method('getFullPath')
             ->willReturn('some/path');
 
-        $changeLogCommand = new ChangeLog();
-        $changeLogCommand->setChangeLogService($this->changeLogServiceMock);
+        $changeLogCommand = new ChangeLog($this->changeLogServiceMock); // @phpstan-ignore-line
 
-        $commandTester = new CommandTester($changeLogCommand);
+        $commandTester = $this->getCommandTester($changeLogCommand);
         $commandTester->execute([]);
 
         $output = $commandTester->getDisplay();
@@ -73,10 +84,9 @@ class ChangeLogTest extends TestCase
                              ->method('getSplFileObject')
             ->willReturn($this->splFileObjectMock);
 
-        $changeLogCommand = new ChangeLog();
-        $changeLogCommand->setChangeLogService($this->changeLogServiceMock);
+        $changeLogCommand = new ChangeLog($this->changeLogServiceMock); // @phpstan-ignore-line
 
-        $commandTester = new CommandTester($changeLogCommand);
+        $commandTester = $this->getCommandTester($changeLogCommand);
         $commandTester->execute([
             'header' => 'some project name',
         ]);
@@ -89,15 +99,49 @@ class ChangeLogTest extends TestCase
             ->willReturn($this->splFileObjectMock);
         $this->changeLogServiceMock->expects(self::once())
                              ->method('writeChangeLog')
-            ->with($this->isInstanceOf(\SplFileObject::class), 'v1.0.0');
+            ->with($this->isInstanceOf(\SplFileObject::class), 'v1.0.0', null);
 
-        $changeLogCommand = new ChangeLog();
-        $changeLogCommand->setChangeLogService($this->changeLogServiceMock);
+        $changeLogCommand = new ChangeLog($this->changeLogServiceMock); // @phpstan-ignore-line
 
-        $commandTester = new CommandTester($changeLogCommand);
+        $commandTester = $this->getCommandTester($changeLogCommand);
         $commandTester->execute([
             '--new-tag' => 'v1.0.0',
         ]);
+    }
+
+    public function testExecuteWithPreviousTagOption(): void
+    {
+        $this->changeLogServiceMock->expects(self::once())
+            ->method('getSplFileObject')
+            ->willReturn($this->splFileObjectMock);
+        $this->changeLogServiceMock->expects(self::once())
+            ->method('writeChangeLog')
+            ->with($this->isInstanceOf(\SplFileObject::class), 'v2.0.0', 'v1.9.0');
+
+        $changeLogCommand = new ChangeLog($this->changeLogServiceMock); // @phpstan-ignore-line
+
+        $commandTester = $this->getCommandTester($changeLogCommand);
+        $commandTester->execute([
+            '--new-tag' => 'v2.0.0',
+            '--previous-tag' => 'v1.9.0',
+        ]);
+    }
+
+    public function testExecuteWithPreviousTagOptionWithoutNewTagFails(): void
+    {
+        $this->changeLogServiceMock->expects(self::never())
+            ->method('writeChangeLog');
+
+        $changeLogCommand = new ChangeLog($this->changeLogServiceMock); // @phpstan-ignore-line
+
+        $commandTester = $this->getCommandTester($changeLogCommand);
+        $commandTester->execute([
+            '--previous-tag' => 'v1.9.0',
+        ]);
+
+        $output = $commandTester->getDisplay();
+        self::assertStringContainsString('error: --previous-tag requires --new-tag', $output);
+        self::assertSame(1, $commandTester->getStatusCode());
     }
 
     public function testExecuteWithOutputDirOption(): void
@@ -109,10 +153,9 @@ class ChangeLogTest extends TestCase
             ->method('getSplFileObject')
             ->willReturn($this->splFileObjectMock);
 
-        $changeLogCommand = new ChangeLog();
-        $changeLogCommand->setChangeLogService($this->changeLogServiceMock);
+        $changeLogCommand = new ChangeLog($this->changeLogServiceMock); // @phpstan-ignore-line
 
-        $commandTester = new CommandTester($changeLogCommand);
+        $commandTester = $this->getCommandTester($changeLogCommand);
         $commandTester->execute([
             '--output-dir' => 'some/path',
         ]);
@@ -127,10 +170,9 @@ class ChangeLogTest extends TestCase
             ->method('getSplFileObject')
             ->willReturn($this->splFileObjectMock);
 
-        $changeLogCommand = new ChangeLog();
-        $changeLogCommand->setChangeLogService($this->changeLogServiceMock);
+        $changeLogCommand = new ChangeLog($this->changeLogServiceMock); // @phpstan-ignore-line
 
-        $commandTester = new CommandTester($changeLogCommand);
+        $commandTester = $this->getCommandTester($changeLogCommand);
         $commandTester->execute([
             '--filename' => 'some-file.md',
         ]);
@@ -146,10 +188,9 @@ class ChangeLogTest extends TestCase
             ->method('getFullPath')
             ->willReturn('some/path');
 
-        $changeLogCommand = new ChangeLog();
-        $changeLogCommand->setChangeLogService($this->changeLogServiceMock);
+        $changeLogCommand = new ChangeLog($this->changeLogServiceMock); // @phpstan-ignore-line
 
-        $commandTester = new CommandTester($changeLogCommand);
+        $commandTester = $this->getCommandTester($changeLogCommand);
         $commandTester->execute([]);
 
         $output = $commandTester->getDisplay();
