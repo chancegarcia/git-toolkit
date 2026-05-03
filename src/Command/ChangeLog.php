@@ -32,97 +32,82 @@
 
 namespace Chance\GitToolkit\Command;
 
-use Chance\GitToolkit\GitInformation;
 use Chance\GitToolkit\Service\ChangeLogService;
 use Cz\Git\GitException;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(
+    name: 'toolkit:changelog',
+    description: 'generate changelog from git commit history'
+)]
 class ChangeLog extends Command
 {
-    // the name of the command (the part after "bin/console")
-    protected static $defaultName = 'toolkit:changelog';
+    private ChangeLogService $changeLogService;
 
-    /**
-     * @var ChangeLogService
-     */
-    private $changeLogService;
-
-    /**
-     * @return ChangeLogService
-     */
     public function getChangeLogService(): ChangeLogService
     {
         return $this->changeLogService;
     }
 
-    /**
-     * @param ChangeLogService $changeLogService
-     */
     public function setChangeLogService(ChangeLogService $changeLogService): void
     {
         $this->changeLogService = $changeLogService;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
-            // the short description shown while running "php bin/console list"
-            ->setDescription('generate changelog from git commit history')
-
-            // the full command description shown when running the command with
-            // the "--help" option
-            ->setHelp('This command allows you to generate a changelog from your git commit history')->addArgument(
+            ->setHelp('This command allows you to generate a changelog from your git commit history')
+            ->addArgument(
                 'header',
                 InputArgument::OPTIONAL,
                 'main file header in output; default: ' . ChangeLogService::DEFAULT_MAIN_HEADER_NAME
-            )->addOption('new-tag', null, InputOption::VALUE_REQUIRED, 'label the current `HEAD` as NEW-TAG on output')
+            )
+            ->addOption('new-tag', null, InputOption::VALUE_REQUIRED, 'label the current `HEAD` as NEW-TAG on output')
             ->addOption(
                 'output-dir',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Write changelog to this directory. default is the value set in the change log service'
-            )->addOption(
+            )
+            ->addOption(
                 'filename',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Write changelog to this filename. default is the value set in the change log service'
-            )
-        ;
+            );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        // todo gather data via questions (project name/main title)
-        // $testTags = array_slice(getGitTags(), 0, 5);
-
         $mainHeaderName = $input->getArgument('header');
         if (is_string($mainHeaderName)) {
             $this->changeLogService->setMainHeaderName($mainHeaderName);
         }
+
         $newTag = $input->getOption('new-tag');
         $filePath = $input->getOption('output-dir');
         if (is_string($filePath)) {
             $this->changeLogService->setChangeLogFilePath($filePath);
         }
+
         $fileName = $input->getOption('filename');
         if (is_string($fileName)) {
             $this->changeLogService->setChangeLogFileName($fileName);
         }
-        // for path option, make sure that there is a trailing slash, if not, add one
 
         try {
             $file = $this->changeLogService->getSplFileObject();
-            $this->changeLogService->writeChangeLog($file, $newTag);// write success
+            $this->changeLogService->writeChangeLog($file, is_string($newTag) ? $newTag : null);
             $output->writeln(sprintf("success: file '%s' has been created", $this->changeLogService->getFullPath()));
 
-            // return this if there was no problem running the command
-            return 0;
+            return Command::SUCCESS;
         } catch (GitException $e) {
-            // or return this if some error happened during the execution
             $output->writeln(
                 sprintf(
                     'error: file "%s" was not written or maybe partially written.',
@@ -131,7 +116,7 @@ class ChangeLog extends Command
             );
             $output->writeln(sprintf('error message: %s (line: %s)', $e->getMessage(), $e->getLine()));
 
-            return 1;
+            return Command::FAILURE;
         }
     }
 }

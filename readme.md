@@ -1,19 +1,22 @@
 # Git Toolkit
 
-[![Build Status](https://travis-ci.com/chancegarcia/git-toolkit.svg?branch=main)](https://travis-ci.com/chancegarcia/git-toolkit) [![Latest Stable Version](https://poser.pugx.org/chancegarcia/git-toolkit/v)](//packagist.org/packages/chancegarcia/git-toolkit) [![Total Downloads](https://poser.pugx.org/chancegarcia/git-toolkit/downloads)](//packagist.org/packages/chancegarcia/git-toolkit) [![Latest Unstable Version](https://poser.pugx.org/chancegarcia/git-toolkit/v/unstable)](//packagist.org/packages/chancegarcia/git-toolkit) [![License](https://poser.pugx.org/chancegarcia/git-toolkit/license)](//packagist.org/packages/chancegarcia/git-toolkit)
-
-develop branch:
-
-[![Build Status](https://travis-ci.com/chancegarcia/git-toolkit.svg?branch=develop)](https://travis-ci.com/chancegarcia/git-toolkit)
+![CI](https://github.com/chancegarcia/git-toolkit/actions/workflows/ci.yml/badge.svg)
+[![Latest Stable Version](https://badgen.net/packagist/v/chancegarcia/git-toolkit)](//packagist.org/packages/chancegarcia/git-toolkit) ![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/chancegarcia/git-toolkit) [![Total Downloads](https://poser.pugx.org/chancegarcia/git-toolkit/downloads)](//packagist.org/packages/chancegarcia/git-toolkit) [![Latest Unstable Version](https://poser.pugx.org/chancegarcia/git-toolkit/v/unstable)](//packagist.org/packages/chancegarcia/git-toolkit) [![License](https://poser.pugx.org/chancegarcia/git-toolkit/license)](//packagist.org/packages/chancegarcia/git-toolkit) [![PHP](https://badgen.net/packagist/php/chancegarcia/git-toolkit)](//php.net)
 
 ---
 
-This toolkit only contains one tool currently. That tool will create a `changelog.md` for a project using the git
-repository tags and the git commit history.
+This toolkit creates a `changelog.md` for a project using the git repository tags and the git commit history.
+
+## Requirements
+
+- PHP >= 8.4
+- Git
 
 ## Installation
 
-        composer require --dev chancegarcia/git-toolkit
+```bash
+composer require --dev chancegarcia/git-toolkit
+```
 
 ## General Usage
 
@@ -36,23 +39,32 @@ The following values are configurable:
 
 ## ChangeLog Command Usage
 
-        ./vendor/bin/toolkit toolkit:changelog toolkit:changelog
+```bash
+./vendor/bin/toolkit toolkit:changelog "I am not a cat."
+```
 
-The changelog file will produce a **markdown** document with a main header (optionally set by the header argument)
-of `Projecty McProjectFace`. Tag names are the subheaders and the commits between the tags are printed after the
-subheader
-
-While you can run the base command, without a header argument, to produce a changelog, you might want to pass the a main
-header argument with it. Unless you really want to have the top header be `Projecty McProjectFace` (totally not judging)
-.
-
-        ./vendor/bin/toolkit toolkit:changelog toolkit:changelog "I am not a cat."
+The changelog file will produce a **markdown** document with a main header. Tag names are the subheaders and the commits
+between the tags are printed after the subheader.
 
 ### Prepare a new or initial release tag/number
 
-If no tags are present. The subheader will be the commit id.
+If no tags are present, the subheader will be the commit id.
 
 In order to "create" a new tag, use the `--new-tag=<NEWTAG>` to set the new header and write all recent commits since
 the previous tag (if there is one) into the changelog.
 
-        ./vendor/chancegarcia/git-toolkit/bin/toolkit toolkit:changelog "We Love Kittens" --new-tag="1.0.0"
+```bash
+./vendor/bin/toolkit toolkit:changelog "We Love Kittens" --new-tag="1.0.0"
+```
+
+## Development
+
+Available composer scripts for local development:
+
+- `composer qa`: Run all quality checks (lint, cs, stan, test)
+- `composer test`: Run PHPUnit tests
+- `composer test:coverage`: Run PHPUnit tests with HTML coverage report
+- `composer lint`: Run parallel-lint
+- `composer cs`: Check coding standards (PSR-12)
+- `composer cs:fix`: Fix coding standards automatically
+- `composer stan`: Run static analysis (PHPStan)

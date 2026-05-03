@@ -34,7 +34,7 @@ namespace Chance\GitToolkit\Formatter;
 
 class MarkdownFormatter
 {
-    public const MARKDOWN_RESERVED_CHARACTERS = [
+    public const array MARKDOWN_RESERVED_CHARACTERS = [
         '*',
         // '_',
         // '{',
@@ -51,9 +51,9 @@ class MarkdownFormatter
     ];
 
     /**
-     * @param array|string[] $commits
+     * @param array<string> $commits
      *
-     * @return array|string[]
+     * @return array<string>
      */
     public static function escapeCommitsForMarkdown(array $commits): array
     {

@@ -37,24 +37,12 @@ use Cz\Git\GitRepository;
 
 class GitInformation
 {
-    /**
-     * @var GitRepository
-     */
-    private $gitRepo;
-
-    /**
-     * GitInformation constructor.
-     *
-     * @param GitRepository $gitRepo
-     */
-    public function __construct(GitRepository $gitRepo)
+    public function __construct(
+        private readonly GitRepository $gitRepo
+    )
     {
-        $this->gitRepo = $gitRepo;
     }
 
-    /**
-     * @return GitRepository
-     */
     public function getGitRepo(): GitRepository
     {
         return $this->gitRepo;

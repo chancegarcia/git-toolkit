@@ -32,47 +32,49 @@
 
 namespace Chance\GitToolkit\Service;
 
+use Chance\GitToolkit\Collector\GitCollector;
 use Chance\GitToolkit\Formatter\MarkdownFormatter;
+use Chance\GitToolkit\Generator\DefaultGenerator;
+use Chance\GitToolkit\Generator\GeneratorInterface;
 use Chance\GitToolkit\GitInformation;
+use Chance\GitToolkit\Renderer\MarkdownRenderer;
+use SplFileObject;
 
 class ChangeLogService
 {
-    public const DEFAULT_MAIN_HEADER_NAME = 'Projecty McProjectFace';
-    public const DEFAULT_FILE_NAME = 'changelog.md';
-    public const DEFAULT_FILE_PATH = '';
-    /**
-     * @var GitInformation
-     */
-    private $gitInformation;
+    public const string DEFAULT_MAIN_HEADER_NAME = 'Projecty McProjectFace';
+    public const string DEFAULT_FILE_NAME = 'changelog.md';
+    public const string DEFAULT_FILE_PATH = '';
 
-    /**
-     * @var string
-     */
-    private $changeLogFileName = self::DEFAULT_FILE_NAME;
+    private string $changeLogFileName = self::DEFAULT_FILE_NAME;
+    private string $changeLogFilePath = self::DEFAULT_FILE_PATH;
+    private string $mainHeaderName = self::DEFAULT_MAIN_HEADER_NAME;
+    private ?GeneratorInterface $generator = null;
 
-    /**
-     * @var string
-     */
-    private $changeLogFilePath = self::DEFAULT_FILE_PATH;
-
-    /**
-     * @var string
-     */
-    private $mainHeaderName = self::DEFAULT_MAIN_HEADER_NAME;
-
-    /**
-     * ChangeLogService constructor.
-     *
-     * @param GitInformation $gitInformation
-     */
-    public function __construct(GitInformation $gitInformation)
+    public function __construct(
+        private readonly GitInformation $gitInformation
+    )
     {
-        $this->gitInformation = $gitInformation;
     }
 
-    /**
-     * @return GitInformation
-     */
+    public function getGenerator(): GeneratorInterface
+    {
+        if ($this->generator === null) {
+            $this->generator = new DefaultGenerator(
+                new GitCollector($this->gitInformation),
+                new MarkdownRenderer(),
+                $this->mainHeaderName
+            );
+        }
+
+        return $this->generator;
+    }
+
+    public function setGenerator(GeneratorInterface $generator): void
+    {
+        $this->generator = $generator;
+    }
+
     public function getGitInformation(): GitInformation
     {
         return $this->gitInformation;
@@ -148,89 +150,28 @@ class ChangeLogService
     }
 
     /**
-     * @param \SplFileObject $file
+     * @param SplFileObject $file
      * @param string|null $newTag
      *
      * @throws \Cz\Git\GitException
      */
-    public function writeChangeLog(\SplFileObject $file, string $newTag = null)
+    public function writeChangeLog(SplFileObject $file, ?string $newTag = null): void
     {
-        $tags = $this->gitInformation->getGitTags();
-        $tagCount = count($tags);
+        $this->getGenerator()->generate($file, $newTag);
 
-        $file->fwrite(sprintf("# %s\n\n", $this->mainHeaderName));
-
-        $hasNewTag = false;
-        if (is_string($newTag)) {
-            $this->writeNewTag($file, $newTag);
-            $hasNewTag = true;
-        }
-
-        if (!$hasNewTag && 0 === $tagCount) {
-            // write current commit as a new tag
-            $this->writeNewTag($file, $this->gitInformation->getCurrentCommit());
-        }
-
-        if ($tagCount > 0) {
-            for ($i = 0; $i < $tagCount; $i++) {
-                if ($i + 1 === $tagCount) {
-                    [$current] = array_slice($tags, $i, 1);
-                    $previous = $this->gitInformation->getFirstCommit();
-                } else {
-                    [$current, $previous] = array_slice($tags, $i, 2);
-                }
-
-                $commits = MarkdownFormatter::escapeCommitsForMarkdown(
-                    $this->gitInformation->getCommits($previous, $current, true)
-                );
-                $commitString = implode("\n", $commits);
-
-                if ('' !== $commitString) {
-                    $tagName = $current;
-                    if ("" === $tagName) {
-                        $currentCommit = $this->gitInformation->getCurrentCommit();
-                        $tagName = sprintf('empty tag \(latest commit: %s\)', $currentCommit);
-                    }
-                    $this->writeTag($file, $tagName, $commitString);
-                }
-            }
-        }
-
-        // close file (https://stackoverflow.com/questions/22449822/how-to-close-a-splfileobject-file-handler/22822981)
+        // close file
         $file = null;
     }
 
-    public function getFullPath()
+    public function getFullPath(): string
     {
         return $this->changeLogFilePath . $this->changeLogFileName;
     }
 
-    public function getSplFileObject(): \SplFileObject
+    public function getSplFileObject(): SplFileObject
     {
         $fullPath = $this->getFullPath();
 
-        return new \SplFileObject($fullPath, 'wb+');
-    }
-
-    /**
-     * @param \SplFileObject $file file resource
-     * @param string $newTag
-     */
-    public function writeNewTag(\SplFileObject $file, string $newTag)
-    {
-        $latestCommits = MarkdownFormatter::escapeCommitsForMarkdown($this->gitInformation->getNewCommits());
-        $latestCommitsString = implode("\n", $latestCommits);
-        $this->writeTag($file, $newTag, $latestCommitsString);
-    }
-
-    /**
-     * @param \SplFileObject $file file resource
-     * @param string $tagName
-     * @param string $commits
-     */
-    public function writeTag(\SplFileObject $file, string $tagName, string $commits)
-    {
-        $file->fwrite(sprintf("## %s\n", $tagName));
-        $file->fwrite(sprintf("%s\n", $commits));
+        return new SplFileObject($fullPath, 'wb+');
     }
 }

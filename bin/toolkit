@@ -71,10 +71,11 @@ require $currentDir . '/vendor/autoload.php';
 use Symfony\Component\Console\Application;
 use Chance\GitToolkit\GitInformation;
 use Chance\GitToolkit\Command\ChangeLog;
+use Chance\GitToolkit\Command\Release;
 use Chance\GitToolkit\Service\ChangeLogService;
 use Cz\Git\GitRepository;
 
-$application = new Application();
+$application = new Application('Chance Git Toolkit', '1.0.0');
 
 $gitRepo = new GitRepository($dir);
 $gitInformation = new GitInformation($gitRepo);
@@ -85,6 +86,7 @@ $changeLogService->setMainHeaderName($projectName);
 
 $changeLogCommand = new ChangeLog();
 $changeLogCommand->setChangeLogService($changeLogService);
-$application->add($changeLogCommand);
+$application->addCommand($changeLogCommand);
+$application->addCommand(new Release());
 
 $application->run();
