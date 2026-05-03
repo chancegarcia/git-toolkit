@@ -32,11 +32,18 @@
 
 $currentDir = getcwd();
 
+require $currentDir . '/vendor/autoload.php';
+
+use Chance\GitToolkit\Environment;
+
+Environment::load($currentDir);
+
 $configFile = $currentDir . '/config/chancegarcia_git_toolkit.php';
 $dirConfigExists = false;
-$projectName = null;
-$outputFilename = null;
-$outputPath = null;
+$projectName = $_ENV['PROJECT_NAME'] ?? null;
+$outputFilename = $_ENV['OUTPUT_FILENAME'] ?? null;
+$outputPath = $_ENV['OUTPUT_DIRECTORY'] ?? null;
+$dir = $_ENV['PROJECT_ROOT'] ?? $currentDir;
 
 if (file_exists($configFile)) {
     /**
@@ -55,18 +62,17 @@ if (file_exists($configFile)) {
     if (array_key_exists('output_directory', $config)) {
         $outputPath = $config['output_directory'];
     }
+
+    if ($dirConfigExists) {
+        $dir = $config['project_root'];
+    }
 }
 
-if ($dirConfigExists) {
-    $dir = $config['project_root'];
-} else {
-    $dir = $currentDir;
+if (!$dirConfigExists && !isset($_ENV['PROJECT_ROOT'])) {
     if (false !== strpos($currentDir, 'bin')) {
         $dir = $currentDir . '/..';
     }
 }
-
-require $currentDir . '/vendor/autoload.php';
 
 use Symfony\Component\Console\Application;
 use Chance\GitToolkit\GitInformation;

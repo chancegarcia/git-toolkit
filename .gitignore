@@ -24,7 +24,6 @@ tmp.*
 .phpstan.cache
 
 # Local environment and config
-.env
 .env.local
 .env.local.php
 .env.*.local

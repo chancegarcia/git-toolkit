@@ -24,15 +24,47 @@ Unless specified in a config file, the repository found in the current working d
 
 ## Configuration (optional)
 
-Default values for some command arguments and options can be set via a config file in
-`config/chancegarcia_git_toolkit.php`.
+The toolkit supports Symfony-style environment variable loading and an optional PHP config file.
 
-The following values are configurable:
+### Environment variables
 
-- `project_root`: the directory where the repository resides
-- `project_name`: The main header value
-- `filename`: name of the markdown file to write out.
-- `output_directory`: path to where the markdown file should be written
+You can use `.env` files to configure the toolkit. The following files are supported and loaded in this order (later
+files override earlier ones):
+
+1. `.env` - Default values
+2. `.env.local` - Local overrides (ignored by git, except for `test` environment)
+3. `.env.{APP_ENV}` - Environment-specific defaults (e.g., `.env.dev`, `.env.prod`, `.env.test`)
+4. `.env.{APP_ENV}.local` - Environment-specific local overrides
+
+**Note:** `.env.local` is NOT loaded when `APP_ENV=test` to ensure test reproducibility.
+
+The following environment variables are supported:
+
+- `APP_ENV`: The active environment (`dev`, `test`, `prod`). Defaults to `dev`.
+- `PROJECT_ROOT`: the directory where the repository resides.
+- `PROJECT_NAME`: The main header value.
+- `OUTPUT_FILENAME`: name of the markdown file to write out.
+- `OUTPUT_DIRECTORY`: path to where the markdown file should be written.
+
+### PHP Config file
+
+Alternatively, you can use a PHP config file in `config/chancegarcia_git_toolkit.php`. Values in the PHP config file
+will override environment variables if present.
+
+The following keys are supported in the config array:
+
+- `project_root`
+- `project_name`
+- `filename`
+- `output_directory`
+
+Example `.env` file:
+
+```dotenv
+PROJECT_NAME="My Project"
+OUTPUT_FILENAME="CHANGELOG.md"
+OUTPUT_DIRECTORY="./"
+```
 
 ## ChangeLog Command Usage
 
