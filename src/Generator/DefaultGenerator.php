@@ -16,9 +16,9 @@ class DefaultGenerator implements GeneratorInterface
     {
     }
 
-    public function generate(SplFileObject $file, ?string $newTag = null): void
+    public function generate(SplFileObject $file, ?string $newTag = null, ?string $previousTag = null): void
     {
-        $data = $this->collector->collect($newTag);
+        $data = $this->collector->collect($newTag, $previousTag);
         $content = $this->renderer->render($data, $this->mainHeader);
         $file->fwrite($content);
     }
