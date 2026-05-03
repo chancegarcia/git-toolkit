@@ -40,14 +40,20 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Exception\RuntimeException;
 
 #[AsCommand(
     name: 'toolkit:changelog',
-    description: 'generate changelog from git commit history'
+    description: 'generate changelog from git commit history',
+    help: 'This command allows you to generate a changelog from your git commit history'
 )]
-class ChangeLog extends Command
+class ChangeLog
 {
-    private ChangeLogService $changeLogService;
+    public function __construct(
+        private ChangeLogService $changeLogService
+    )
+    {
+    }
 
     public function getChangeLogService(): ChangeLogService
     {
@@ -59,16 +65,63 @@ class ChangeLog extends Command
         $this->changeLogService = $changeLogService;
     }
 
-    protected function configure(): void
+    public function __invoke(
+        InputInterface  $input,
+        OutputInterface $output,
+    ): int
     {
-        $this
-            ->setHelp('This command allows you to generate a changelog from your git commit history')
+        $header = $input->getArgument('header');
+        $newTag = $input->getOption('new-tag');
+        $previousTag = $input->getOption('previous-tag');
+        $outputDir = $input->getOption('output-dir');
+        $filename = $input->getOption('filename');
+
+        if (is_string($previousTag) && $newTag === null) {
+            $output->writeln('<error>error: --previous-tag requires --new-tag because the new tag is used as the changelog heading.</error>');
+            return Command::FAILURE;
+        }
+
+        try {
+            if (is_string($header)) {
+                $this->changeLogService->setMainHeaderName($header);
+            }
+
+            if (is_string($outputDir)) {
+                $this->changeLogService->setChangeLogFilePath($outputDir);
+            }
+
+            if (is_string($filename)) {
+                $this->changeLogService->setChangeLogFileName($filename);
+            }
+
+            $file = $this->changeLogService->getSplFileObject();
+            $this->changeLogService->writeChangeLog($file, is_string($newTag) ? $newTag : null, is_string($previousTag) ? $previousTag : null);
+            $output->writeln(sprintf("success: file '%s' has been created", $this->changeLogService->getFullPath()));
+
+            return Command::SUCCESS;
+        } catch (GitException|RuntimeException|\RuntimeException $e) {
+            $output->writeln(
+                sprintf(
+                    '<error>error: file "%s" was not written or maybe partially written.</error>',
+                    $this->changeLogService->getFullPath()
+                )
+            );
+            $output->writeln(sprintf('<error>error message: %s (line: %s)</error>', $e->getMessage(), $e->getLine()));
+
+            return Command::FAILURE;
+        }
+    }
+
+    public function configure(Command $command): void
+    {
+        $command
             ->addArgument(
                 'header',
                 InputArgument::OPTIONAL,
                 'main file header in output; default: ' . ChangeLogService::DEFAULT_MAIN_HEADER_NAME
             )
             ->addOption('new-tag', null, InputOption::VALUE_REQUIRED, 'label the current `HEAD` as NEW-TAG on output')
+            ->addOption('previous-tag', null, InputOption::VALUE_REQUIRED, 'explicitly compare the upcoming release against this previous tag')
             ->addOption(
                 'output-dir',
                 null,
@@ -81,42 +134,5 @@ class ChangeLog extends Command
                 InputOption::VALUE_REQUIRED,
                 'Write changelog to this filename. default is the value set in the change log service'
             );
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $mainHeaderName = $input->getArgument('header');
-        if (is_string($mainHeaderName)) {
-            $this->changeLogService->setMainHeaderName($mainHeaderName);
-        }
-
-        $newTag = $input->getOption('new-tag');
-        $filePath = $input->getOption('output-dir');
-        if (is_string($filePath)) {
-            $this->changeLogService->setChangeLogFilePath($filePath);
-        }
-
-        $fileName = $input->getOption('filename');
-        if (is_string($fileName)) {
-            $this->changeLogService->setChangeLogFileName($fileName);
-        }
-
-        try {
-            $file = $this->changeLogService->getSplFileObject();
-            $this->changeLogService->writeChangeLog($file, is_string($newTag) ? $newTag : null);
-            $output->writeln(sprintf("success: file '%s' has been created", $this->changeLogService->getFullPath()));
-
-            return Command::SUCCESS;
-        } catch (GitException $e) {
-            $output->writeln(
-                sprintf(
-                    'error: file "%s" was not written or maybe partially written.',
-                    $this->changeLogService->getFullPath()
-                )
-            );
-            $output->writeln(sprintf('error message: %s (line: %s)', $e->getMessage(), $e->getLine()));
-
-            return Command::FAILURE;
-        }
     }
 }
