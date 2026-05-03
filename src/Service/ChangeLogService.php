@@ -53,9 +53,10 @@ class ChangeLogService
     private ?GeneratorInterface $generator = null;
 
     public function __construct(
-        private readonly GitInformation $gitInformation
+        GitInformation $gitInformation
     )
     {
+        $this->gitInformation = $gitInformation;
     }
 
     public function getGenerator(): GeneratorInterface

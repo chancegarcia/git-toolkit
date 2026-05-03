@@ -49,7 +49,6 @@ class GitInformation
     }
 
     /**
-     * @return array|string[] list of current tags
      * @return array<string> list of current tags
      */
     public function getGitTags(): array
@@ -114,7 +113,7 @@ class GitInformation
     }
 
     /**
-     * @return array
+     * @return array<string>
      */
     public function getNewCommits(): array
     {
