@@ -39,16 +39,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
     name: 'toolkit:release',
-    description: 'Perform a release'
+    description: 'Perform a release',
+    help: 'This command is a placeholder for future release automation.'
 )]
-class Release extends Command
+class Release
 {
-    protected function configure(): void
-    {
-        $this->setHelp('This command is a placeholder for future release automation.');
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function __invoke(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln('todo: make this a real command.');
 

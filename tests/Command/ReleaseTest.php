@@ -34,18 +34,17 @@ namespace Chance\GitToolkit\Test\Command;
 
 use Chance\GitToolkit\Command\Release;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class ReleaseTest extends TestCase
 {
     public function testExecute()
     {
-        // @formatter:off
-
-        // @formatter:on
-
-        $releaseCommand = new Release();
-        $commandTester = new CommandTester($releaseCommand);
+        $release = new Release();
+        $wrapper = new \Symfony\Component\Console\Command\Command('toolkit:release');
+        $wrapper->setCode($release);
+        $commandTester = new CommandTester($wrapper);
         $commandTester->execute([]);
 
         // the output of the command in the console
