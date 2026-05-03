@@ -10,32 +10,27 @@ The `ChanceGitToolkit` project generates changelogs by:
 4. **CLI Interface**: Symfony Console commands (`toolkit:changelog`) provide the user interface to trigger the
    generation.
 
-## Suggested Code Optimizations
+## Suggested Code Optimizations (Completed)
 
-- **Interface Isolation**: separated data collection, rendering, and the overall generation process.
-- **Typed Properties and Return Types**: updated the codebase to use PHP 8.4 features, including typed properties and
-  strict return types, improving reliability and IDE support.
-- **Dependency Injection**: improved the way services are instantiated in `bin/toolkit` to facilitate better testing and
-  future containerization if needed.
-- **Error Handling**: centralized error handling in the command layer, providing clearer feedback to the user when Git
-  operations fail.
+- **Interface Isolation**: Separated data collection (`CollectorInterface`), rendering (`RendererInterface`), and the
+  overall generation process (`GeneratorInterface`).
+- **Typed Properties and Return Types**: Updated the codebase to use PHP 8.4 features, including typed properties and
+  strict return types.
+- **Dependency Injection**: Improved the way services are instantiated in `bin/toolkit` to facilitate better testing and
+  future containerization.
+- **Error Handling**: Centralized error handling in the command layer (`ChangeLog::renderError`), providing clearer
+  feedback to the user when Git operations fail.
 
 ## AI Changelog Feature Plan
 
-The future AI feature will be implemented as an alternative `GeneratorInterface` implementation.
-
-### User Experience
-
-- **Default Behavior**: Remains exactly as it is today (generic Markdown list of commits).
-- **Optional AI Mode**: Enabled via flags like `--ai`.
-- **Configurable Prompts**: Users can provide their own prompt via `--prompt-file`.
-
-### AI Provider Abstraction
+The future AI feature will be implemented as an alternative `GeneratorInterface` implementation. The following
+abstractions have been prepared:
 
 - `AiGenerator`: An implementation of `GeneratorInterface` that uses an AI provider.
 - `AiClientInterface`: An abstraction for AI services (OpenAI, Anthropic, etc.).
-- `PromptTemplateLoader`: Responsible for loading and rendering the prompt template (e.g., from
-  `docs/changelog-prompt.md`).
+- `PromptTemplateLoader`: Responsible for loading and rendering the prompt template (currently a stub).
+
+### Next Steps for AI Implementation
 
 ### Data for AI
 
