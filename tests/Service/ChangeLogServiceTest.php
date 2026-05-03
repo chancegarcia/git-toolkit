@@ -45,10 +45,10 @@ class ChangeLogServiceTest extends TestCase
         $generator = $this->createMock(GeneratorInterface::class);
         $generator->expects(self::once())
             ->method('generate')
-            ->with(self::isInstanceOf(\SplFileObject::class), 'v1.0.0');
+            ->with(self::isInstanceOf(\SplFileObject::class), 'v1.0.0', 'v0.9.0');
 
         $this->service->setGenerator($generator);
-        $this->service->writeChangeLog(new \SplFileObject('php://memory', 'wb+'), 'v1.0.0');
+        $this->service->writeChangeLog(new \SplFileObject('php://memory', 'wb+'), 'v1.0.0', 'v0.9.0');
     }
 
     public function testFilePath(): void
