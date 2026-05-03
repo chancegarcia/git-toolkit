@@ -50,6 +50,7 @@ class GitInformation
 
     /**
      * @return array|string[] list of current tags
+     * @return array<string> list of current tags
      */
     public function getGitTags(): array
     {
@@ -82,7 +83,7 @@ class GitInformation
      * @param string $current
      * @param bool $noMerges add `--no-merges` option to log call
      *
-     * @return array
+     * @return array<string>
      */
     public function getCommits(string $previous, string $current, bool $noMerges = false): array
     {
@@ -105,7 +106,7 @@ class GitInformation
      * @param string $current
      * @param bool $noMerges add `--no-merges` option to log call
      *
-     * @return array
+     * @return array<string>
      */
     public function getCommitRange(string $previous, string $current, bool $noMerges = false): array
     {

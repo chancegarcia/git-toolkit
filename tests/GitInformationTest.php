@@ -22,7 +22,7 @@ class GitInformationTest extends TestCase
     {
         $this->gitRepoMock->expects(self::once())
             ->method('execute')
-            ->with(['tag', '--sort=-v:refname'])
+            ->with(['tag', '-l', '--sort=-v:refname'])
             ->willReturn(['v1.0.0', 'v0.9.0']);
 
         $tags = $this->gitInformation->getGitTags();
@@ -32,9 +32,8 @@ class GitInformationTest extends TestCase
     public function testGetCurrentCommit(): void
     {
         $this->gitRepoMock->expects(self::once())
-            ->method('execute')
-            ->with(['rev-parse', 'HEAD'])
-            ->willReturn(['abc1234']);
+            ->method('getLastCommitId')
+            ->willReturn('abc1234');
 
         self::assertSame('abc1234', $this->gitInformation->getCurrentCommit());
     }
@@ -53,11 +52,11 @@ class GitInformationTest extends TestCase
     {
         $this->gitRepoMock->expects(self::once())
             ->method('execute')
-            ->with(['log', 'v1.0.0..v1.1.0', '--oneline', '--no-merges'])
+            ->with(['log', '--format=%B', 'v1.0.0..v1.1.0'])
             ->willReturn(['hash1 commit message 1', 'hash2 commit message 2']);
 
         $commits = $this->gitInformation->getCommitRange('v1.0.0', 'v1.1.0');
-        self::assertSame(['commit message 1', 'commit message 2'], $commits);
+        self::assertSame(['hash1 commit message 1', 'hash2 commit message 2'], $commits);
     }
 
     public function testGetGitRepo(): void
