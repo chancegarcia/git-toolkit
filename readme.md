@@ -25,10 +25,7 @@ Unless specified in a config file, the repository found in the current working d
 ## Configuration (optional)
 
 Default values for some command arguments and options can be set via a config file in
-
-`config/chancegarcia_git_toolkit.php`
-
-A `.dist` file provides an example of configuration options.
+`config/chancegarcia_git_toolkit.php`.
 
 The following values are configurable:
 
@@ -39,23 +36,42 @@ The following values are configurable:
 
 ## ChangeLog Command Usage
 
-```bash
-./vendor/bin/toolkit toolkit:changelog "I am not a cat."
-```
-
-The changelog file will produce a **markdown** document with a main header. Tag names are the subheaders and the commits
-between the tags are printed after the subheader.
-
-### Prepare a new or initial release tag/number
-
-If no tags are present, the subheader will be the commit id.
-
-In order to "create" a new tag, use the `--new-tag=<NEWTAG>` to set the new header and write all recent commits since
-the previous tag (if there is one) into the changelog.
+The `toolkit:changelog` command generates a markdown document with a main header. Tag names are the subheaders and the
+commits between the tags are listed below them.
 
 ```bash
-./vendor/bin/toolkit toolkit:changelog "We Love Kittens" --new-tag="1.0.0"
+./vendor/bin/toolkit toolkit:changelog "My Project"
 ```
+
+### Options
+
+- `--new-tag=<tag>`: Adds a changelog section for an upcoming release and uses the provided value as that section
+  heading.
+- `--previous-tag=<tag>`: When used with `--new-tag`, explicitly compares the upcoming release against this previous tag
+  instead of auto-selecting the latest known tag. Requires `--new-tag`.
+- `--output-dir=<path>`: Directory where the changelog file should be written.
+- `--filename=<name>`: Name of the changelog file.
+
+### Examples
+
+#### Prepare a new release heading
+
+Use `--new-tag` to set the heading for unreleased commits.
+
+```bash
+./vendor/bin/toolkit toolkit:changelog --new-tag="1.0.0"
+```
+
+#### Explicit comparison range
+
+Use `--previous-tag` to specify exactly which tag to compare against for the upcoming release. This is useful when you
+want to bypass auto-selection of the latest tag.
+
+```bash
+./vendor/bin/toolkit toolkit:changelog --new-tag="2.0.0" --previous-tag="1.9.0"
+```
+
+This generates a `2.0.0` section containing commits from `1.9.0..HEAD`.
 
 ## Development
 

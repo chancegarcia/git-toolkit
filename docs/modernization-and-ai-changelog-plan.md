@@ -12,13 +12,12 @@ The `ChanceGitToolkit` project generates changelogs by:
 
 ## Suggested Code Optimizations
 
-- **Interface Isolation**: We have already introduced `GeneratorInterface`, `CollectorInterface`, and
-  `RendererInterface`. This separates data collection, rendering, and the overall generation process.
-- **Typed Properties and Return Types**: Updated the codebase to use PHP 8.4 features, including typed properties and
+- **Interface Isolation**: separated data collection, rendering, and the overall generation process.
+- **Typed Properties and Return Types**: updated the codebase to use PHP 8.4 features, including typed properties and
   strict return types, improving reliability and IDE support.
-- **Dependency Injection**: Improved the way services are instantiated in `bin/toolkit` to facilitate better testing and
+- **Dependency Injection**: improved the way services are instantiated in `bin/toolkit` to facilitate better testing and
   future containerization if needed.
-- **Error Handling**: Centralized error handling in the command layer, providing clearer feedback to the user when Git
+- **Error Handling**: centralized error handling in the command layer, providing clearer feedback to the user when Git
   operations fail.
 
 ## AI Changelog Feature Plan
