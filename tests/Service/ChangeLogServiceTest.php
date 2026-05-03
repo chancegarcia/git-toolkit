@@ -42,14 +42,13 @@ class ChangeLogServiceTest extends TestCase
 
     public function testWriteChangeLog(): void
     {
-        $file = $this->createMock(SplFileObject::class);
         $generator = $this->createMock(GeneratorInterface::class);
         $generator->expects(self::once())
             ->method('generate')
-            ->with($file, 'v1.0.0');
+            ->with(self::isInstanceOf(\SplFileObject::class), 'v1.0.0');
 
         $this->service->setGenerator($generator);
-        $this->service->writeChangeLog($file, 'v1.0.0');
+        $this->service->writeChangeLog(new \SplFileObject('php://memory', 'wb+'), 'v1.0.0');
     }
 
     public function testFilePath(): void
@@ -79,5 +78,48 @@ class ChangeLogServiceTest extends TestCase
     public function testGitInformation(): void
     {
         self::assertSame($this->gitInformationMock, $this->service->getGitInformation());
+    }
+
+    public function testMainHeaderAffectsOutput(): void
+    {
+        $this->service->setMainHeaderName('Custom Name');
+        $this->gitInformationMock->method('getGitTags')->willReturn([]);
+
+        $tempFile = new SplFileObject('php://memory', 'wb+');
+        $this->service->writeChangeLog($tempFile);
+        $tempFile->fseek(0);
+        $content = $tempFile->fread(1024);
+
+        self::assertStringContainsString('# Custom Name', $content);
+    }
+
+    public function testMainHeaderChangeAfterGeneratorCreatedAffectsOutput(): void
+    {
+        // call getGenerator to "freeze" it if it's bugged
+        $this->service->getGenerator();
+
+        $this->service->setMainHeaderName('Custom Name');
+        $this->gitInformationMock->method('getGitTags')->willReturn([]);
+
+        $tempFile = new SplFileObject('php://memory', 'wb+');
+        $this->service->writeChangeLog($tempFile);
+        $tempFile->fseek(0);
+        $content = $tempFile->fread(1024);
+
+        self::assertStringContainsString('# Custom Name', $content);
+    }
+
+    public function testMainHeaderNullResetsOutputToDefault(): void
+    {
+        $this->service->setMainHeaderName('Custom Name');
+        $this->service->setMainHeaderName(null);
+        $this->gitInformationMock->method('getGitTags')->willReturn([]);
+
+        $tempFile = new SplFileObject('php://memory', 'wb+');
+        $this->service->writeChangeLog($tempFile);
+        $tempFile->fseek(0);
+        $content = $tempFile->fread(1024);
+
+        self::assertStringContainsString('# ' . ChangeLogService::DEFAULT_MAIN_HEADER_NAME, $content);
     }
 }

@@ -4,11 +4,11 @@
  * @package
  * @subpackage
  * @author      Chance Garcia <chance@garcia.codes>
- * @copyright   (C)Copyright 2013-2021 Chance Garcia, chancegarcia.com
+ * @copyright   (C)Copyright 2013-2026 Chance Garcia, chancegarcia.com
  *
  *    The MIT License (MIT)
  *
- * Copyright (c) 2013-2021 Chance Garcia
+ * Copyright (c) 2013-2026 Chance Garcia
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,8 +32,8 @@
 
 namespace Chance\GitToolkit;
 
-use Cz\Git\GitException;
-use Cz\Git\GitRepository;
+use CzProject\GitPhp\GitException;
+use CzProject\GitPhp\GitRepository;
 
 class GitInformation
 {
@@ -67,7 +67,7 @@ class GitInformation
     }
 
     /**
-     * @return string|null id of current commit
+     * @return string id of current commit
      *
      * @throws GitException
      */
@@ -98,6 +98,18 @@ class GitInformation
         }
 
         return $this->gitRepo->execute($commandArray);
+    }
+
+    /**
+     * @param string $previous
+     * @param string $current
+     * @param bool $noMerges add `--no-merges` option to log call
+     *
+     * @return array
+     */
+    public function getCommitRange(string $previous, string $current, bool $noMerges = false): array
+    {
+        return $this->getCommits($previous, $current, $noMerges);
     }
 
     /**

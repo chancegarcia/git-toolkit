@@ -4,11 +4,11 @@
  * @package
  * @subpackage
  * @author      Chance Garcia <chance@garcia.codes>
- * @copyright   (C)Copyright 2013-2021 Chance Garcia, chancegarcia.com
+ * @copyright   (C)Copyright 2013-2026 Chance Garcia, chancegarcia.com
  *
  *    The MIT License (MIT)
  *
- * Copyright (c) 2013-2021 Chance Garcia
+ * Copyright (c) 2013-2026 Chance Garcia
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@
 namespace Chance\GitToolkit\Command;
 
 use Chance\GitToolkit\Service\ChangeLogService;
-use Cz\Git\GitException;
+use CzProject\GitPhp\GitException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;

@@ -4,7 +4,7 @@ namespace Chance\GitToolkit\Test\Command;
 
 use Chance\GitToolkit\Command\ChangeLog;
 use Chance\GitToolkit\Service\ChangeLogService;
-use Cz\Git\GitException;
+use CzProject\GitPhp\GitException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;

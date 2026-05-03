@@ -3,7 +3,7 @@
 namespace Chance\GitToolkit\Test;
 
 use Chance\GitToolkit\GitInformation;
-use Cz\Git\GitRepository;
+use CzProject\GitPhp\GitRepository;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

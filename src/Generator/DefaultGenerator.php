@@ -10,8 +10,8 @@ class DefaultGenerator implements GeneratorInterface
 {
     public function __construct(
         private readonly CollectorInterface $collector,
-        private readonly RendererInterface  $renderer,
-        private readonly string             $mainHeader
+        private readonly RendererInterface $renderer,
+        private readonly string            $mainHeader
     )
     {
     }
