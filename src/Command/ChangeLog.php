@@ -66,7 +66,7 @@ class ChangeLog
     }
 
     public function __invoke(
-        InputInterface  $input,
+        InputInterface $input,
         OutputInterface $output,
     ): int
     {
@@ -100,16 +100,21 @@ class ChangeLog
 
             return Command::SUCCESS;
         } catch (GitException|RuntimeException|\RuntimeException $e) {
-            $output->writeln(
-                sprintf(
-                    '<error>error: file "%s" was not written or maybe partially written.</error>',
-                    $this->changeLogService->getFullPath()
-                )
-            );
-            $output->writeln(sprintf('<error>error message: %s (line: %s)</error>', $e->getMessage(), $e->getLine()));
+            $this->renderError($output, $e);
+
+            return Command::FAILURE;
+        } catch (\Throwable $e) {
+            $this->renderError($output, $e, 'An unexpected error occurred.');
 
             return Command::FAILURE;
         }
+    }
+
+    private function renderError(OutputInterface $output, \Throwable $e, ?string $customMessage = null): void
+    {
+        $message = $customMessage ?? sprintf('error: file "%s" was not written or maybe partially written.', $this->changeLogService->getFullPath());
+        $output->writeln(sprintf('<error>%s</error>', $message));
+        $output->writeln(sprintf('<error>error message: %s (line: %s)</error>', $e->getMessage(), $e->getLine()));
     }
 
     public function configure(Command $command): void
