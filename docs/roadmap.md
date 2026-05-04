@@ -87,19 +87,26 @@ The tool supports several distinct modes of operation, with "What's new?" as the
 - **Alternate Output**: Supports generating separate history files via `--mode=full` with `--filename` and/or
   `--output-dir`.
 
-### Phase 3: Rendering Extensibility
+### Phase 3: Rendering Extensibility (Completed)
 
-Support for custom renderers will be introduced to allow for diverse output requirements.
+Support for custom renderers has been introduced to allow for diverse output requirements.
 
-**Planned Extensions:**
+**Key Improvements:**
 
-- **Custom Renderers**: Ability to provide custom classes for rendering.
-- **Use Cases**:
-    - Alternative Markdown layouts.
-    - GitHub Release-style notes.
-    - Monorepo/package-specific output.
-    - Issue/PR linking and comparison URLs.
-    - AI-generated summaries alongside deterministic sections.
+- **Rich Data Model**: A new object-oriented data model (`ChangeLogData`, `Release`, `Section`) is passed to renderers,
+  providing full context including headers, version tags, and grouped commits.
+- **Renderer Abstraction**: The `RendererInterface` now supports both the new data model and legacy array structures for
+  backward compatibility.
+- **Public Extension Point**: Users can implement `RendererInterface` to create custom output formats (e.g., JSON, HTML,
+  GitHub Release notes).
+
+**Use Cases:**
+
+- Alternative Markdown layouts.
+- GitHub Release-style notes.
+- Monorepo/package-specific output.
+- Issue/PR linking and comparison URLs.
+- AI-generated summaries alongside deterministic sections.
 
 ### Phase 4: Release Recommendation / SemVer Impact Analysis
 

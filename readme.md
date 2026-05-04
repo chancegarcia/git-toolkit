@@ -191,8 +191,8 @@ The final rendered document is the result of a multi-stage pipeline:
    `--new-tag` affect the range used for the newest release.
 4. **Conventional Commit Parsing/Grouping**: If enabled, commits within each tag section are organized by type (
    Features, Bug Fixes, etc.). This happens *after* collection and does not affect tag ordering.
-5. **Rendering**: The **Renderer** receives processed data and applies headers and formatting. Tag order from the
-   collector is preserved.
+5. **Rendering**: The **Renderer** receives a rich `ChangeLogData` model and transforms it into the final output. The
+   default `ConventionalMarkdownRenderer` preserves the tag order from the collector.
 6. **Output Selection**: `--filename` and `--output-dir` determine the final destination.
 
 ### Custom Tag Ordering
