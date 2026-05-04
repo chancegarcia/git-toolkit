@@ -74,15 +74,34 @@ class ChangeLog
         $previousTag = $input->getOption('previous-tag');
         $outputDir = $input->getOption('output-dir');
         $filename = $input->getOption('filename');
+        $mode = $input->getOption('mode');
 
         if (is_string($previousTag) && $newTag === null) {
             $output->writeln('<error>error: --previous-tag requires --new-tag because the new tag is used as the changelog heading.</error>');
             return Command::FAILURE;
         }
 
+        $fullHistory = false;
+        if (in_array($mode, ['full', 'complete', 'history'])) {
+            $fullHistory = true;
+        } elseif (!in_array($mode, ['whats-new', 'current'])) {
+            $output->writeln(
+                sprintf(
+                    '<error>error: invalid mode "%s". Supported modes: whats-new, full, current, complete, history</error>',
+                    $mode
+                )
+            );
+
+            return Command::FAILURE;
+        }
+
         try {
+            $this->changeLogService->setFullHistory($fullHistory);
+
             if (is_string($header)) {
                 $this->changeLogService->setMainHeaderName($header);
+            } elseif (!$fullHistory) {
+                $this->changeLogService->setMainHeaderName(ChangeLogService::DEFAULT_WHATS_NEW_HEADER_NAME);
             }
 
             if (is_string($outputDir)) {
@@ -91,6 +110,19 @@ class ChangeLog
 
             if (is_string($filename)) {
                 $this->changeLogService->setChangeLogFileName($filename);
+            }
+
+            if (!$this->changeLogService->changeLogFileExists()) {
+                // If it's a non-default filename or output-dir, we can create it safely.
+                // Otherwise, it must be initialized.
+                $isDefault = $outputDir === null && $filename === null;
+                if ($isDefault) {
+                    $output->writeln(
+                        '<error>No changelog has been initialized for this project. Run "toolkit:init" to create one, or "toolkit:initialize" if you prefer the alias.</error>'
+                    );
+
+                    return Command::FAILURE;
+                }
             }
 
             $file = $this->changeLogService->getSplFileObject();
@@ -122,7 +154,7 @@ class ChangeLog
             ->addArgument(
                 'header',
                 InputArgument::OPTIONAL,
-                'main file header in output; default: ' . ChangeLogService::DEFAULT_MAIN_HEADER_NAME
+                'main file header in output; default: ' . ChangeLogService::DEFAULT_MAIN_HEADER_NAME . ' (full mode) or ' . ChangeLogService::DEFAULT_WHATS_NEW_HEADER_NAME . ' (whats-new mode)'
             )
             ->addOption('new-tag', null, InputOption::VALUE_REQUIRED, 'label the current `HEAD` as NEW-TAG on output')
             ->addOption('previous-tag', null, InputOption::VALUE_REQUIRED, 'explicitly compare the upcoming release against this previous tag')
@@ -137,6 +169,12 @@ class ChangeLog
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Write changelog to this filename. default is the value set in the change log service'
+            )->addOption(
+                'mode',
+                'm',
+                InputOption::VALUE_REQUIRED,
+                'Generation mode: whats-new (default) or full. Aliases: current (whats-new), complete, history (full)',
+                'whats-new'
             );
     }
 }

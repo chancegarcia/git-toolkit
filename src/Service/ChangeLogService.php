@@ -39,12 +39,14 @@ use SplFileObject;
 class ChangeLogService
 {
     public const string DEFAULT_MAIN_HEADER_NAME = 'Projecty McProjectFace';
+    public const string DEFAULT_WHATS_NEW_HEADER_NAME = "What's new?";
     public const string DEFAULT_FILE_NAME = 'changelog.md';
     public const string DEFAULT_FILE_PATH = '';
 
     private string $changeLogFileName = self::DEFAULT_FILE_NAME;
     private string $changeLogFilePath = self::DEFAULT_FILE_PATH;
     private string $mainHeaderName = self::DEFAULT_MAIN_HEADER_NAME;
+    private bool $fullHistory = false;
     private ?GeneratorInterface $generator = null;
 
     public function __construct(
@@ -131,6 +133,16 @@ class ChangeLogService
         $this->generator = null;
     }
 
+    public function isFullHistory(): bool
+    {
+        return $this->fullHistory;
+    }
+
+    public function setFullHistory(bool $fullHistory): void
+    {
+        $this->fullHistory = $fullHistory;
+    }
+
     public function writeChangeLog(\SplFileObject $file, ?string $newTag = null, ?string $previousTag = null): void
     {
         $this->getGenerator()->generate($file, $newTag, $previousTag);
@@ -141,9 +153,21 @@ class ChangeLogService
         return $this->changeLogFilePath . $this->changeLogFileName;
     }
 
+    public function changeLogFileExists(): bool
+    {
+        return file_exists($this->getFullPath());
+    }
+
     public function getSplFileObject(): SplFileObject
     {
         $fullPath = $this->getFullPath();
+        $directory = dirname($fullPath);
+
+        if (!is_dir($directory) && $directory !== '.' && $directory !== '') {
+            if (!mkdir($directory, 0777, true) && !is_dir($directory)) {
+                throw new \RuntimeException(sprintf('Directory "%s" was not created', $directory));
+            }
+        }
 
         return new SplFileObject($fullPath, 'wb+');
     }
