@@ -24,7 +24,20 @@ class LegacyGenerator implements GeneratorInterface
     {
         $data = $this->collector->collect($newTag, $previousTag, $fullHistory);
         $processedData = $this->processData($data);
-        $content = $this->renderer->render($processedData, $this->mainHeader);
+
+        if ($this->renderer instanceof \Chance\GitToolkit\Renderer\LegacyRenderer || $this->renderer instanceof \Chance\GitToolkit\Renderer\ConventionalMarkdownRenderer) {
+            $content = $this->renderer->render($processedData, $this->mainHeader);
+        } else {
+            // Attempt to wrap in ChangeLogData for modern renderers
+            $releases = [];
+            foreach ($processedData as $tag => $commits) {
+                $sections = [new \Chance\GitToolkit\Data\Section('Commits', (array)$commits)];
+                $releases[] = new \Chance\GitToolkit\Data\Release($tag, $sections);
+            }
+            $changeLogData = new \Chance\GitToolkit\Data\ChangeLogData($this->mainHeader, $releases);
+            $content = $this->renderer->render($changeLogData);
+        }
+
         $file->fwrite($content);
     }
 
