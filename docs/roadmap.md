@@ -60,18 +60,32 @@ Conventional Commits are now the default input model for changelog generation.
 
 - `test`, `build`, `ci`, `chore`, `style`
 
-### Phase 2: Changelog Generation Modes
+### Phase 2: Changelog Generation Modes (Completed)
 
-The tool will support several distinct modes of operation, with "What's new?" as the default.
+The tool supports several distinct modes of operation, with "What's new?" as the default.
 
-**Planned Modes:**
+**Modes:**
 
-- **Current Release / "What’s new?" (Default)**: Examines only the newest unreleased changes or a specific release
-  range (usually since the latest tag). This allows for focused release notes, faster generation, and smaller AI
-  context.
-- **Complete History**: Generates a full changelog from the beginning of the repository.
-- **Initialize Changelog**: Designed for existing projects with tags but no existing changelog.
-- **Legacy Mode**: Non-conventional commit parsing for older repositories.
+- **Current Release / "What’s new?" (Default)**: `toolkit:changelog`. Replaces the changelog file with only the
+  newest/recent changes.
+  - Default title: `What's new?`.
+- **Initialize Changelog**: `toolkit:init` (alias `toolkit:initialize`). Designed for projects with or without tags that
+  lack an existing changelog.
+  - If tags exist: Generates a starting changelog from complete history.
+  - If no tags exist: Generates an initial release header (defaults to `v1.0.0`).
+- **Complete History**: `toolkit:changelog --mode=full`. Regenerates the full changelog history from the beginning of
+  the repository or a requested tag range.
+  - Replaces the changelog file with regenerated history.
+  - Default title: project default title.
+
+**Behavioral Requirements:**
+
+- **Tag Ordering**: Newest-first tag ordering is the default collector behavior.
+- **Collector Responsibility**: Sorting and ordering is handled in the collector layer.
+- **Custom Ordering**: Users can implement and configure their own collector for alternative ordering strategies.
+- **Commit Grouping**: Conventional commit grouping happens within each tag section and is separate from tag ordering.
+- **Alternate Output**: Supports generating separate history files via `--mode=full` with `--filename` and/or
+  `--output-dir`.
 
 ### Phase 3: Rendering Extensibility
 

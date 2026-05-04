@@ -18,13 +18,51 @@ This toolkit creates a `changelog.md` for a project using the git repository tag
 composer require --dev chancegarcia/git-toolkit
 ```
 
-## General Usage
+## Usage
 
-Unless specified in a config file, the repository found in the current working directory will be used.
+The toolkit provides two primary commands for managing your changelog.
+
+### `toolkit:init`
+
+Initializes a changelog for your project. This should be run once when you start using the toolkit.
+
+- **With existing tags**: Generates a complete history changelog from all previous tags.
+- **Without tags**: Generates an initial release header. Defaults to `v1.0.0`.
+
+**Options:**
+
+- `--initial-version=<version>`: (or `-iv`) Specify the initial version header if no tags exist (default: `v1.0.0`).
+- `--output-dir=<path>`: Directory where the changelog file should be written.
+- `--filename=<name>`: Name of the changelog file.
+
+**Alias**: `toolkit:initialize`
+
+### `toolkit:changelog`
+
+The regular changelog generation command. It focuses on the **current release** ("What's new?") by default.
+
+**Modes (`--mode`):**
+
+- `whats-new` (default): Generates only the most recent/recent release notes. Replaces the changelog file with these
+  changes. Default header: `What's new?`.
+- `full`: Regenerates the entire repository changelog history or a requested tag range. Default header: existing project
+  default.
+
+**Aliases:**
+
+- `current` as an alias for `whats-new`.
+- `complete` or `history` as aliases for `full`.
+
+**Examples:**
+
+- Generate default "What's new?" changelog: `bin/toolkit toolkit:changelog --new-tag=v2.0.0`
+- Generate full history: `bin/toolkit toolkit:changelog --mode=full`
+- Generate separate history file: `bin/toolkit toolkit:changelog --mode=full --filename=history.md`
+
+> [!IMPORTANT]
+> This command will fail if a changelog has not been initialized yet. If you see an error, run `toolkit:init` first.
 
 ## Configuration (optional)
-
-The toolkit supports Symfony-style environment variable loading and an optional PHP config file.
 
 ### Environment variables
 
@@ -105,6 +143,7 @@ CHANGELOG_USE_CONVENTIONAL_COMMITS=false
 
 ### Options
 
+- `--mode=<mode>`: (or `-m`) Generation mode: `whats-new` (default) or `full`.
 - `--new-tag=<tag>`: Adds a changelog section for an upcoming release and uses the provided value as that section
   heading.
 - `--previous-tag=<tag>`: When used with `--new-tag`, explicitly compares the upcoming release against this previous tag
@@ -132,6 +171,43 @@ want to bypass auto-selection of the latest tag.
 ```
 
 This generates a `2.0.0` section containing commits from `1.9.0..HEAD`.
+
+## Advanced Usage
+
+### Changelog Rendering Pipeline
+
+The final rendered document is the result of a multi-stage pipeline:
+
+1. **Mode Selection**: `--mode` determines whether the output contains only recent/current changes (`whats-new`) or
+   regenerated full/ranged history (`full`).
+2. **Tag/Release Collection**: The **Collector** determines which tag sections are included. The default `GitCollector`
+   orders tag sections **newest-first**. Older tags appear below newer tags.
+3. **Commit Collection**: For each tag/range, commits are collected from the appropriate Git range. `--previous-tag` and
+   `--new-tag` affect the range used for the newest release.
+4. **Conventional Commit Parsing/Grouping**: If enabled, commits within each tag section are organized by type (
+   Features, Bug Fixes, etc.). This happens *after* collection and does not affect tag ordering.
+5. **Rendering**: The **Renderer** receives processed data and applies headers and formatting. Tag order from the
+   collector is preserved.
+6. **Output Selection**: `--filename` and `--output-dir` determine the final destination.
+
+### Custom Tag Ordering
+
+The project provides newest-first ordering by default. Users who want a different ordering strategy can implement and
+configure their own `CollectorInterface`.
+
+### Separate History Files
+
+You can maintain a "What's new?" focused `changelog.md` while also maintaining a separate full history file:
+
+```bash
+# Update the main "What's new?" changelog
+./vendor/bin/toolkit toolkit:changelog --new-tag="v2.0.0"
+
+# Generate/Update a separate full history file
+./vendor/bin/toolkit toolkit:changelog --mode=full --filename=history.md
+```
+
+If the alternate target file or its directory does not exist, the tool will attempt to create them safely.
 
 ## Development
 
