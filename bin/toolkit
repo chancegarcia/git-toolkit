@@ -79,10 +79,12 @@ use Chance\GitToolkit\GitInformation;
 use Chance\GitToolkit\Command\ChangeLog;
 use Chance\GitToolkit\Command\Init;
 use Chance\GitToolkit\Command\Release;
+use Chance\GitToolkit\Command\ReleaseRecommend;
 use Chance\GitToolkit\Service\ConfigReader;
 use Chance\GitToolkit\Service\GeneratorFactory;
 use Chance\GitToolkit\Service\ChangeLogService;
 use Chance\GitToolkit\Service\GitRepositoryFactory;
+use Chance\GitToolkit\Service\ReleaseRecommender;
 use Symfony\Component\Console\Command\Command;
 
 $application = new Application('Chance Git Toolkit', '1.0.0');
@@ -120,6 +122,12 @@ $releaseCommand = new Release();
 $releaseWrapper = new Command('toolkit:release');
 $releaseWrapper->setCode($releaseCommand);
 
-$application->addCommands([$changeLogWrapper, $initWrapper, $releaseWrapper]);
+$releaseRecommender = new ReleaseRecommender();
+$recommendCommand = new ReleaseRecommend($gitInformation, $releaseRecommender);
+$recommendWrapper = new Command('toolkit:release:recommend');
+$recommendWrapper->setCode($recommendCommand);
+$recommendCommand->configure($recommendWrapper);
+
+$application->addCommands([$changeLogWrapper, $initWrapper, $releaseWrapper, $recommendWrapper]);
 
 $application->run();
