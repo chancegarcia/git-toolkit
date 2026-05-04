@@ -200,18 +200,17 @@ class ChangeLogTest extends TestCase
                              ->method('getSplFileObject')
             ->willThrowException(new GitException('some git error'));
 
-        $this->changeLogServiceMock->expects(self::once())
-            ->method('getFullPath')
-            ->willReturn('some/path');
-
         $changeLogCommand = new ChangeLog($this->changeLogServiceMock); // @phpstan-ignore-line
 
         $commandTester = $this->getCommandTester($changeLogCommand);
         $commandTester->execute([]);
 
         $output = $commandTester->getDisplay();
-        self::assertStringContainsString('error: file "some/path" was not written or maybe partially written.', $output);
-        self::assertStringContainsString('error message: some git error', $output);
+        self::assertStringContainsString(
+            'Git error: The configured repository path may not be a valid Git repository or was not found.',
+            $output
+        );
+        self::assertStringContainsString('Details: some git error', $output);
     }
 
     public function testExecuteFailsWhenChangelogNotInitialized(): void

@@ -105,6 +105,15 @@ class Init
 
     private function renderError(OutputInterface $output, \Throwable $e, ?string $customMessage = null): void
     {
+        if ($e instanceof GitException) {
+            $output->writeln(
+                '<error>Git error: The configured repository path may not be a valid Git repository or was not found.</error>'
+            );
+            $output->writeln(sprintf('<error>Details: %s</error>', $e->getMessage()));
+
+            return;
+        }
+
         $message = $customMessage ?? sprintf(
             'error: file "%s" was not written or maybe partially written.',
             $this->changeLogService->getFullPath()
