@@ -145,7 +145,7 @@ class ChangeLogService
 
     public function writeChangeLog(\SplFileObject $file, ?string $newTag = null, ?string $previousTag = null): void
     {
-        $this->getGenerator()->generate($file, $newTag, $previousTag);
+        $this->getGenerator()->generate($file, $newTag, $previousTag, $this->fullHistory);
     }
 
     public function getFullPath(): string

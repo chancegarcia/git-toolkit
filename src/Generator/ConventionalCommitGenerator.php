@@ -38,9 +38,14 @@ class ConventionalCommitGenerator implements GeneratorInterface
     ) {
     }
 
-    public function generate(SplFileObject $file, ?string $newTag = null, ?string $previousTag = null): void
+    public function generate(
+        SplFileObject $file,
+        ?string $newTag = null,
+        ?string $previousTag = null,
+        bool $fullHistory = true
+    ): void
     {
-        $rawData = $this->collector->collect($newTag, $previousTag);
+        $rawData = $this->collector->collect($newTag, $previousTag, $fullHistory);
         $processedData = $this->processData($rawData);
 
         $content = $this->renderer->render($processedData, $this->mainHeader);

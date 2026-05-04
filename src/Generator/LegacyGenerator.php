@@ -15,9 +15,14 @@ class LegacyGenerator implements GeneratorInterface
     ) {
     }
 
-    public function generate(SplFileObject $file, ?string $newTag = null, ?string $previousTag = null): void
+    public function generate(
+        SplFileObject $file,
+        ?string $newTag = null,
+        ?string $previousTag = null,
+        bool $fullHistory = true
+    ): void
     {
-        $data = $this->collector->collect($newTag, $previousTag);
+        $data = $this->collector->collect($newTag, $previousTag, $fullHistory);
         $processedData = $this->processData($data);
         $content = $this->renderer->render($processedData, $this->mainHeader);
         $file->fwrite($content);

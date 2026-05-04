@@ -14,9 +14,11 @@ class GitCollector implements CollectorInterface
     /**
      * @param string|null $newTag
      * @param string|null $previousTag
+     * @param bool $fullHistory Whether to collect full history or just the newest/requested range
+     *
      * @return array<string, array<string>> Map of tag to list of commit messages
      */
-    public function collect(?string $newTag = null, ?string $previousTag = null): array
+    public function collect(?string $newTag = null, ?string $previousTag = null, bool $fullHistory = true): array
     {
         /** @var array<string, array<string>> $data */
         $data = [];
@@ -33,6 +35,23 @@ class GitCollector implements CollectorInterface
                 $commits = $this->gitInformation->getCommitRange($tags[0], $currentCommit, true);
             }
             $data[$newTag] = $commits;
+
+            if (!$fullHistory) {
+                return $data;
+            }
+        }
+
+        if (!$fullHistory && empty($data) && !empty($tags)) {
+            // If no new tag but we want only "what's new", return the latest tag's commits
+            $tag = $tags[0];
+            if (isset($tags[1])) {
+                $commits = $this->gitInformation->getCommitRange($tags[1], $tag, true);
+            } else {
+                $commits = $this->gitInformation->getCommitsForTag($tag, true);
+            }
+            $data[$tag] = $commits;
+
+            return $data;
         }
 
         foreach ($tags as $i => $tag) {
