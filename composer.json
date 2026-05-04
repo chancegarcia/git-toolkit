@@ -24,7 +24,7 @@
     "require": {
         "php": ">=7.3",
         "symfony/console": "^4.4",
-        "czproject/git-php": "^3"
+        "czproject/git-php": "^4"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",
