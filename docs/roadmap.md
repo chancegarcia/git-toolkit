@@ -148,7 +148,7 @@ The final phase introduces commands to automate the release process.
 - Bump version according to the command.
 - Generate/update changelog using the "What's new?" mode.
 - Use recommendation logic to warn if the requested bump doesn't match the commit history.
-- Support for tagging and configurable push behavior.
+- Support for tagging (annotated by default) and configurable push behavior.
 
 ---
 
@@ -199,6 +199,8 @@ return [
         'version_env' => 'APP_VERSION',
         'tag_prefix' => 'v',
         'create_tag' => true,
+        'tag_annotated' => true, // default: annotated tags for better metadata and push --follow-tags support
+        'tag_message' => '{tag} - {date}', // simple deterministic default
     ],
 ];
 ```
