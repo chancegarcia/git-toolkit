@@ -83,6 +83,7 @@ use Chance\GitToolkit\Service\ConfigReader;
 use Chance\GitToolkit\Service\GeneratorFactory;
 use Chance\GitToolkit\Service\ChangeLogService;
 use Chance\GitToolkit\Service\GitRepositoryFactory;
+use Symfony\Component\Console\Command\Command;
 
 $application = new Application('Chance Git Toolkit', '1.0.0');
 
@@ -104,8 +105,21 @@ $changeLogService->setChangeLogFileName($outputFilename);
 $changeLogService->setChangeLogFilePath($outputPath);
 $changeLogService->setMainHeaderName($projectName);
 
+// ensure Symfony Console properly handles help and arguments for invokable command classes.
 $changeLogCommand = new ChangeLog($changeLogService);
+$changeLogWrapper = new Command('toolkit:changelog');
+$changeLogWrapper->setCode($changeLogCommand);
+$changeLogCommand->configure($changeLogWrapper);
+
 $initCommand = new Init($changeLogService);
-$application->addCommands([$changeLogCommand, $initCommand, new Release()]);
+$initWrapper = new Command('toolkit:init');
+$initWrapper->setCode($initCommand);
+$initCommand->configure($initWrapper);
+
+$releaseCommand = new Release();
+$releaseWrapper = new Command('toolkit:release');
+$releaseWrapper->setCode($releaseCommand);
+
+$application->addCommands([$changeLogWrapper, $initWrapper, $releaseWrapper]);
 
 $application->run();
