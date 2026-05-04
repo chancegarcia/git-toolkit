@@ -22,14 +22,14 @@ class InitTest extends TestCase
         ;
 
         $this->changeLogServiceMock->expects(self::once())->method('getSplFileObject')->willReturn(
-                $this->splFileObjectMock
-            )
+            $this->splFileObjectMock
+        )
         ;
 
         $this->changeLogServiceMock->expects(self::once())->method('writeChangeLog')->with(
-                $this->splFileObjectMock,
-                null
-            )
+            $this->splFileObjectMock,
+            null
+        )
         ;
 
         $this->changeLogServiceMock->expects(self::once())->method('getFullPath')->willReturn('changelog.md')
@@ -58,14 +58,14 @@ class InitTest extends TestCase
         ;
 
         $this->changeLogServiceMock->expects(self::once())->method('getSplFileObject')->willReturn(
-                $this->splFileObjectMock
-            )
+            $this->splFileObjectMock
+        )
         ;
 
         $this->changeLogServiceMock->expects(self::once())->method('writeChangeLog')->with(
-                $this->splFileObjectMock,
-                'v1.0.0'
-            )
+            $this->splFileObjectMock,
+            'v1.0.0'
+        )
         ;
 
         $command = new Init($this->changeLogServiceMock); // @phpstan-ignore-line
@@ -81,14 +81,14 @@ class InitTest extends TestCase
         ;
 
         $this->changeLogServiceMock->expects(self::once())->method('getSplFileObject')->willReturn(
-                $this->splFileObjectMock
-            )
+            $this->splFileObjectMock
+        )
         ;
 
         $this->changeLogServiceMock->expects(self::once())->method('writeChangeLog')->with(
-                $this->splFileObjectMock,
-                'v0.1.0'
-            )
+            $this->splFileObjectMock,
+            'v0.1.0'
+        )
         ;
 
         $command = new Init($this->changeLogServiceMock); // @phpstan-ignore-line
@@ -103,8 +103,8 @@ class InitTest extends TestCase
         $this->changeLogServiceMock = $this->createMock(ChangeLogService::class);
         $this->gitInformationMock = $this->createMock(GitInformation::class);
         $this->splFileObjectMock = $this->getMockBuilder(\SplFileObject::class)->setConstructorArgs(
-                ['php://memory', 'wb+']
-            )->getMock()
+            ['php://memory', 'wb+']
+        )->getMock()
         ;
 
         $this->changeLogServiceMock->method('getGitInformation')->willReturn($this->gitInformationMock)

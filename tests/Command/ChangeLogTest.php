@@ -36,8 +36,8 @@ class ChangeLogTest extends TestCase
         $this->changeLogServiceMock->expects(self::once())->method('changeLogFileExists')->willReturn(true)
         ;
         $this->changeLogServiceMock->expects(self::once())->method('setMainHeaderName')->with(
-                ChangeLogService::DEFAULT_WHATS_NEW_HEADER_NAME
-            )
+            ChangeLogService::DEFAULT_WHATS_NEW_HEADER_NAME
+        )
         ;
         $this->changeLogServiceMock->expects(self::never())
             ->method('setChangeLogFilePath');
@@ -238,8 +238,8 @@ class ChangeLogTest extends TestCase
         $this->changeLogServiceMock->expects(self::never())->method('setMainHeaderName')
         ;
         $this->changeLogServiceMock->expects(self::once())->method('getSplFileObject')->willReturn(
-                $this->splFileObjectMock
-            )
+            $this->splFileObjectMock
+        )
         ;
 
         $changeLogCommand = new ChangeLog($this->changeLogServiceMock); // @phpstan-ignore-line
@@ -254,8 +254,8 @@ class ChangeLogTest extends TestCase
         $this->changeLogServiceMock->expects(self::once())->method('setFullHistory')->with(false)
         ;
         $this->changeLogServiceMock->expects(self::once())->method('setMainHeaderName')->with(
-                ChangeLogService::DEFAULT_WHATS_NEW_HEADER_NAME
-            )
+            ChangeLogService::DEFAULT_WHATS_NEW_HEADER_NAME
+        )
         ;
 
         $changeLogCommand = new ChangeLog($this->changeLogServiceMock); // @phpstan-ignore-line
@@ -303,8 +303,8 @@ class ChangeLogTest extends TestCase
         $this->changeLogServiceMock->expects(self::once())->method('changeLogFileExists')->willReturn(false)
         ;
         $this->changeLogServiceMock->expects(self::once())->method('getSplFileObject')->willReturn(
-                $this->splFileObjectMock
-            )
+            $this->splFileObjectMock
+        )
         ;
 
         $changeLogCommand = new ChangeLog($this->changeLogServiceMock); // @phpstan-ignore-line

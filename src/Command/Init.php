@@ -125,26 +125,26 @@ class Init
     public function configure(Command $command): void
     {
         $command->addArgument(
-                'header',
-                InputArgument::OPTIONAL,
-                'main file header in output; default: ' . ChangeLogService::DEFAULT_MAIN_HEADER_NAME
-            )->addOption(
-                'initial-version',
-                'iv',
-                InputOption::VALUE_REQUIRED,
-                'initial version to use if no tags exist',
-                'v1.0.0'
-            )->addOption(
-                'output-dir',
-                null,
-                InputOption::VALUE_REQUIRED,
-                'Write changelog to this directory. default is the value set in the change log service'
-            )->addOption(
-                'filename',
-                null,
-                InputOption::VALUE_REQUIRED,
-                'Write changelog to this filename. default is the value set in the change log service'
-            )
+            'header',
+            InputArgument::OPTIONAL,
+            'main file header in output; default: ' . ChangeLogService::DEFAULT_MAIN_HEADER_NAME
+        )->addOption(
+            'initial-version',
+            'iv',
+            InputOption::VALUE_REQUIRED,
+            'initial version to use if no tags exist',
+            'v1.0.0'
+        )->addOption(
+            'output-dir',
+            null,
+            InputOption::VALUE_REQUIRED,
+            'Write changelog to this directory. default is the value set in the change log service'
+        )->addOption(
+            'filename',
+            null,
+            InputOption::VALUE_REQUIRED,
+            'Write changelog to this filename. default is the value set in the change log service'
+        )
         ;
     }
 }
