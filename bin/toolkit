@@ -122,7 +122,8 @@ $releaseCommand = new Release();
 $releaseWrapper = new Command('toolkit:release');
 $releaseWrapper->setCode($releaseCommand);
 
-$releaseRecommender = new ReleaseRecommender();
+$releaseRecommenderConfig = $config['release_recommendation']['type_impact'] ?? null;
+$releaseRecommender = new ReleaseRecommender($releaseRecommenderConfig);
 $recommendCommand = new ReleaseRecommend($gitInformation, $releaseRecommender);
 $recommendWrapper = new Command('toolkit:release:recommend');
 $recommendWrapper->setCode($recommendCommand);

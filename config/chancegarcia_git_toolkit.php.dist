@@ -1,8 +1,74 @@
 <?php
 
 return [
+    /**
+     * The directory where the git repository resides.
+     * Default: getcwd()
+     */
     'project_root' => getcwd(),
-    'project_name' => 'Git-Toolkit',
-    'filename' => "Changeloggy McChangeLoggerson.md",
-    'output_directory' => getcwd() . '/tmp/',
+
+    /**
+     * The main header value for the changelog.
+     * Default: 'Projecty McProjectFace'
+     */
+    'project_name' => 'Projecty McProjectFace',
+
+    /**
+     * The name of the markdown file to write out.
+     * Default: 'changelog.md'
+     */
+    'filename' => 'changelog.md',
+
+    /**
+     * The path to where the markdown file should be written.
+     * Default: '' (current directory)
+     */
+    'output_directory' => '',
+
+    /**
+     * Whether to use Conventional Commits parsing.
+     * When true, commits are grouped by type.
+     * When false, all commits are listed under each tag (Legacy mode).
+     * Default: true
+     */
+    'CHANGELOG_USE_CONVENTIONAL_COMMITS' => true,
+
+    /**
+     * Whether to include non-conventional commits in an "Other" section
+     * when using Conventional Commits mode.
+     * Default: true
+     */
+    'CHANGELOG_INCLUDE_NON_CONVENTIONAL' => true,
+
+    /**
+     * Release recommendation configuration.
+     * Affects the output of the `toolkit:release:recommend` command.
+     */
+    'release_recommendation' => [
+        /**
+         * Mapping of commit types to their release impact.
+         * Supported impact values: 'major', 'minor', 'patch', 'none'.
+         *
+         * Breaking changes always recommend 'major', regardless of type mapping.
+         * The mapping controls the impact for non-breaking commit types.
+         * Users may change a type such as 'chore' from 'none' to 'patch' if they want
+         * maintenance work to trigger patch recommendations.
+         *
+         * This affects release recommendation only and does not perform a release.
+         */
+        'type_impact' => [
+            'feat' => 'minor',
+            'fix' => 'patch',
+            'perf' => 'patch',
+            'security' => 'patch',
+            'deprecated' => 'patch',
+            'docs' => 'none',
+            'refactor' => 'none',
+            'test' => 'none',
+            'build' => 'none',
+            'ci' => 'none',
+            'chore' => 'none',
+            'style' => 'none',
+        ],
+    ],
 ];

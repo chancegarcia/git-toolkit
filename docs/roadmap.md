@@ -108,18 +108,19 @@ Support for custom renderers has been introduced to allow for diverse output req
 - Issue/PR linking and comparison URLs.
 - AI-generated summaries alongside deterministic sections.
 
-### Phase 4: Release Recommendation / SemVer Impact Analysis
+### Phase 4: Release Recommendation / SemVer Impact Analysis (Completed)
 
-The tool will be able to analyze commits to recommend the next version bump according to SemVer.
+The tool analyzes commits since the last tag to recommend the next version bump according to SemVer. This is an
+analysis-only feature and does not perform the actual release.
 
-**Proposed Recommendation Logic:**
+**Implemented Recommendation Logic:**
 
-- **Major**: If any breaking changes are detected.
-- **Minor**: If `feat` commits are present (and no breaking changes).
-- **Patch**: For `fix`, `perf`, `security`, or `deprecated` changes.
-- **No Release**: If only non-release-impacting commits (e.g., `docs`, `refactor`) are present.
+- **Major**: Recommended if any breaking changes are detected.
+- **Minor**: Recommended if `feat` commits are present and no breaking changes are detected.
+- **Patch**: Recommended for `fix`, `perf`, `security`, `deprecated` changes when no higher-impact changes are present.
+- **None**: Recommended if only non-release-impacting commits (e.g., `docs`, `refactor`, `chore`, `test`) are present.
 
-*Note: This phase focuses on analysis and recommendation; it does not perform the actual release.*
+**Command:** `toolkit:release:recommend`
 
 ### Phase 5: AI-Assisted Changelog Generation
 

@@ -103,6 +103,19 @@ The following keys are supported in the config array:
 - `project_name`
 - `filename`
 - `output_directory`
+- `CHANGELOG_USE_CONVENTIONAL_COMMITS`
+- `CHANGELOG_INCLUDE_NON_CONVENTIONAL`
+- `release_recommendation` (nested array with `type_impact` mapping)
+
+Example config file (`config/chancegarcia_git_toolkit.php`):
+
+```php
+return [
+    'project_name' => "My Project",
+    'filename' => "CHANGELOG.md",
+    'output_directory' => "./",
+];
+```
 
 Example `.env` file:
 
@@ -179,15 +192,20 @@ This generates a `2.0.0` section containing commits from `1.9.0..HEAD`.
 
 ### `toolkit:release:recommend`
 
-Recommends a SemVer release level (major, minor, or patch) based on the commits since the last tag.
+Recommends a SemVer release level (`major`, `minor`, or `patch`) based on the commits since the last tag.
+
+> [!NOTE]
+> This command is **analysis-only**. It does **not** create tags, update versions, or perform a release. It is designed
+> to help you decide which version bump is appropriate.
 
 **How it works:**
 
-- **Major**: Recommended if any breaking changes are detected.
+- **Major**: Recommended if any breaking changes are detected (e.g., `feat!: ...` or `BREAKING CHANGE:` footer).
 - **Minor**: Recommended if there are feature (`feat`) commits and no breaking changes.
-- **Patch**: Recommended if there are fix (`fix`), performance (`perf`), security, or deprecation commits, and no
-  features or breaking changes.
-- **None**: Recommended if only documentation, chore, refactor, or test commits are found.
+- **Patch**: Recommended if there are fix (`fix`), performance (`perf`), security (`security`), or deprecation (
+  `deprecated`) commits, and no features or breaking changes.
+- **None**: Recommended if only non-release-impacting commits (e.g., `docs`, `chore`, `refactor`, `style`, `test`,
+  `build`, `ci`) are found.
 
 **Options:**
 
@@ -200,7 +218,7 @@ Recommends a SemVer release level (major, minor, or patch) based on the commits 
 ./vendor/bin/toolkit toolkit:release:recommend
 ```
 
-Example output:
+**Example output:**
 
 ```text
 Recommended release: minor
@@ -208,6 +226,41 @@ Reason: 3 feature commits found and no breaking changes detected.
 Highest-impact commit type found: feat
 Breaking changes detected: no
 ```
+
+When no release-impacting commits are found, the output will reflect this:
+
+```text
+Recommended release: none
+Reason: No release-impacting commits found.
+Highest-impact commit type found: docs
+Breaking changes detected: no
+```
+
+#### Configuring Impact Mapping
+
+You can customize which commit types trigger which release levels by adding a `release_recommendation` section to your
+`config/chancegarcia_git_toolkit.php` file:
+
+```php
+return [
+    // ... other config
+    'release_recommendation' => [
+        'type_impact' => [
+            'feat' => 'minor',
+            'fix' => 'patch',
+            'perf' => 'patch',
+            'security' => 'patch',
+            'deprecated' => 'patch',
+            'docs' => 'none',
+            // custom types
+            'chore' => 'patch', 
+        ],
+    ],
+];
+```
+
+Supported impact levels are `major`, `minor`, `patch`, and `none`. Breaking changes always recommend `major` regardless
+of the type impact mapping.
 
 ## Advanced Usage
 
