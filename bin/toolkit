@@ -82,12 +82,12 @@ use Chance\GitToolkit\Command\Release;
 use Chance\GitToolkit\Service\ConfigReader;
 use Chance\GitToolkit\Service\GeneratorFactory;
 use Chance\GitToolkit\Service\ChangeLogService;
-use CzProject\GitPhp\GitRepository;
+use Chance\GitToolkit\Service\GitRepositoryFactory;
 
 $application = new Application('Chance Git Toolkit', '1.0.0');
 
-$gitRepo = new GitRepository($dir);
-$gitInformation = new GitInformation($gitRepo);
+$gitRepoFactory = new GitRepositoryFactory($dir);
+$gitInformation = new GitInformation($gitRepoFactory);
 
 $configMap = [];
 if (isset($config) && is_array($config)) {

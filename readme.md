@@ -87,6 +87,11 @@ The following environment variables are supported:
 - `OUTPUT_FILENAME`: name of the markdown file to write out.
 - `OUTPUT_DIRECTORY`: path to where the markdown file should be written.
 
+**Note on Git Repository:**
+Generic commands like `help`, `list`, and `--help` (including command-specific help) do not require the `PROJECT_ROOT`
+to be a valid Git repository. However, commands that perform Git-dependent operations (like `toolkit:changelog` or
+`toolkit:init`) will fail gracefully with an error message if the repository is not found or is invalid.
+
 ### PHP Config file
 
 Alternatively, you can use a PHP config file in `config/chancegarcia_git_toolkit.php`. Values in the PHP config file

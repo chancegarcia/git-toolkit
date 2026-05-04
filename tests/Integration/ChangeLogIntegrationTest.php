@@ -4,6 +4,7 @@ namespace Chance\GitToolkit\Test\Integration;
 
 use Chance\GitToolkit\GitInformation;
 use Chance\GitToolkit\Service\ChangeLogService;
+use Chance\GitToolkit\Service\GitRepositoryFactory;
 use Chance\GitToolkit\Test\GitTestHelper;
 use PHPUnit\Framework\TestCase;
 use SplFileObject;
@@ -30,7 +31,8 @@ class ChangeLogIntegrationTest extends TestCase
             $this->helper->createFile('file3.txt', 'content3');
             $this->helper->commit($repo, 'third commit (unreleased)');
 
-            $gitInfo = new GitInformation($repo);
+            $factory = new GitRepositoryFactory($this->tmpRepoPath);
+            $gitInfo = new GitInformation($factory);
             $service = new ChangeLogService($gitInfo);
             $service->setMainHeaderName('Test Project');
             $service->setFullHistory(true);
@@ -63,7 +65,8 @@ class ChangeLogIntegrationTest extends TestCase
             $this->helper->commit($repo, 'Commit with *star* and [brackets]');
             $this->helper->tag($repo, 'v1.0.0');
 
-            $gitInfo = new GitInformation($repo);
+            $factory = new GitRepositoryFactory($this->tmpRepoPath);
+            $gitInfo = new GitInformation($factory);
             $service = new ChangeLogService($gitInfo);
 
             $outputPath = $this->tmpRepoPath . '/CHANGELOG.md';
@@ -83,8 +86,8 @@ class ChangeLogIntegrationTest extends TestCase
         $notARepoPath = sys_get_temp_dir() . '/not-a-repo-' . uniqid();
         mkdir($notARepoPath);
 
-        $gitRepo = new \CzProject\GitPhp\GitRepository($notARepoPath);
-        $gitInfo = new GitInformation($gitRepo);
+        $factory = new GitRepositoryFactory($notARepoPath);
+        $gitInfo = new GitInformation($factory);
         $service = new ChangeLogService($gitInfo);
 
         $this->expectException(\CzProject\GitPhp\GitException::class);
@@ -108,7 +111,8 @@ class ChangeLogIntegrationTest extends TestCase
             $this->helper->createFile('file3.txt', 'content3');
             $this->helper->commit($repo, 'unreleased commit');
 
-            $gitInfo = new GitInformation($repo);
+            $factory = new GitRepositoryFactory($this->tmpRepoPath);
+            $gitInfo = new GitInformation($factory);
             $service = new ChangeLogService($gitInfo);
             $service->setFullHistory(false); // whats-new mode
 
@@ -144,7 +148,8 @@ class ChangeLogIntegrationTest extends TestCase
             $this->helper->commit($repo, 'second commit');
             $this->helper->tag($repo, 'v1.1.0');
 
-            $gitInfo = new GitInformation($repo);
+            $factory = new GitRepositoryFactory($this->tmpRepoPath);
+            $gitInfo = new GitInformation($factory);
             $service = new ChangeLogService($gitInfo);
             $service->setFullHistory(true); // full mode
 

@@ -3,6 +3,7 @@
 namespace Chance\GitToolkit\Test;
 
 use Chance\GitToolkit\GitInformation;
+use Chance\GitToolkit\Service\GitRepositoryFactory;
 use CzProject\GitPhp\GitRepository;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -10,12 +11,15 @@ use PHPUnit\Framework\TestCase;
 class GitInformationTest extends TestCase
 {
     private MockObject $gitRepoMock;
+    private MockObject $factoryMock;
     private GitInformation $gitInformation;
 
     protected function setUp(): void
     {
         $this->gitRepoMock = $this->createMock(GitRepository::class);
-        $this->gitInformation = new GitInformation($this->gitRepoMock);
+        $this->factoryMock = $this->createMock(GitRepositoryFactory::class);
+        $this->factoryMock->method('create')->willReturn($this->gitRepoMock);
+        $this->gitInformation = new GitInformation($this->factoryMock);
     }
 
     public function testGetGitTags(): void

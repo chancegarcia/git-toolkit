@@ -32,25 +32,32 @@
 
 namespace Chance\GitToolkit;
 
+use Chance\GitToolkit\Service\GitRepositoryFactory;
 use CzProject\GitPhp\GitException;
 use CzProject\GitPhp\GitRepository;
 
 class GitInformation
 {
+    private ?GitRepository $gitRepo = null;
+
     public function __construct(
-        private readonly GitRepository $gitRepo
+        private readonly GitRepositoryFactory $factory
     ) {
     }
 
     public function getGitRepo(): GitRepository
     {
+        if ($this->gitRepo === null) {
+            $this->gitRepo = $this->factory->create();
+        }
+
         return $this->gitRepo;
     }
 
     public function getGitTags(): array
     {
         /** @var array<string> $result */
-        $result = $this->gitRepo->execute(['tag', '-l', '--sort=-v:refname']);
+        $result = $this->getGitRepo()->execute(['tag', '-l', '--sort=-v:refname']);
 
         return $result;
     }
@@ -58,7 +65,7 @@ class GitInformation
     public function getFirstCommit(): string
     {
         /** @var array<string> $commits */
-        $commits = $this->gitRepo->execute(['rev-list', '--max-parents=0', 'HEAD']);
+        $commits = $this->getGitRepo()->execute(['rev-list', '--max-parents=0', 'HEAD']);
 
         return trim((string)array_pop($commits));
     }
@@ -71,7 +78,7 @@ class GitInformation
     public function getCurrentCommit(): string
     {
         // executing `git rev-parse HEAD` would also work
-        return $this->gitRepo->getLastCommitId();
+        return $this->getGitRepo()->getLastCommitId();
     }
 
     public function getCommits(string $previous, string $current, bool $noMerges = false): array
@@ -88,7 +95,7 @@ class GitInformation
         }
 
         /** @var array<string> $result */
-        $result = $this->gitRepo->execute($commandArray);
+        $result = $this->getGitRepo()->execute($commandArray);
 
         return $result;
     }
@@ -111,7 +118,7 @@ class GitInformation
         }
 
         /** @var array<string> $result */
-        $result = $this->gitRepo->execute($commandArray);
+        $result = $this->getGitRepo()->execute($commandArray);
 
         return $result;
     }
