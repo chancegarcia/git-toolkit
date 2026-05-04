@@ -107,6 +107,8 @@ This generates a `2.0.0` section containing commits from `1.9.0..HEAD`.
 
 ## Development
 
+For planned future direction and the development roadmap, see [docs/roadmap.md](docs/roadmap.md).
+
 Available composer scripts for local development:
 
 - `composer qa`: Run all quality checks (lint, cs, stan, test)
