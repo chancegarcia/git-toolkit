@@ -32,12 +32,8 @@
 
 namespace Chance\GitToolkit\Service;
 
-use Chance\GitToolkit\Collector\GitCollector;
-use Chance\GitToolkit\Formatter\MarkdownFormatter;
-use Chance\GitToolkit\Generator\DefaultGenerator;
 use Chance\GitToolkit\Generator\GeneratorInterface;
 use Chance\GitToolkit\GitInformation;
-use Chance\GitToolkit\Renderer\MarkdownRenderer;
 use SplFileObject;
 
 class ChangeLogService
@@ -46,26 +42,21 @@ class ChangeLogService
     public const string DEFAULT_FILE_NAME = 'changelog.md';
     public const string DEFAULT_FILE_PATH = '';
 
-    private readonly GitInformation $gitInformation;
     private string $changeLogFileName = self::DEFAULT_FILE_NAME;
     private string $changeLogFilePath = self::DEFAULT_FILE_PATH;
     private string $mainHeaderName = self::DEFAULT_MAIN_HEADER_NAME;
     private ?GeneratorInterface $generator = null;
 
     public function __construct(
-        GitInformation $gitInformation
+        private readonly GitInformation $gitInformation,
+        private readonly GeneratorFactory $generatorFactory = new GeneratorFactory(new ConfigReader())
     ) {
-        $this->gitInformation = $gitInformation;
     }
 
     public function getGenerator(): GeneratorInterface
     {
         if ($this->generator === null) {
-            $this->generator = new DefaultGenerator(
-                new GitCollector($this->gitInformation),
-                new MarkdownRenderer(),
-                $this->mainHeaderName
-            );
+            $this->generator = $this->generatorFactory->createGenerator($this->gitInformation, $this->mainHeaderName);
         }
 
         return $this->generator;

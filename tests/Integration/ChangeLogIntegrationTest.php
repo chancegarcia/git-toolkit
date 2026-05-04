@@ -15,7 +15,9 @@ class ChangeLogIntegrationTest extends TestCase
 
     public function testGenerateChangeLogWithRealGitRepo(): void
     {
-        $repo = $this->helper->initRepo();
+        $_ENV['CHANGELOG_USE_CONVENTIONAL_COMMITS'] = 'false';
+        try {
+            $repo = $this->helper->initRepo();
 
         $this->helper->createFile('file1.txt', 'content1');
         $this->helper->commit($repo, 'initial commit');
@@ -46,11 +48,16 @@ class ChangeLogIntegrationTest extends TestCase
         $this->assertStringContainsString('second commit', $content);
         $this->assertStringContainsString('## v1.0.0', $content);
         $this->assertStringContainsString('initial commit', $content);
+        } finally {
+            unset($_ENV['CHANGELOG_USE_CONVENTIONAL_COMMITS']);
+        }
     }
 
     public function testEscapingMarkdownInCommits(): void
     {
-        $repo = $this->helper->initRepo();
+        $_ENV['CHANGELOG_USE_CONVENTIONAL_COMMITS'] = 'false';
+        try {
+            $repo = $this->helper->initRepo();
         $this->helper->createFile('file1.txt');
         $this->helper->commit($repo, 'Commit with *star* and [brackets]');
         $this->helper->tag($repo, 'v1.0.0');
@@ -65,6 +72,9 @@ class ChangeLogIntegrationTest extends TestCase
 
         $content = file_get_contents($outputPath);
         $this->assertStringContainsString('Commit with \*star\* and \[brackets\]', $content);
+        } finally {
+            unset($_ENV['CHANGELOG_USE_CONVENTIONAL_COMMITS']);
+        }
     }
 
     public function testGitErrorHandlingNotARepo(): void

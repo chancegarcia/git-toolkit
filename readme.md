@@ -43,6 +43,9 @@ The following environment variables are supported:
 - `APP_ENV`: The active environment (`dev`, `test`, `prod`). Defaults to `dev`.
 - `PROJECT_ROOT`: the directory where the repository resides.
 - `PROJECT_NAME`: The main header value.
+- `CHANGELOG_USE_CONVENTIONAL_COMMITS`: Whether to use Conventional Commits parsing (default: `true`).
+- `CHANGELOG_INCLUDE_NON_CONVENTIONAL`: Whether to include non-conventional commits in "Other" section when using
+  Conventional Commits mode (default: `true`).
 - `OUTPUT_FILENAME`: name of the markdown file to write out.
 - `OUTPUT_DIRECTORY`: path to where the markdown file should be written.
 
@@ -68,11 +71,36 @@ OUTPUT_DIRECTORY="./"
 
 ## ChangeLog Command Usage
 
-The `toolkit:changelog` command generates a markdown document with a main header. Tag names are the subheaders and the
-commits between the tags are listed below them.
+The `toolkit:changelog` command generates a markdown document with a main header.
 
-```bash
-./vendor/bin/toolkit toolkit:changelog "My Project"
+By default, it uses **Conventional Commits** parsing to group commits into sections like "Features", "Bug Fixes", etc.
+Breaking changes are also automatically detected and highlighted.
+
+### Conventional Commits (Default)
+
+The following commit types are included by default:
+
+- `feat` → Features
+- `fix` → Bug Fixes
+- `perf` → Performance Improvements
+- `refactor` → Refactoring
+- `docs` → Documentation
+- `security` → Security
+- `deprecated` → Deprecations
+
+Non-conventional commits are included by default under the "Other" section. You can disable this by setting
+`CHANGELOG_INCLUDE_NON_CONVENTIONAL=false`.
+
+Breaking changes are detected if the commit message contains `!` after the type/scope (e.g., `feat!: ...`) or a
+`BREAKING CHANGE:` footer.
+
+### Legacy Mode
+
+If you prefer the old behavior (listing all raw commit messages under each tag), you can disable Conventional Commits
+via the environment variable:
+
+```dotenv
+CHANGELOG_USE_CONVENTIONAL_COMMITS=false
 ```
 
 ### Options

@@ -78,32 +78,30 @@ use Symfony\Component\Console\Application;
 use Chance\GitToolkit\GitInformation;
 use Chance\GitToolkit\Command\ChangeLog;
 use Chance\GitToolkit\Command\Release;
+use Chance\GitToolkit\Service\ConfigReader;
+use Chance\GitToolkit\Service\GeneratorFactory;
 use Chance\GitToolkit\Service\ChangeLogService;
-use Chance\GitToolkit\Collector\GitCollector;
-use Chance\GitToolkit\Renderer\MarkdownRenderer;
-use Chance\GitToolkit\Generator\DefaultGenerator;
 use CzProject\GitPhp\GitRepository;
 
 $application = new Application('Chance Git Toolkit', '1.0.0');
 
 $gitRepo = new GitRepository($dir);
 $gitInformation = new GitInformation($gitRepo);
-$changeLogService = new ChangeLogService($gitInformation);
+
+$configMap = [];
+if (isset($config) && is_array($config)) {
+    // Map existing config to what ConfigReader expects if necessary
+    // For now, ConfigReader checks env too.
+    $configMap = $config;
+}
+
+$configReader = new ConfigReader($configMap);
+$generatorFactory = new GeneratorFactory($configReader);
+$changeLogService = new ChangeLogService($gitInformation, $generatorFactory);
 
 $changeLogService->setChangeLogFileName($outputFilename);
 $changeLogService->setChangeLogFilePath($outputPath);
 $changeLogService->setMainHeaderName($projectName);
-
-// Explicitly wire the generator and its dependencies
-$collector = new GitCollector($gitInformation);
-$renderer = new MarkdownRenderer();
-$generator = new DefaultGenerator(
-        $collector,
-        $renderer,
-        $changeLogService->getMainHeaderName()
-);
-
-$changeLogService->injectGenerator($generator);
 
 $changeLogCommand = new ChangeLog($changeLogService);
 $application->addCommands([$changeLogCommand, new Release()]);

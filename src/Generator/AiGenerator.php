@@ -17,8 +17,14 @@ class AiGenerator implements GeneratorInterface
     public function generate(SplFileObject $file, ?string $newTag = null, ?string $previousTag = null): void
     {
         $data = $this->collector->collect($newTag, $previousTag);
-        $prompt = $this->promptLoader->load($data);
+        $processedData = $this->processData($data);
+        $prompt = $this->promptLoader->load($processedData);
         $content = $this->aiClient->generateChangelog($prompt);
         $file->fwrite($content);
+    }
+
+    public function processData(array $rawData): array
+    {
+        return $rawData;
     }
 }

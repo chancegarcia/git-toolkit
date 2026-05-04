@@ -34,16 +34,17 @@ The project's evolution is guided by the following principles:
 
 The project will be developed in the following order:
 
-### Phase 1: Conventional Commit Changelog Generation
+### Phase 1: Conventional Commit Changelog Generation (Completed)
 
-Conventional Commits will become the default input model for changelog generation.
+Conventional Commits are now the default input model for changelog generation.
 
-**Intended Behavior:**
+**Implemented Behavior:**
 
 - Commits are parsed by type, optional scope, subject, and breaking-change metadata.
-- Breaking changes are detected from `!` in the type/scope and `BREAKING CHANGE:` style footers.
+- Breaking changes are detected from `!` in the type/scope and `BREAKING CHANGE:`/`BREAKING-CHANGE:` style footers.
 - Changelog entries are grouped by commit type.
 - Legacy (non-conventional) generation remains available as an opt-in behavior.
+- Configuration via environment variable: `CHANGELOG_USE_CONVENTIONAL_COMMITS`.
 
 **Default Included Types:**
 
@@ -55,7 +56,7 @@ Conventional Commits will become the default input model for changelog generatio
 - `security` &rarr; Security
 - `deprecated` &rarr; Deprecations
 
-**Excluded by Default (Configurable):**
+**Excluded by Default:**
 
 - `test`, `build`, `ci`, `chore`, `style`
 
@@ -158,7 +159,7 @@ return [
         ],
     ],
     'renderer' => [
-        'default' => 'MarkdownRenderer',
+        'default' => 'LegacyRenderer',
         'options' => [],
     ],
     'release_recommendation' => [

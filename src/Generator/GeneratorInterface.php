@@ -12,4 +12,11 @@ interface GeneratorInterface
      * @param string|null $previousTag Optional previous tag for comparison
      */
     public function generate(SplFileObject $file, ?string $newTag = null, ?string $previousTag = null): void;
+
+    /**
+     * @param array $rawData
+     *
+     * @return array
+     */
+    public function processData(array $rawData): array;
 }

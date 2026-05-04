@@ -4,7 +4,7 @@ namespace Chance\GitToolkit\Renderer;
 
 use Chance\GitToolkit\Formatter\MarkdownFormatter;
 
-class MarkdownRenderer implements RendererInterface
+class LegacyRenderer implements RendererInterface
 {
     public function render(array $data, string $mainHeader): string
     {
