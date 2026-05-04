@@ -2,33 +2,46 @@
 
 namespace Chance\GitToolkit\Renderer;
 
+use Chance\GitToolkit\Data\ChangeLogData;
 use Chance\GitToolkit\Data\ConventionalCommit;
+use Chance\GitToolkit\Data\Release;
 use Chance\GitToolkit\Formatter\MarkdownFormatter;
 
 class ConventionalMarkdownRenderer implements RendererInterface
 {
-    public function render(array $data, string $mainHeader): string
+    public function render(ChangeLogData|array $data, ?string $mainHeader = null): string
     {
+        if ($data instanceof ChangeLogData) {
+            $mainHeader = $data->getMainHeader();
+            $releases = $data->getReleases();
+        } else {
+            $releases = $this->mapLegacyData($data);
+        }
+
         $content = sprintf("# %s\n\n", $mainHeader);
 
-        foreach ($data as $tag => $groups) {
-            $content .= sprintf("## %s\n\n", $tag);
+        foreach ($releases as $release) {
+            $content .= sprintf("## %s\n\n", $release->getTag());
 
-            foreach ($groups as $label => $commits) {
-                $content .= sprintf("### %s\n\n", $label);
+            if ($release->getAiSummary()) {
+                $content .= $release->getAiSummary() . "\n\n";
+            }
 
-                $descriptions = array_map(function ($commit) {
-                    if (is_string($commit)) {
-                        return $commit;
+            foreach ($release->getSections() as $section) {
+                $content .= sprintf("### %s\n\n", $section->getLabel());
+
+                $descriptions = array_map(function ($item) {
+                    if (is_string($item)) {
+                        return $item;
                     }
-                    /** @var ConventionalCommit $commit */
-                    $description = $commit->getDescription();
-                    if ($commit->getScope()) {
-                        $description = sprintf('**%s:** %s', $commit->getScope(), $description);
+                    /** @var ConventionalCommit $item */
+                    $description = $item->getDescription();
+                    if ($item->getScope()) {
+                        $description = sprintf('**%s:** %s', $item->getScope(), $description);
                     }
 
                     return $description;
-                }, (array)$commits);
+                }, $section->getItems());
 
                 $escapedCommits = MarkdownFormatter::escapeCommitsForMarkdown($descriptions);
                 foreach ($escapedCommits as $commit) {
@@ -39,5 +52,24 @@ class ConventionalMarkdownRenderer implements RendererInterface
         }
 
         return $content;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return array<Release>
+     */
+    private function mapLegacyData(array $data): array
+    {
+        $releases = [];
+        foreach ($data as $tag => $groups) {
+            $sections = [];
+            foreach ($groups as $label => $commits) {
+                $sections[] = new \Chance\GitToolkit\Data\Section($label, (array)$commits);
+            }
+            $releases[] = new Release($tag, $sections);
+        }
+
+        return $releases;
     }
 }
