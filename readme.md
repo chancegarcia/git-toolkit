@@ -20,7 +20,7 @@ composer require --dev chancegarcia/git-toolkit
 
 ## Usage
 
-The toolkit provides two primary commands for managing your changelog.
+The toolkit provides three primary commands for managing your changelog and release planning.
 
 ### `toolkit:init`
 
@@ -176,6 +176,38 @@ want to bypass auto-selection of the latest tag.
 ```
 
 This generates a `2.0.0` section containing commits from `1.9.0..HEAD`.
+
+### `toolkit:release:recommend`
+
+Recommends a SemVer release level (major, minor, or patch) based on the commits since the last tag.
+
+**How it works:**
+
+- **Major**: Recommended if any breaking changes are detected.
+- **Minor**: Recommended if there are feature (`feat`) commits and no breaking changes.
+- **Patch**: Recommended if there are fix (`fix`), performance (`perf`), security, or deprecation commits, and no
+  features or breaking changes.
+- **None**: Recommended if only documentation, chore, refactor, or test commits are found.
+
+**Options:**
+
+- `--new-tag=<tag>`: Temporary label for the upcoming release (default: `upcoming`).
+- `--previous-tag=<tag>`: Compare against this specific tag instead of the latest tag.
+
+**Example:**
+
+```bash
+./vendor/bin/toolkit toolkit:release:recommend
+```
+
+Example output:
+
+```text
+Recommended release: minor
+Reason: 3 feature commits found and no breaking changes detected.
+Highest-impact commit type found: feat
+Breaking changes detected: no
+```
 
 ## Advanced Usage
 
