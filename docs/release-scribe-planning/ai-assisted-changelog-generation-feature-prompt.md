@@ -4,7 +4,7 @@ START PROMPT
 
 You are working in the PHP project that is being rebranded as the standalone release communication product.
 
-This project is no longer planned to become the full ReleasePilot workflow tool. Its scope is Product 1 of the split:
+This project is no longer planned to become the full ReleasePilot workflow tool. Its scope is ReleaseScribe:
 
 - “What’s new” document generation
 - changelog generation
@@ -14,12 +14,12 @@ This project is no longer planned to become the full ReleasePilot workflow tool.
 - SemVer/release impact recommendation
 - AI-assisted release communication
 
-ReleasePilot is a separate Product 2 that will consume or integrate this project’s output later.
+ReleasePilot is the guided release workflow tool in the ReleaseScribe / ReleasePilot product split. ReleasePilot will consume or integrate ReleaseScribe output later.
 
 Goal: implement and document AI-assisted release communication for the standalone “What’s new” / changelog generation
 product.
 
-This is Phase 5 of the Product 1 roadmap. It should happen after:
+This is Phase 5 of the ReleaseScribe roadmap. It should happen after:
 
 - Conventional Commit changelog generation
 - Changelog generation modes
@@ -31,18 +31,17 @@ Do not implement ReleasePilot workflow commands in this phase.
 Do not implement full release orchestration in this phase.
 
 Do not implement release preparation, release tagging, release publishing, release commits, branch policy enforcement,
-release manifests owned by ReleasePilot, or CI release gates in this phase unless specifically scoped as Product
-1-compatible output artifacts.
+release manifests owned by ReleasePilot, or CI release gates in this phase unless specifically scoped as ReleaseScribe-compatible output artifacts.
 
 Product split guidance:
 
-- Product 1 is the standalone release communication generator.
-- Product 2 is ReleasePilot, a separate guided release workflow product.
-- Product 1 may be designed so ReleasePilot can consume it later.
-- Product 1 must remain useful without ReleasePilot.
-- Product 1 must not depend on ReleasePilot.
-- Product 1 may expose library APIs, structured outputs, and artifacts that make ReleasePilot integration easier.
-- ReleasePilot-specific workflow decisions must remain outside Product 1.
+- ReleaseScribe is the standalone release communication tool in the ReleaseScribe / ReleasePilot product split.
+- ReleasePilot is the separate guided release workflow product.
+- ReleaseScribe may be designed so ReleasePilot can consume it later.
+- ReleaseScribe must remain useful without ReleasePilot.
+- ReleaseScribe must not depend on ReleasePilot.
+- ReleaseScribe may expose library APIs, structured outputs, and artifacts that make ReleasePilot integration easier.
+- ReleasePilot-specific workflow decisions must remain outside ReleaseScribe.
 
 AI feature principles:
 
@@ -179,9 +178,9 @@ Core requirements:
 
 9. Structured output and ReleasePilot readiness.
 
-   Product 1 should be ready to integrate with ReleasePilot later.
+   ReleaseScribe should be ready to integrate with ReleasePilot later.
 
-   Do not implement ReleasePilot workflows here, but ensure Product 1 can expose useful outputs.
+   Do not implement ReleasePilot workflows here, but ensure ReleaseScribe can expose useful outputs.
 
    Consider supporting:
 
@@ -191,9 +190,9 @@ Core requirements:
     - release communication artifacts that can be consumed by ReleasePilot
     - deterministic recommendation data alongside AI summaries
 
-   Product 1 should be usable in CI without ReleasePilot.
+   ReleaseScribe should be usable in CI without ReleasePilot.
 
-   Product 1 should also be usable as a dependency by ReleasePilot.
+   ReleaseScribe should also be usable as a dependency by ReleasePilot.
 
 10. Failure and fallback behavior.
 
@@ -207,16 +206,16 @@ Core requirements:
 
     Update documentation to reflect the product split:
 
-    - Product 1 is the standalone “What’s new” / changelog / release communication generator.
-    - Product 2 is ReleasePilot and owns guided release workflow features.
-    - Product 1 does not implement release workflow commands.
-    - Product 1 may expose outputs that ReleasePilot can consume later.
+    - ReleaseScribe is the standalone “What’s new” / changelog / release communication generator.
+    - ReleasePilot owns guided release workflow features.
+    - ReleaseScribe does not implement release workflow commands.
+    - ReleaseScribe may expose outputs that ReleasePilot can consume later.
     - AI enhances release communication, not release authority.
     - Deterministic Conventional Commit parsing and SemVer recommendation remain the source of truth.
     - AI uses current release / “What’s new?” mode by default.
     - Complete-history AI generation is opt-in.
     - AI output should be reviewable and grounded in commit data.
-    - Product 1 remains useful without AI.
+    - ReleaseScribe remains useful without AI.
 
     Update README when behavior, configuration, usage, commands, output, or extension points change.
 
@@ -235,7 +234,7 @@ Testing/tooling requirements:
     - fallback behavior when AI provider/client fails
     - behavior when AI is disabled
     - behavior when AI is required and fails, if supported
-    - no ReleasePilot workflow behavior is introduced into Product 1
+    - no ReleasePilot workflow behavior is introduced into ReleaseScribe
 
 - Avoid tests that require real external AI calls.
 - Use fakes, mocks, or stubs for AI clients.
@@ -254,9 +253,9 @@ Acceptance criteria:
 - Complete-history AI generation is opt-in.
 - AI output is documented as reviewable and grounded in commit data.
 - AI does not replace deterministic parsing or SemVer recommendation.
-- Product 1 remains useful without AI.
-- Product 1 does not depend on ReleasePilot.
-- Product 1 exposes or plans stable outputs suitable for future ReleasePilot integration.
+- ReleaseScribe remains useful without AI.
+- ReleaseScribe does not depend on ReleasePilot.
+- ReleaseScribe exposes or plans stable outputs suitable for future ReleasePilot integration.
 - No real secrets are committed.
 - README and docs are consistent.
 - No ReleasePilot workflow commands are implemented in this phase.

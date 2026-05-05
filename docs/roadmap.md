@@ -10,9 +10,9 @@ This document outlines the planned future direction for **ReleaseScribe**.
 
 The project is being rebranded from Git Toolkit to **ReleaseScribe**.
 
-ReleaseScribe is Product 1 of a two-product split:
+ReleaseScribe and ReleasePilot are the result of a two-product split:
 
-1. **ReleaseScribe**: Standalone release communication generator (this repository).
+1. **ReleaseScribe**: Standalone release communication tool (this repository).
 2. **ReleasePilot**: Guided release workflow tool (separate repository).
 
 ReleaseScribe turns technical changes into release-ready communication artifacts for developers, maintainers, release
