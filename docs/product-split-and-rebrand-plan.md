@@ -19,7 +19,7 @@ maintaining a clear integration path.
 ## Current Repository Status
 
 - **This Repository:** Remains **ReleaseScribe**.
-- **ReleasePilot Docs:** Transitional organization only; move to separate repository is a future/manual task.
+- **ReleasePilot Docs:** These have been moved to `../release-pilot/docs/`. Both products should be checked for drift when changes affect shared boundaries.
 - **Shared Context:** Both projects should be checked for drift when changes affect product boundaries. Refer
   to [Prompt Delivery Format](misc/generic-phpstorm-ai-chat-prompt-delivery-format.md) for drift prevention guidance.
 
@@ -54,10 +54,8 @@ ReleaseScribe turns technical changes into release-ready communication artifacts
 
 - **Rebrand First:** Rebrand ReleaseScribe before implementing Phase 5 AI features.
 - **Clean Cutover:** No legacy aliasing or wrappers for the old Git Toolkit identity.
-- **Transitional Docs:** ReleasePilot docs remain under `docs/release-pilot/` until the ReleasePilot repository is
-  established.
-- **Manual Move:** Moving ReleasePilot docs into a separate repository is a future/manual task, not part of the current
-  documentation organization.
+- **Transitional Docs:** Completed. ReleasePilot docs now live in `release-pilot/docs/`.
+- **Manual Move:** Completed. Moving ReleasePilot docs into a separate repository is finished.
 
 ## Authoritative Documentation
 
@@ -75,15 +73,14 @@ ReleaseScribe turns technical changes into release-ready communication artifacts
 - [API Plan](release-scribe-planning/release-scribe-api-plan.md) - Integration surface for downstream tools.
 - [Artifacts Plan](release-scribe-planning/release-scribe-artifacts-plan.md) - Generated outputs and conventions.
 
-### ReleasePilot Documentation (Transitional)
+### ReleasePilot Documentation
 
-*Note: These files currently reside in `docs/release-pilot/` and will be moved to the ReleasePilot repository later.*
+*Note: These files now reside in `release-pilot/docs/`.*
 
-- [Product Plan](release-pilot/product-plan.md) - Goals and command structure.
-- [ReleaseScribe Integration Plan](release-pilot/release-scribe-integration-plan.md) - How ReleasePilot consumes Product
-  1.
-- [CI Workflow Plan](release-pilot/ci-workflow-plan.md) - CI gates and automation.
-- [Release Manifest Plan](release-pilot/release-manifest-plan.md) - Central release data structure.
+- [Product Plan](../../release-pilot/docs/product-plan.md) - Goals and command structure.
+- [ReleaseScribe Integration Plan](../../release-pilot/docs/release-scribe-integration-plan.md) - How ReleasePilot consumes ReleaseScribe.
+- [CI Workflow Plan](../../release-pilot/docs/ci-workflow-plan.md) - CI gates and automation.
+- [Release Manifest Plan](../../release-pilot/docs/release-manifest-plan.md) - Central release data structure.
 
 ## Extracted Prompts
 
@@ -91,11 +88,10 @@ ReleaseScribe turns technical changes into release-ready communication artifacts
 
 - [Phase 5 AI Implementation](prompts/release-scribe-phase-5-ai-assisted-release-communication.md)
 - [ReleaseScribe Rebrand](prompts/release-scribe-rebrand.md)
-- [Shared Plan File Cleanup](prompts/shared-plan-file-cleanup.md)
 
 ### ReleasePilot Prompts
 
-- [Release Workflow Commands](release-pilot/prompts/release-workflow-commands.md)
+- [Release Workflow Commands](../../release-pilot/docs/prompts/release-workflow-commands.md)
 
 ---
 *End of Index*

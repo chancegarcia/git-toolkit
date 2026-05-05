@@ -11,10 +11,10 @@ If ReleasePilot docs live in both repositories, shared assumptions may drift.
 
 **Mitigation:**
 
-- Move ReleasePilot-specific docs from ReleaseScribe to ReleasePilot instead of copying them.
+- Move ReleasePilot-specific docs from ReleaseScribe to ReleasePilot instead of copying them (Completed).
 - Keep ReleaseScribe docs focused on ReleaseScribe.
 - Keep ReleasePilot docs focused on ReleasePilot.
-- Update generic AI/Junie prompting guidance to explicitly check for drift.
+- Update generic AI/Junie prompting guidance to explicitly check for drift (Completed).
 - When both projects are open under `release-tools`, ask AI Assistant or Junie to inspect both relevant docs if a change
   affects shared terminology, integration expectations, command names, roadmap sequencing, or package names.
 
@@ -45,7 +45,7 @@ If ReleasePilot starts too early, it may depend on unstable ReleaseScribe intern
 
 **Mitigation:**
 
-- ReleasePilot remains documentation/planning-only until ReleaseScribe is stable.
+- ReleasePilot remains documentation/planning-only until ReleaseScribe is stable (Completed).
 - ReleasePilot implementation begins only after ReleaseScribe has stable enough outputs and/or API contracts.
 - Once ReleasePilot implementation begins, it can depend on ReleaseScribe directly.
 
@@ -55,9 +55,9 @@ If the old `ChanceGitToolkit` folder remains available, changes may accidentally
 
 **Mitigation:**
 
-- Archive/tarball `ChanceGitToolkit` after `release-scribe` is cloned.
-- Remove `ChanceGitToolkit` from PhpStorm.
-- Use only `release-tools/release-scribe` as the active ReleaseScribe working copy.
+- Archive/tarball `ChanceGitToolkit` after `release-scribe` is cloned (Completed).
+- Remove `ChanceGitToolkit` from PhpStorm (Completed).
+- Use only `release-tools/release-scribe` as the active ReleaseScribe working copy (Completed).
 
 ## Decisions and Revisit Items
 

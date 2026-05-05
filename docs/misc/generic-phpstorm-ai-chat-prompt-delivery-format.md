@@ -20,7 +20,8 @@ Junie prompt requirements:
   roadmap sequencing, or ReleaseScribe/ReleasePilot responsibilities, relevant documentation should be checked for
   drift.
 - ReleaseScribe-specific docs should stay focused on ReleaseScribe.
-- ReleasePilot-specific docs should stay under `docs/release-pilot/` while this repo is still the organizing location.
+- ReleasePilot-specific docs should stay in the ReleasePilot project, currently:
+    - `release-pilot/docs/`
 - Prefer moving product-specific docs to the owning documentation area instead of duplicating content.
 - If shared docs or shared context must exist in more than one place later, identify which copy is authoritative or
   update both intentionally.

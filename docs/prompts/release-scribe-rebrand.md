@@ -121,7 +121,7 @@ Core rebrand requirements:
 
    If ReleasePilot planning remains in this repo temporarily, keep it under:
 
-    - `docs/release-pilot/`
+    - `release-pilot/docs/` (in separate repository)
 
    Make clear that those docs are transitional or cross-product planning.
 
