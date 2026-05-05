@@ -303,6 +303,15 @@ If the alternate target file or its directory does not exist, the tool will atte
 
 For planned future direction and the development roadmap, see [docs/roadmap.md](docs/roadmap.md).
 
+### Repository Boundary Rules
+
+- Treat the `release-scribe` directory as the root of the ReleaseScribe repository.
+- Anything outside this repository root is out of scope and must be considered inaccessible.
+- Do not create links to `../release-pilot/`, `../release-tools/`, or other local parent/sibling paths.
+- ReleaseScribe documentation should stay focused on ReleaseScribe.
+- Cross-product coordination belongs in the parent coordination repo, not in ReleaseScribe docs.
+- If ReleaseScribe needs to refer to ReleasePilot, refer to public package/API/CLI behavior, external URLs, or documented integration contracts rather than local sibling paths.
+
 Available composer scripts for local development:
 
 - `composer qa`: Run all quality checks (lint, cs, stan, test)
