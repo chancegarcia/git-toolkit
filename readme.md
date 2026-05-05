@@ -313,6 +313,8 @@ See [docs/ai-guidelines.md](docs/ai-guidelines.md) for repository identity and b
 - Treat the `release-scribe` directory as the root of the ReleaseScribe repository.
 - Anything outside this repository root is out of scope and must be considered inaccessible for normal operation.
 - Do not create links to `../release-pilot/`, `../release-tools/`, or other local parent/sibling paths.
+- **Coordination Repository Paths:** When referring to the separate coordination repository from the ReleaseScribe perspective, it is acceptable to use local workspace-style paths such as `release-tools/docs/...` or `release-tools/prompts/...`.
+- **Workspace Only:** Make clear that `release-tools/...` paths are only available in a local multi-repository workspace and are not part of the ReleaseScribe repository. They should not be used for normal users, CI, or automation.
 - ReleaseScribe documentation should stay focused on ReleaseScribe.
 - Cross-product coordination belongs in the separate `release-tools` coordination repository, not in ReleaseScribe docs.
 - If ReleaseScribe needs to refer to ReleasePilot, refer to it as a separate product/repository.
