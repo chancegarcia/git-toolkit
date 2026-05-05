@@ -2,7 +2,7 @@
 
 > [!IMPORTANT]
 > This document contains historical context for modernization and AI planning. For the current consolidated project
-> roadmap, see [docs/roadmap.md](roadmap.md).
+> roadmap, see [docs/roadmap.md](../roadmap.md).
 
 ## Current Architecture Summary
 
