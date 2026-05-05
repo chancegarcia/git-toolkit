@@ -1,11 +1,11 @@
-# Git Toolkit
+# ReleaseScribe
 
-![CI](https://github.com/chancegarcia/git-toolkit/actions/workflows/ci.yml/badge.svg)
-[![Latest Stable Version](https://badgen.net/packagist/v/chancegarcia/git-toolkit)](//packagist.org/packages/chancegarcia/git-toolkit) ![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/chancegarcia/git-toolkit) [![Total Downloads](https://poser.pugx.org/chancegarcia/git-toolkit/downloads)](//packagist.org/packages/chancegarcia/git-toolkit) [![Latest Unstable Version](https://poser.pugx.org/chancegarcia/git-toolkit/v/unstable)](//packagist.org/packages/chancegarcia/git-toolkit) [![License](https://poser.pugx.org/chancegarcia/git-toolkit/license)](//packagist.org/packages/chancegarcia/git-toolkit) [![PHP](https://badgen.net/packagist/php/chancegarcia/git-toolkit)](//php.net)
+![CI](https://github.com/chancegarcia/release-scribe/actions/workflows/ci.yml/badge.svg)
+[![Latest Stable Version](https://badgen.net/packagist/v/chancegarcia/release-scribe)](//packagist.org/packages/chancegarcia/release-scribe) ![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/chancegarcia/release-scribe) [![Total Downloads](https://poser.pugx.org/chancegarcia/release-scribe/downloads)](//packagist.org/packages/chancegarcia/release-scribe) [![Latest Unstable Version](https://poser.pugx.org/chancegarcia/release-scribe/v/unstable)](//packagist.org/packages/chancegarcia/release-scribe) [![License](https://poser.pugx.org/chancegarcia/release-scribe/license)](//packagist.org/packages/chancegarcia/release-scribe) [![PHP](https://badgen.net/packagist/php/chancegarcia/release-scribe)](//php.net)
 
 ---
 
-This toolkit creates a `changelog.md` for a project using the git repository tags and the git commit history.
+ReleaseScribe creates a `changelog.md` for a project using the git repository tags and the git commit history.
 
 ## Requirements
 
@@ -303,14 +303,21 @@ If the alternate target file or its directory does not exist, the tool will atte
 
 For planned future direction and the development roadmap, see [docs/roadmap.md](docs/roadmap.md).
 
+### AI and Junie Operating Guidelines
+
+See [docs/ai-guidelines.md](docs/ai-guidelines.md) for repository identity and boundary rules.
+
 ### Repository Boundary Rules
 
+- **Current Repository:** This is the ReleaseScribe product repository.
 - Treat the `release-scribe` directory as the root of the ReleaseScribe repository.
-- Anything outside this repository root is out of scope and must be considered inaccessible.
+- Anything outside this repository root is out of scope and must be considered inaccessible for normal operation.
 - Do not create links to `../release-pilot/`, `../release-tools/`, or other local parent/sibling paths.
 - ReleaseScribe documentation should stay focused on ReleaseScribe.
-- Cross-product coordination belongs in the parent coordination repo, not in ReleaseScribe docs.
-- If ReleaseScribe needs to refer to ReleasePilot, refer to public package/API/CLI behavior, external URLs, or documented integration contracts rather than local sibling paths.
+- Cross-product coordination belongs in the separate `release-tools` coordination repository, not in ReleaseScribe docs.
+- If ReleaseScribe needs to refer to ReleasePilot, refer to it as a separate product/repository.
+- ReleaseScribe must not depend on ReleasePilot.
+- In a local multi-repository workspace, AI/dev tools may have access to sibling repositories if the task explicitly states it.
 
 Available composer scripts for local development:
 

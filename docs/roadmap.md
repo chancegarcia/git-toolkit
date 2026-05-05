@@ -12,7 +12,7 @@ The project is being rebranded from Git Toolkit to **ReleaseScribe**.
 
 ReleaseScribe and ReleasePilot are the result of a two-product split:
 
-1. **ReleaseScribe**: Standalone release communication tool (this repository).
+1. **ReleaseScribe**: Standalone release communication tool (this ReleaseScribe repository).
 2. **ReleasePilot**: Guided release workflow tool (separate repository).
 
 ReleaseScribe turns technical changes into release-ready communication artifacts for developers, maintainers, release
