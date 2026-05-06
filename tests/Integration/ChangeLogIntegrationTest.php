@@ -1,11 +1,11 @@
 <?php
 
-namespace Chance\GitToolkit\Test\Integration;
+namespace Chance\ReleaseScribe\Test\Integration;
 
-use Chance\GitToolkit\GitInformation;
-use Chance\GitToolkit\Service\ChangeLogService;
-use Chance\GitToolkit\Service\GitRepositoryFactory;
-use Chance\GitToolkit\Test\GitTestHelper;
+use Chance\ReleaseScribe\GitInformation;
+use Chance\ReleaseScribe\Service\ChangeLogService;
+use Chance\ReleaseScribe\Service\GitRepositoryFactory;
+use Chance\ReleaseScribe\Test\GitTestHelper;
 use PHPUnit\Framework\TestCase;
 use SplFileObject;
 
@@ -171,7 +171,7 @@ class ChangeLogIntegrationTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->tmpRepoPath = sys_get_temp_dir() . '/git-toolkit-test-' . uniqid();
+        $this->tmpRepoPath = sys_get_temp_dir() . '/release-scribe-test-' . uniqid('', true);
         $this->helper = new GitTestHelper($this->tmpRepoPath);
     }
 

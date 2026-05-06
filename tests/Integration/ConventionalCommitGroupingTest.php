@@ -1,10 +1,10 @@
 <?php
 
-namespace Chance\GitToolkit\Tests\Integration;
+namespace Chance\ReleaseScribe\Tests\Integration;
 
-use Chance\GitToolkit\Collector\CollectorInterface;
-use Chance\GitToolkit\Generator\ConventionalCommitGenerator;
-use Chance\GitToolkit\Renderer\ConventionalMarkdownRenderer;
+use Chance\ReleaseScribe\Collector\CollectorInterface;
+use Chance\ReleaseScribe\Generator\ConventionalCommitGenerator;
+use Chance\ReleaseScribe\Renderer\ConventionalMarkdownRenderer;
 use PHPUnit\Framework\TestCase;
 use SplFileObject;
 
@@ -58,17 +58,17 @@ class ConventionalCommitGroupingTest extends TestCase
 
         try {
             $_ENV['CHANGELOG_USE_CONVENTIONAL_COMMITS'] = 'false';
-            $service = new \Chance\GitToolkit\Service\ChangeLogService(
-                $this->createMock(\Chance\GitToolkit\GitInformation::class)
+            $service = new \Chance\ReleaseScribe\Service\ChangeLogService(
+                $this->createMock(\Chance\ReleaseScribe\GitInformation::class)
             );
-            $this->assertInstanceOf(\Chance\GitToolkit\Generator\LegacyGenerator::class, $service->getGenerator());
+            $this->assertInstanceOf(\Chance\ReleaseScribe\Generator\LegacyGenerator::class, $service->getGenerator());
 
             $_ENV['CHANGELOG_USE_CONVENTIONAL_COMMITS'] = 'true';
-            $service = new \Chance\GitToolkit\Service\ChangeLogService(
-                $this->createMock(\Chance\GitToolkit\GitInformation::class)
+            $service = new \Chance\ReleaseScribe\Service\ChangeLogService(
+                $this->createMock(\Chance\ReleaseScribe\GitInformation::class)
             );
             $this->assertInstanceOf(
-                \Chance\GitToolkit\Generator\ConventionalCommitGenerator::class,
+                \Chance\ReleaseScribe\Generator\ConventionalCommitGenerator::class,
                 $service->getGenerator()
             );
         } finally {

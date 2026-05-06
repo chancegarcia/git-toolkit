@@ -1,18 +1,18 @@
 <?php
 
-namespace Chance\GitToolkit\Command;
+namespace Chance\ReleaseScribe\Command;
 
-use Chance\GitToolkit\Collector\GitCollector;
-use Chance\GitToolkit\GitInformation;
-use Chance\GitToolkit\Service\ConventionalCommitParser;
-use Chance\GitToolkit\Service\ReleaseRecommender;
+use Chance\ReleaseScribe\Collector\GitCollector;
+use Chance\ReleaseScribe\GitInformation;
+use Chance\ReleaseScribe\Service\ConventionalCommitParser;
+use Chance\ReleaseScribe\Service\ReleaseRecommender;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(name: 'toolkit:release:recommend', description: 'recommend a SemVer release level based on commits', help: 'This command analyzes the commits since the last tag and recommends whether to release a major, minor, or patch version.')]
+#[AsCommand(name: 'recommend', description: 'recommend a SemVer release level based on commits', help: 'This command analyzes the commits since the last tag and recommends whether to release a major, minor, or patch version.')]
 class ReleaseRecommend
 {
     public function __construct(

@@ -1,8 +1,8 @@
 <?php
 
-namespace Chance\GitToolkit\Test;
+namespace Chance\ReleaseScribe\Test;
 
-use Chance\GitToolkit\Environment;
+use Chance\ReleaseScribe\Environment;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -53,7 +53,7 @@ class EnvironmentTest extends TestCase
     protected function setUp(): void
     {
         $this->fs = new Filesystem();
-        $this->tempDir = sys_get_temp_dir() . '/git-toolkit-env-test-' . uniqid('', true);
+        $this->tempDir = sys_get_temp_dir() . '/release-scribe-env-test-' . uniqid('', true);
         $this->fs->mkdir($this->tempDir);
     }
 

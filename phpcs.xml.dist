@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<ruleset name="ChanceGitToolkit">
-    <description>The coding standard for ChanceGitToolkit.</description>
+<ruleset name="ReleaseScribe">
+    <description>The coding standard for ReleaseScribe.</description>
     <arg name="colors"/>
     <arg name="extensions" value="php"/>
     <rule ref="PSR12"/>

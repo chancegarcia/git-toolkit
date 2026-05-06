@@ -1,6 +1,6 @@
 <?php
 
-namespace Chance\GitToolkit\Data;
+namespace Chance\ReleaseScribe\Data;
 
 class ConventionalCommit
 {

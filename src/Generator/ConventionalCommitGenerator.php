@@ -1,14 +1,13 @@
 <?php
 
-namespace Chance\GitToolkit\Generator;
+namespace Chance\ReleaseScribe\Generator;
 
-use Chance\GitToolkit\Collector\CollectorInterface;
-use Chance\GitToolkit\Data\ChangeLogData;
-use Chance\GitToolkit\Data\ConventionalCommit;
-use Chance\GitToolkit\Data\Release;
-use Chance\GitToolkit\Data\Section;
-use Chance\GitToolkit\Renderer\RendererInterface;
-use Chance\GitToolkit\Service\ConventionalCommitParser;
+use Chance\ReleaseScribe\Collector\CollectorInterface;
+use Chance\ReleaseScribe\Data\ChangeLogData;
+use Chance\ReleaseScribe\Data\Release;
+use Chance\ReleaseScribe\Data\Section;
+use Chance\ReleaseScribe\Renderer\RendererInterface;
+use Chance\ReleaseScribe\Service\ConventionalCommitParser;
 use SplFileObject;
 
 class ConventionalCommitGenerator implements GeneratorInterface
@@ -46,8 +45,7 @@ class ConventionalCommitGenerator implements GeneratorInterface
         ?string $newTag = null,
         ?string $previousTag = null,
         bool $fullHistory = true
-    ): void
-    {
+    ): void {
         $rawData = $this->collector->collect($newTag, $previousTag, $fullHistory);
         $releases = $this->processData($rawData);
 

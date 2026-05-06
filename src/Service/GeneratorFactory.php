@@ -1,14 +1,14 @@
 <?php
 
-namespace Chance\GitToolkit\Service;
+namespace Chance\ReleaseScribe\Service;
 
-use Chance\GitToolkit\Collector\GitCollector;
-use Chance\GitToolkit\Generator\ConventionalCommitGenerator;
-use Chance\GitToolkit\Generator\LegacyGenerator;
-use Chance\GitToolkit\Generator\GeneratorInterface;
-use Chance\GitToolkit\GitInformation;
-use Chance\GitToolkit\Renderer\ConventionalMarkdownRenderer;
-use Chance\GitToolkit\Renderer\LegacyRenderer;
+use Chance\ReleaseScribe\Collector\GitCollector;
+use Chance\ReleaseScribe\Generator\ConventionalCommitGenerator;
+use Chance\ReleaseScribe\Generator\LegacyGenerator;
+use Chance\ReleaseScribe\Generator\GeneratorInterface;
+use Chance\ReleaseScribe\GitInformation;
+use Chance\ReleaseScribe\Renderer\ConventionalMarkdownRenderer;
+use Chance\ReleaseScribe\Renderer\LegacyRenderer;
 
 class GeneratorFactory
 {
@@ -24,12 +24,16 @@ class GeneratorFactory
 
         if ($useConventional) {
             return new ConventionalCommitGenerator(
-                $collector, new ConventionalMarkdownRenderer(), $mainHeader
+                $collector,
+                new ConventionalMarkdownRenderer(),
+                $mainHeader
             );
         }
 
         return new LegacyGenerator(
-            $collector, new LegacyRenderer(), $mainHeader
+            $collector,
+            new LegacyRenderer(),
+            $mainHeader
         );
     }
 }

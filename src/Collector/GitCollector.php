@@ -1,8 +1,8 @@
 <?php
 
-namespace Chance\GitToolkit\Collector;
+namespace Chance\ReleaseScribe\Collector;
 
-use Chance\GitToolkit\GitInformation;
+use Chance\ReleaseScribe\GitInformation;
 
 class GitCollector implements CollectorInterface
 {

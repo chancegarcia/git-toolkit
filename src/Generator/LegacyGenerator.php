@@ -1,9 +1,9 @@
 <?php
 
-namespace Chance\GitToolkit\Generator;
+namespace Chance\ReleaseScribe\Generator;
 
-use Chance\GitToolkit\Collector\CollectorInterface;
-use Chance\GitToolkit\Renderer\RendererInterface;
+use Chance\ReleaseScribe\Collector\CollectorInterface;
+use Chance\ReleaseScribe\Renderer\RendererInterface;
 use SplFileObject;
 
 class LegacyGenerator implements GeneratorInterface
@@ -20,21 +20,20 @@ class LegacyGenerator implements GeneratorInterface
         ?string $newTag = null,
         ?string $previousTag = null,
         bool $fullHistory = true
-    ): void
-    {
+    ): void {
         $data = $this->collector->collect($newTag, $previousTag, $fullHistory);
         $processedData = $this->processData($data);
 
-        if ($this->renderer instanceof \Chance\GitToolkit\Renderer\LegacyRenderer || $this->renderer instanceof \Chance\GitToolkit\Renderer\ConventionalMarkdownRenderer) {
+        if ($this->renderer instanceof \Chance\ReleaseScribe\Renderer\LegacyRenderer || $this->renderer instanceof \Chance\ReleaseScribe\Renderer\ConventionalMarkdownRenderer) {
             $content = $this->renderer->render($processedData, $this->mainHeader);
         } else {
             // Attempt to wrap in ChangeLogData for modern renderers
             $releases = [];
             foreach ($processedData as $tag => $commits) {
-                $sections = [new \Chance\GitToolkit\Data\Section('Commits', (array)$commits)];
-                $releases[] = new \Chance\GitToolkit\Data\Release($tag, $sections);
+                $sections = [new \Chance\ReleaseScribe\Data\Section('Commits', (array)$commits)];
+                $releases[] = new \Chance\ReleaseScribe\Data\Release($tag, $sections);
             }
-            $changeLogData = new \Chance\GitToolkit\Data\ChangeLogData($this->mainHeader, $releases);
+            $changeLogData = new \Chance\ReleaseScribe\Data\ChangeLogData($this->mainHeader, $releases);
             $content = $this->renderer->render($changeLogData);
         }
 

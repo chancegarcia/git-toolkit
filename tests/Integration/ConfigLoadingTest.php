@@ -1,9 +1,9 @@
 <?php
 
-namespace Chance\GitToolkit\Test\Integration;
+namespace Chance\ReleaseScribe\Test\Integration;
 
-use Chance\GitToolkit\GitInformation;
-use Chance\GitToolkit\Service\ChangeLogService;
+use Chance\ReleaseScribe\GitInformation;
+use Chance\ReleaseScribe\Service\ChangeLogService;
 use PHPUnit\Framework\TestCase;
 
 class ConfigLoadingTest extends TestCase
@@ -23,7 +23,7 @@ return [
 PHP;
         file_put_contents($this->tmpConfigFile, $configContent);
 
-        // Simulate logic from bin/toolkit
+        // Simulate logic from bin/release-scribe
         $config = require $this->tmpConfigFile;
 
         $projectName = $config['project_name'] ?? null;
@@ -50,9 +50,9 @@ PHP;
 
     protected function setUp(): void
     {
-        $this->tmpConfigDir = sys_get_temp_dir() . '/git-toolkit-config-' . uniqid();
+        $this->tmpConfigDir = sys_get_temp_dir() . '/release-scribe-config-' . uniqid('', true);
         mkdir($this->tmpConfigDir);
-        $this->tmpConfigFile = $this->tmpConfigDir . '/chancegarcia_git_toolkit.php';
+        $this->tmpConfigFile = $this->tmpConfigDir . '/release_scribe.php';
     }
 
     protected function tearDown(): void

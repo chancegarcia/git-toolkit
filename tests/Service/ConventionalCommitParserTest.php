@@ -1,8 +1,8 @@
 <?php
 
-namespace Chance\GitToolkit\Tests\Service;
+namespace Chance\ReleaseScribe\Tests\Service;
 
-use Chance\GitToolkit\Service\ConventionalCommitParser;
+use Chance\ReleaseScribe\Service\ConventionalCommitParser;
 use PHPUnit\Framework\TestCase;
 
 class ConventionalCommitParserTest extends TestCase

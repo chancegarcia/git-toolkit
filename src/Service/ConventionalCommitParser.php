@@ -1,8 +1,8 @@
 <?php
 
-namespace Chance\GitToolkit\Service;
+namespace Chance\ReleaseScribe\Service;
 
-use Chance\GitToolkit\Data\ConventionalCommit;
+use Chance\ReleaseScribe\Data\ConventionalCommit;
 
 class ConventionalCommitParser
 {
@@ -46,7 +46,13 @@ class ConventionalCommitParser
         }
 
         return new ConventionalCommit(
-            $type, $scope, $description, $body, $footer, $isBreakingChange, $message
+            $type,
+            $scope,
+            $description,
+            $body,
+            $footer,
+            $isBreakingChange,
+            $message
         );
     }
 }

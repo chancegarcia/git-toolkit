@@ -30,10 +30,10 @@
  *
  */
 
-namespace Chance\GitToolkit\Service;
+namespace Chance\ReleaseScribe\Service;
 
-use Chance\GitToolkit\Generator\GeneratorInterface;
-use Chance\GitToolkit\GitInformation;
+use Chance\ReleaseScribe\Generator\GeneratorInterface;
+use Chance\ReleaseScribe\GitInformation;
 use SplFileObject;
 
 class ChangeLogService

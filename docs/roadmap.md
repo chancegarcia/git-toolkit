@@ -61,7 +61,7 @@ The tool analyzes commits since the last tag to recommend the next version bump 
 
 ### Phase 5: AI-Assisted Release Communication (Planned)
 
-AI will be used to enhance the quality of release communication.
+AI will be used to enhance the quality of release communication by summarizing commits into human-readable prose.
 
 **AI Principles:**
 
@@ -69,11 +69,13 @@ AI will be used to enhance the quality of release communication.
 - Data provided to AI will be structured and filtered.
 - "What's new?" mode will be the default for AI generation.
 - AI summaries must be reviewable and grounded in commit data.
+- AI functionality is planned for a later phase and is not yet implemented.
 
-### Phase 6: Release Workflow Orchestration (Moved)
+## Out of Scope: Guided Release Workflow Orchestration
 
-Release workflow commands (checking, planning, tagging, publishing) have been moved to **ReleasePilot**. ReleaseScribe
-will provide the underlying communication and recommendation engine that ReleasePilot consumes.
+Guided release workflow orchestration (e.g., repository checks, branching strategy, tag creation, asset uploads, publishing to registries) belongs to a separate product and is out of scope for ReleaseScribe.
+
+ReleaseScribe provides the authoritative "What's new?" generation and deterministic SemVer recommendation that orchestration tools may consume.
 
 ---
 

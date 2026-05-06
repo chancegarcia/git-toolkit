@@ -1,9 +1,9 @@
 <?php
 
-namespace Chance\GitToolkit\Tests\Service;
+namespace Chance\ReleaseScribe\Tests\Service;
 
-use Chance\GitToolkit\Data\ConventionalCommit;
-use Chance\GitToolkit\Service\ReleaseRecommender;
+use Chance\ReleaseScribe\Data\ConventionalCommit;
+use Chance\ReleaseScribe\Service\ReleaseRecommender;
 use PHPUnit\Framework\TestCase;
 
 class ReleaseRecommenderTest extends TestCase

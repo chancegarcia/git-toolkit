@@ -1,9 +1,9 @@
 <?php
 
-namespace Chance\GitToolkit\Renderer;
+namespace Chance\ReleaseScribe\Renderer;
 
-use Chance\GitToolkit\Data\ChangeLogData;
-use Chance\GitToolkit\Formatter\MarkdownFormatter;
+use Chance\ReleaseScribe\Data\ChangeLogData;
+use Chance\ReleaseScribe\Formatter\MarkdownFormatter;
 
 class LegacyRenderer implements RendererInterface
 {

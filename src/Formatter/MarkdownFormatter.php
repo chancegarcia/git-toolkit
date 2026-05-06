@@ -30,7 +30,7 @@
  *
  */
 
-namespace Chance\GitToolkit\Formatter;
+namespace Chance\ReleaseScribe\Formatter;
 
 class MarkdownFormatter
 {

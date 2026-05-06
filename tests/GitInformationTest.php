@@ -1,9 +1,9 @@
 <?php
 
-namespace Chance\GitToolkit\Test;
+namespace Chance\ReleaseScribe\Test;
 
-use Chance\GitToolkit\GitInformation;
-use Chance\GitToolkit\Service\GitRepositoryFactory;
+use Chance\ReleaseScribe\GitInformation;
+use Chance\ReleaseScribe\Service\GitRepositoryFactory;
 use CzProject\GitPhp\GitRepository;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;

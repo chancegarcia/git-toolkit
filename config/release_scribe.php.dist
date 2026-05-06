@@ -42,7 +42,7 @@ return [
 
     /**
      * Release recommendation configuration.
-     * Affects the output of the `toolkit:release:recommend` command.
+     * Affects the output of the `recommend` command.
      */
     'release_recommendation' => [
         /**

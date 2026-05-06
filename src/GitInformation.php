@@ -30,9 +30,9 @@
  *
  */
 
-namespace Chance\GitToolkit;
+namespace Chance\ReleaseScribe;
 
-use Chance\GitToolkit\Service\GitRepositoryFactory;
+use Chance\ReleaseScribe\Service\GitRepositoryFactory;
 use CzProject\GitPhp\GitException;
 use CzProject\GitPhp\GitRepository;
 

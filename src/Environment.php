@@ -1,6 +1,6 @@
 <?php
 
-namespace Chance\GitToolkit;
+namespace Chance\ReleaseScribe;
 
 use Symfony\Component\Dotenv\Dotenv;
 

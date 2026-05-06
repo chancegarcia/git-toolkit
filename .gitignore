@@ -28,6 +28,7 @@ tmp.*
 .env.local.php
 .env.*.local
 /config/chancegarcia_git_toolkit.php
+/config/release_scribe.php
 /config/secrets/prod/prod.decrypt.private.php
 http-client.private.env.json
 

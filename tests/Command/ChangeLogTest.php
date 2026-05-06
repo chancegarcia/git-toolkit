@@ -1,9 +1,9 @@
 <?php
 
-namespace Chance\GitToolkit\Test\Command;
+namespace Chance\ReleaseScribe\Test\Command;
 
-use Chance\GitToolkit\Command\ChangeLog;
-use Chance\GitToolkit\Service\ChangeLogService;
+use Chance\ReleaseScribe\Command\ChangeLog;
+use Chance\ReleaseScribe\Service\ChangeLogService;
 use CzProject\GitPhp\GitException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -25,7 +25,7 @@ class ChangeLogTest extends TestCase
 
     private function getCommandTester(ChangeLog $command): CommandTester
     {
-        $wrapper = new \Symfony\Component\Console\Command\Command('toolkit:changelog');
+        $wrapper = new \Symfony\Component\Console\Command\Command('whats-new');
         $wrapper->setCode($command);
         $command->configure($wrapper);
         return new CommandTester($wrapper);
@@ -225,7 +225,7 @@ class ChangeLogTest extends TestCase
 
         $output = $commandTester->getDisplay();
         self::assertStringContainsString('No changelog has been initialized for this project.', $output);
-        self::assertStringContainsString('Run "toolkit:init" to create one', $output);
+        self::assertStringContainsString('Run "release-scribe init" to create one', $output);
         self::assertSame(1, $commandTester->getStatusCode());
     }
 

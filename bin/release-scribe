@@ -34,11 +34,11 @@ $currentDir = getcwd();
 
 require $currentDir . '/vendor/autoload.php';
 
-use Chance\GitToolkit\Environment;
+use Chance\ReleaseScribe\Environment;
 
 Environment::load($currentDir);
 
-$configFile = $currentDir . '/config/chancegarcia_git_toolkit.php';
+$configFile = $currentDir . '/config/release_scribe.php';
 $dirConfigExists = false;
 $projectName = $_ENV['PROJECT_NAME'] ?? null;
 $outputFilename = $_ENV['OUTPUT_FILENAME'] ?? null;
@@ -75,27 +75,25 @@ if (!$dirConfigExists && !isset($_ENV['PROJECT_ROOT'])) {
 }
 
 use Symfony\Component\Console\Application;
-use Chance\GitToolkit\GitInformation;
-use Chance\GitToolkit\Command\ChangeLog;
-use Chance\GitToolkit\Command\Init;
-use Chance\GitToolkit\Command\Release;
-use Chance\GitToolkit\Command\ReleaseRecommend;
-use Chance\GitToolkit\Service\ConfigReader;
-use Chance\GitToolkit\Service\GeneratorFactory;
-use Chance\GitToolkit\Service\ChangeLogService;
-use Chance\GitToolkit\Service\GitRepositoryFactory;
-use Chance\GitToolkit\Service\ReleaseRecommender;
+use Chance\ReleaseScribe\GitInformation;
+use Chance\ReleaseScribe\Command\ChangeLog;
+use Chance\ReleaseScribe\Command\FullChangeLog;
+use Chance\ReleaseScribe\Command\Init;
+use Chance\ReleaseScribe\Command\ReleaseRecommend;
+use Chance\ReleaseScribe\Service\ConfigReader;
+use Chance\ReleaseScribe\Service\GeneratorFactory;
+use Chance\ReleaseScribe\Service\ChangeLogService;
+use Chance\ReleaseScribe\Service\GitRepositoryFactory;
+use Chance\ReleaseScribe\Service\ReleaseRecommender;
 use Symfony\Component\Console\Command\Command;
 
-$application = new Application('Chance Git Toolkit', '1.0.0');
+$application = new Application('ReleaseScribe', '1.0.0');
 
 $gitRepoFactory = new GitRepositoryFactory($dir);
 $gitInformation = new GitInformation($gitRepoFactory);
 
 $configMap = [];
 if (isset($config) && is_array($config)) {
-    // Map existing config to what ConfigReader expects if necessary
-    // For now, ConfigReader checks env too.
     $configMap = $config;
 }
 
@@ -107,28 +105,32 @@ $changeLogService->setChangeLogFileName($outputFilename);
 $changeLogService->setChangeLogFilePath($outputPath);
 $changeLogService->setMainHeaderName($projectName);
 
-// ensure Symfony Console properly handles help and arguments for invokable command classes.
-$changeLogCommand = new ChangeLog($changeLogService);
-$changeLogWrapper = new Command('toolkit:changelog');
-$changeLogWrapper->setCode($changeLogCommand);
-$changeLogCommand->configure($changeLogWrapper);
+// whats-new
+$whatsNewCommand = new ChangeLog($changeLogService);
+$whatsNewWrapper = new Command('whats-new');
+$whatsNewWrapper->setCode($whatsNewCommand);
+$whatsNewCommand->configure($whatsNewWrapper);
 
+// changelog
+$fullChangelogCommand = new FullChangeLog($whatsNewCommand);
+$fullChangelogWrapper = new Command('changelog');
+$fullChangelogWrapper->setCode($fullChangelogCommand);
+$fullChangelogCommand->configure($fullChangelogWrapper);
+
+// init
 $initCommand = new Init($changeLogService);
-$initWrapper = new Command('toolkit:init');
+$initWrapper = new Command('init');
 $initWrapper->setCode($initCommand);
 $initCommand->configure($initWrapper);
 
-$releaseCommand = new Release();
-$releaseWrapper = new Command('toolkit:release');
-$releaseWrapper->setCode($releaseCommand);
-
+// recommend
 $releaseRecommenderConfig = $config['release_recommendation']['type_impact'] ?? null;
 $releaseRecommender = new ReleaseRecommender($releaseRecommenderConfig);
 $recommendCommand = new ReleaseRecommend($gitInformation, $releaseRecommender);
-$recommendWrapper = new Command('toolkit:release:recommend');
+$recommendWrapper = new Command('recommend');
 $recommendWrapper->setCode($recommendCommand);
 $recommendCommand->configure($recommendWrapper);
 
-$application->addCommands([$changeLogWrapper, $initWrapper, $releaseWrapper, $recommendWrapper]);
+$application->addCommands([$whatsNewWrapper, $fullChangelogWrapper, $initWrapper, $recommendWrapper]);
 
 $application->run();

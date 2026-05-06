@@ -1,6 +1,6 @@
 <?php
 
-namespace Chance\GitToolkit\Test;
+namespace Chance\ReleaseScribe\Test;
 
 use CzProject\GitPhp\Git;
 use CzProject\GitPhp\GitRepository;

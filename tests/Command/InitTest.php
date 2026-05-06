@@ -1,10 +1,10 @@
 <?php
 
-namespace Chance\GitToolkit\Test\Command;
+namespace Chance\ReleaseScribe\Test\Command;
 
-use Chance\GitToolkit\Command\Init;
-use Chance\GitToolkit\GitInformation;
-use Chance\GitToolkit\Service\ChangeLogService;
+use Chance\ReleaseScribe\Command\Init;
+use Chance\ReleaseScribe\GitInformation;
+use Chance\ReleaseScribe\Service\ChangeLogService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Command\Command;
@@ -45,7 +45,7 @@ class InitTest extends TestCase
 
     private function getCommandTester(Init $command): CommandTester
     {
-        $wrapper = new Command('toolkit:init');
+        $wrapper = new Command('init');
         $wrapper->setCode($command);
         $command->configure($wrapper);
 

@@ -30,9 +30,9 @@
  *
  */
 
-namespace Chance\GitToolkit\Command;
+namespace Chance\ReleaseScribe\Command;
 
-use Chance\GitToolkit\Service\ChangeLogService;
+use Chance\ReleaseScribe\Service\ChangeLogService;
 use CzProject\GitPhp\GitException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -42,7 +42,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Exception\RuntimeException;
 
-#[AsCommand(name: 'toolkit:init', description: 'initialize changelog for the project', help: 'This command allows you to initialize a changelog. It will generate a complete history if tags exist, or an initial release if no tags exist.', aliases: ['toolkit:initialize'])]
+#[AsCommand(name: 'init', description: 'initialize changelog for the project', help: 'This command allows you to initialize a changelog. It will generate a complete history if tags exist, or an initial release if no tags exist.')]
 class Init
 {
     public function __construct(
@@ -92,7 +92,7 @@ class Init
             );
 
             return Command::SUCCESS;
-        } catch (GitException|RuntimeException|\RuntimeException $e) {
+        } catch (GitException | RuntimeException | \RuntimeException $e) {
             $this->renderError($output, $e);
 
             return Command::FAILURE;

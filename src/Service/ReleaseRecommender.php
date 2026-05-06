@@ -1,9 +1,9 @@
 <?php
 
-namespace Chance\GitToolkit\Service;
+namespace Chance\ReleaseScribe\Service;
 
-use Chance\GitToolkit\Data\ConventionalCommit;
-use Chance\GitToolkit\Data\ReleaseRecommendation;
+use Chance\ReleaseScribe\Data\ConventionalCommit;
+use Chance\ReleaseScribe\Data\ReleaseRecommendation;
 
 class ReleaseRecommender
 {

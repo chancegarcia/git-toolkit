@@ -1,10 +1,10 @@
 <?php
 
-namespace Chance\GitToolkit\Test\Service;
+namespace Chance\ReleaseScribe\Test\Service;
 
-use Chance\GitToolkit\Generator\GeneratorInterface;
-use Chance\GitToolkit\GitInformation;
-use Chance\GitToolkit\Service\ChangeLogService;
+use Chance\ReleaseScribe\Generator\GeneratorInterface;
+use Chance\ReleaseScribe\GitInformation;
+use Chance\ReleaseScribe\Service\ChangeLogService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use SplFileObject;

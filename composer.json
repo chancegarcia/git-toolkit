@@ -1,15 +1,17 @@
 {
-    "name": "chancegarcia/git-toolkit",
-    "description": "create a change log based on your commit history and tags",
+    "name": "chancegarcia/release-scribe",
+    "description": "ReleaseScribe: \"What's new\", changelog, release notes, and SemVer recommendation tool",
   "minimum-stability": "stable",
   "prefer-stable": true,
     "type": "project",
     "keywords": [
-        "git tags",
-        "commit history",
-        "change log"
+        "release notes",
+        "changelog",
+        "whats-new",
+        "semver",
+        "release recommendation"
     ],
-    "homepage": "https://github.com/chancegarcia/git-toolkit",
+    "homepage": "https://github.com/chancegarcia/release-scribe",
     "license": "MIT",
     "authors": [
         {
@@ -19,8 +21,8 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/chancegarcia/git-toolkit/issues",
-        "source": "https://github.com/chancegarcia/git-toolkit"
+        "issues": "https://github.com/chancegarcia/release-scribe/issues",
+        "source": "https://github.com/chancegarcia/release-scribe"
     },
     "require": {
       "php": ">=8.4",
@@ -52,16 +54,16 @@
     ]
     },
     "bin": [
-        "bin/toolkit"
+        "bin/release-scribe"
     ],
     "autoload": {
         "psr-4": {
-            "Chance\\GitToolkit\\": "src"
+            "Chance\\ReleaseScribe\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Chance\\GitToolkit\\Test\\": "tests"
+            "Chance\\ReleaseScribe\\Test\\": "tests"
         }
     }
 }

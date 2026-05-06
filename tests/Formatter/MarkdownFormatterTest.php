@@ -30,9 +30,9 @@
  *
  */
 
-namespace Chance\GitToolkit\Test\Formatter;
+namespace Chance\ReleaseScribe\Test\Formatter;
 
-use Chance\GitToolkit\Formatter\MarkdownFormatter;
+use Chance\ReleaseScribe\Formatter\MarkdownFormatter;
 use PHPUnit\Framework\TestCase;
 
 class MarkdownFormatterTest extends TestCase

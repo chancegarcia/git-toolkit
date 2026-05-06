@@ -1,6 +1,6 @@
 <?php
 
-namespace Chance\GitToolkit\Collector;
+namespace Chance\ReleaseScribe\Collector;
 
 interface CollectorInterface
 {

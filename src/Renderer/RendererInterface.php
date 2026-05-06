@@ -1,9 +1,9 @@
 <?php
 
-namespace Chance\GitToolkit\Renderer;
+namespace Chance\ReleaseScribe\Renderer;
 
-use Chance\GitToolkit\Data\ChangeLogData;
-use Chance\GitToolkit\Data\ConventionalCommit;
+use Chance\ReleaseScribe\Data\ChangeLogData;
+use Chance\ReleaseScribe\Data\ConventionalCommit;
 
 interface RendererInterface
 {

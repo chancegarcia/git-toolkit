@@ -30,9 +30,9 @@
  *
  */
 
-namespace Chance\GitToolkit\Command;
+namespace Chance\ReleaseScribe\Command;
 
-use Chance\GitToolkit\Service\ChangeLogService;
+use Chance\ReleaseScribe\Service\ChangeLogService;
 use CzProject\GitPhp\GitException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -43,9 +43,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Exception\RuntimeException;
 
 #[AsCommand(
-    name: 'toolkit:changelog',
+    name: 'whats-new',
     description: 'generate changelog from git commit history',
-    help: 'This command allows you to generate a changelog from your git commit history'
+    help: 'This command allows you to generate a "What\'s new" changelog from your git commit history'
 )]
 class ChangeLog
 {
@@ -67,14 +67,13 @@ class ChangeLog
     public function __invoke(
         InputInterface $input,
         OutputInterface $output,
-    ): int
-    {
+    ): int {
         $header = $input->getArgument('header');
         $newTag = $input->getOption('new-tag');
         $previousTag = $input->getOption('previous-tag');
         $outputDir = $input->getOption('output-dir');
         $filename = $input->getOption('filename');
-        $mode = $input->getOption('mode');
+        $mode = $input->hasOption('mode') ? $input->getOption('mode') : 'whats-new';
 
         if (is_string($previousTag) && $newTag === null) {
             $output->writeln('<error>error: --previous-tag requires --new-tag because the new tag is used as the changelog heading.</error>');
@@ -118,7 +117,7 @@ class ChangeLog
                 $isDefault = $outputDir === null && $filename === null;
                 if ($isDefault) {
                     $output->writeln(
-                        '<error>No changelog has been initialized for this project. Run "toolkit:init" to create one, or "toolkit:initialize" if you prefer the alias.</error>'
+                        '<error>No changelog has been initialized for this project. Run "release-scribe init" to create one.</error>'
                     );
 
                     return Command::FAILURE;
@@ -130,7 +129,7 @@ class ChangeLog
             $output->writeln(sprintf("success: file '%s' has been created", $this->changeLogService->getFullPath()));
 
             return Command::SUCCESS;
-        } catch (GitException|RuntimeException|\RuntimeException $e) {
+        } catch (GitException | RuntimeException | \RuntimeException $e) {
             $this->renderError($output, $e);
 
             return Command::FAILURE;

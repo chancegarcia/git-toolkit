@@ -1,6 +1,6 @@
 <?php
 
-namespace Chance\GitToolkit\Generator;
+namespace Chance\ReleaseScribe\Generator;
 
 use SplFileObject;
 

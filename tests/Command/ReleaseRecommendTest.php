@@ -1,10 +1,10 @@
 <?php
 
-namespace Chance\GitToolkit\Tests\Command;
+namespace Chance\ReleaseScribe\Tests\Command;
 
-use Chance\GitToolkit\Command\ReleaseRecommend;
-use Chance\GitToolkit\GitInformation;
-use Chance\GitToolkit\Service\ReleaseRecommender;
+use Chance\ReleaseScribe\Command\ReleaseRecommend;
+use Chance\ReleaseScribe\GitInformation;
+use Chance\ReleaseScribe\Service\ReleaseRecommender;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -23,7 +23,7 @@ class ReleaseRecommendTest extends TestCase
         ]);
 
         $command = new ReleaseRecommend($this->gitInformation, $this->recommender);
-        $wrapper = new Command('toolkit:release:recommend');
+        $wrapper = new Command('recommend');
         $wrapper->setCode($command);
         $command->configure($wrapper);
 
@@ -43,7 +43,7 @@ class ReleaseRecommendTest extends TestCase
         $this->gitInformation->method('getCommitRange')->willReturn([]);
 
         $command = new ReleaseRecommend($this->gitInformation, $this->recommender);
-        $wrapper = new Command('toolkit:release:recommend');
+        $wrapper = new Command('recommend');
         $wrapper->setCode($command);
         $command->configure($wrapper);
 

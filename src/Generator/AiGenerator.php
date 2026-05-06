@@ -1,9 +1,9 @@
 <?php
 
-namespace Chance\GitToolkit\Generator;
+namespace Chance\ReleaseScribe\Generator;
 
 use SplFileObject;
-use Chance\GitToolkit\Collector\CollectorInterface;
+use Chance\ReleaseScribe\Collector\CollectorInterface;
 
 class AiGenerator implements GeneratorInterface
 {

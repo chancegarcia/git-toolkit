@@ -13,7 +13,7 @@ The changelog generation process follows these steps:
 
 ## Data Model
 
-The renderer receives a `Chance\GitToolkit\Data\ChangeLogData` object, which contains:
+The renderer receives a `Chance\ReleaseScribe\Data\ChangeLogData` object, which contains:
 
 - `getMainHeader()`: The primary title for the changelog.
 - `getReleases()`: An array of `Release` objects.
@@ -35,13 +35,13 @@ Each `Section` object contains:
 
 ## Creating a Custom Renderer
 
-To create a custom renderer, implement the `Chance\GitToolkit\Renderer\RendererInterface`:
+To create a custom renderer, implement the `Chance\ReleaseScribe\Renderer\RendererInterface`:
 
 ```php
 namespace App\Renderer;
 
-use Chance\GitToolkit\Data\ChangeLogData;
-use Chance\GitToolkit\Renderer\RendererInterface;
+use Chance\ReleaseScribe\Data\ChangeLogData;
+use Chance\ReleaseScribe\Renderer\RendererInterface;
 
 class MyCustomRenderer implements RendererInterface
 {

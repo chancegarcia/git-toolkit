@@ -1,6 +1,6 @@
 <?php
 
-namespace Chance\GitToolkit\Service;
+namespace Chance\ReleaseScribe\Service;
 
 class ConfigReader
 {
