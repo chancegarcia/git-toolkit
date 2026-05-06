@@ -1,4 +1,34 @@
-# Git-Toolkit
+# ReleaseScribe
+
+## 2.0.0
+
+### Rebrand and Identity
+- **Rebrand from Git Toolkit to ReleaseScribe**: Complete transition of the project identity, including package name, binary name, and namespace.
+- **New Package Identity**: Now available as `chancegarcia/release-scribe`.
+- **New Binary Name**: The CLI tool is now invoked via `release-scribe`.
+- **Namespace Change**: All code has been migrated to the `Chance\ReleaseScribe` namespace.
+- **Project Split**: ReleaseScribe is now a standalone tool focused exclusively on release communication and recommendation, separated from the ReleasePilot workflow orchestrator.
+
+### New Features and Commands
+- **New Command Suite**:
+    - `whats-new`: Generates release notes for the current/latest release.
+    - `changelog`: Generates a full-history changelog.
+    - `recommend`: Provides a deterministic SemVer release level recommendation (major, minor, or patch) based on commit history.
+    - `init`: Initializes a new changelog file for a project.
+- **Conventional Commits Support**: Added deterministic parsing of Conventional Commits for structured changelog generation and SemVer recommendations.
+- **AI-Powered Generation**: Introduced the foundational plumbing for an experimental AI generator to support more descriptive, human-readable release notes in future updates.
+- **Environment Configuration**: Added support for `.env` files for easier local configuration and sensitive credential management.
+- **Extensible Rendering**: Redesigned renderer architecture to support custom output formats and structured data models.
+
+### Maintenance and Infrastructure
+- **PHP 8.4 Requirement**: Updated the minimum supported PHP version to 8.4 to leverage modern language features.
+- **GitHub Actions Integration**: Migrated CI/CD from Travis CI to GitHub Actions for improved reliability and faster feedback loops.
+- **Enhanced Testing**: Expanded test coverage with new integration tests for CLI commands and configuration loading.
+
+### Breaking Changes
+- **No Backward Compatibility**: No aliases or wrappers are provided for the old `git-toolkit` binary or package names. Users must update their installations and scripts to use `release-scribe`.
+- **Namespace Migration**: Existing integrations using the code as a library must update references to the new `Chance\ReleaseScribe` namespace.
+- **Config Migration**: Configuration files and environment variables have been updated to reflect the new identity.
 
 ## 1.1.1
 style: fix to adhere to psr12
