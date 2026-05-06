@@ -302,10 +302,7 @@ If the alternate target file or its directory does not exist, the tool will atte
 ## Development
 
 For planned future direction and the development roadmap, see [docs/roadmap.md](docs/roadmap.md).
-
-### AI and Junie Operating Guidelines
-
-See [docs/ai-guidelines.md](docs/ai-guidelines.md) for repository identity and boundary rules.
+Internal planning documents are kept in the coordination repository.
 
 ### Repository Boundary Rules
 
