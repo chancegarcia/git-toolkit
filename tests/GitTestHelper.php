@@ -2,7 +2,6 @@
 
 namespace Chance\ReleaseScribe\Test;
 
-use CzProject\GitPhp\Git;
 use CzProject\GitPhp\GitRepository;
 use Symfony\Component\Filesystem\Filesystem;
 

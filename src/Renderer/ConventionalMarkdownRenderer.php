@@ -6,6 +6,7 @@ use Chance\ReleaseScribe\Data\ChangeLogData;
 use Chance\ReleaseScribe\Data\ConventionalCommit;
 use Chance\ReleaseScribe\Data\Release;
 use Chance\ReleaseScribe\Formatter\MarkdownFormatter;
+use Chance\ReleaseScribe\Data\Section;
 
 class ConventionalMarkdownRenderer implements RendererInterface
 {
@@ -65,7 +66,7 @@ class ConventionalMarkdownRenderer implements RendererInterface
         foreach ($data as $tag => $groups) {
             $sections = [];
             foreach ($groups as $label => $commits) {
-                $sections[] = new \Chance\ReleaseScribe\Data\Section($label, (array)$commits);
+                $sections[] = new Section($label, (array)$commits);
             }
             $releases[] = new Release($tag, $sections);
         }

@@ -7,8 +7,9 @@ use Chance\ReleaseScribe\Service\ChangeLogService;
 use CzProject\GitPhp\GitException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
+use SplFileObject;
+use Symfony\Component\Console\Command\Command;
 
 class ChangeLogTest extends TestCase
 {
@@ -18,14 +19,14 @@ class ChangeLogTest extends TestCase
     protected function setUp(): void
     {
         $this->changeLogServiceMock = $this->createMock(ChangeLogService::class);
-        $this->splFileObjectMock = $this->getMockBuilder(\SplFileObject::class)
+        $this->splFileObjectMock = $this->getMockBuilder(SplFileObject::class)
             ->setConstructorArgs(['php://memory', 'wb+'])
             ->getMock();
     }
 
     private function getCommandTester(ChangeLog $command): CommandTester
     {
-        $wrapper = new \Symfony\Component\Console\Command\Command('whats-new');
+        $wrapper = new Command('whats-new');
         $wrapper->setCode($command);
         $command->configure($wrapper);
         return new CommandTester($wrapper);
@@ -48,7 +49,7 @@ class ChangeLogTest extends TestCase
             ->willReturn($this->splFileObjectMock);
         $this->changeLogServiceMock->expects(self::once())
                              ->method('writeChangeLog')
-            ->with($this->isInstanceOf(\SplFileObject::class), null, null);
+            ->with($this->isInstanceOf(SplFileObject::class), null, null);
 
         $changeLogCommand = new ChangeLog($this->changeLogServiceMock); // @phpstan-ignore-line
 
@@ -107,7 +108,7 @@ class ChangeLogTest extends TestCase
             ->willReturn($this->splFileObjectMock);
         $this->changeLogServiceMock->expects(self::once())
                              ->method('writeChangeLog')
-            ->with($this->isInstanceOf(\SplFileObject::class), 'v1.0.0', null);
+            ->with($this->isInstanceOf(SplFileObject::class), 'v1.0.0', null);
 
         $changeLogCommand = new ChangeLog($this->changeLogServiceMock); // @phpstan-ignore-line
 
@@ -126,7 +127,7 @@ class ChangeLogTest extends TestCase
             ->willReturn($this->splFileObjectMock);
         $this->changeLogServiceMock->expects(self::once())
             ->method('writeChangeLog')
-            ->with($this->isInstanceOf(\SplFileObject::class), 'v2.0.0', 'v1.9.0');
+            ->with($this->isInstanceOf(SplFileObject::class), 'v2.0.0', 'v1.9.0');
 
         $changeLogCommand = new ChangeLog($this->changeLogServiceMock); // @phpstan-ignore-line
 

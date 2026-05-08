@@ -131,4 +131,21 @@ No backward compatibility wrappers or aliases are provided for the old identity.
 ## Development
 
 For planned future direction, see [docs/roadmap.md](docs/roadmap.md).
-Available composer scripts: `composer qa`, `composer test`, `composer lint`, `composer cs`, `composer stan`.
+
+### Coding Standards
+
+This project follows [PSR-12](https://www.php-fig.org/psr/psr-12/) and workspace-default [PHP Coding Standards](../docs/ai-guidelines/php-coding-standards.md). 
+
+Additionally, we use `slevomat/coding-standard` to enforce:
+- Removal of unused `use` statements.
+- Cleanup of unnecessary fully qualified class names.
+
+- **Check standards:** `composer cs:check`
+- **Fix standards:** `composer cs:fix`
+- **Run all QA:** `composer qa` (includes linting, coding standards, static analysis, and tests)
+
+### Other Composer Scripts
+
+- `composer test`: Run PHPUnit tests.
+- `composer lint`: Run parallel-lint.
+- `composer stan`: Run PHPStan static analysis.

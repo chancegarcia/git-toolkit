@@ -25,7 +25,7 @@ Local readiness tasks and decisions.
   - [x] `composer validate`
   - [x] PHPUnit
   - [x] PHPStan/static analysis, if configured
-  - [x] coding standards/linting, if configured (Verified: All functional coding standard issues fixed; minor line-length warnings remain but do not block release)
+  - [x] coding standards/linting, if configured (Verified: All functional coding standard issues fixed; minor line-length warnings remain but do not block release. Fixed RuntimeException FQN errors during 2026-05-08 preflight.)
 - [x] Review CI, coverage, badges, and external integration references for hardcoded old repository, package, or binary names. `Owner: AI/local`
 - [x] Confirm required secrets/tokens/integration access for GitHub Actions, Packagist, Coveralls, and any other services. `Owner: Human/external`
 - [x] Confirm external task order and rollback expectations. `Owner: Human/external`
@@ -83,3 +83,4 @@ Announcement and portfolio/update tasks.
 - 2026-05-05: Added 2.0.0 section to `changelog.md`.
 - 2026-05-05: Drafted `docs/rebrand-announcement-draft.md`.
 - 2026-05-05: Final local rebrand consistency check completed.
+- 2026-05-08: Re-ran preflight after coding standards update. Fixed RuntimeException FQN errors in `Init.php` and `ChangeLog.php`. Verified identity consistency and documentation across `release-scribe/` and `release-pilot/`. All QA tools pass (except minor line-length warnings).

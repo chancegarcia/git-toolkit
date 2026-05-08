@@ -8,6 +8,7 @@ use Chance\ReleaseScribe\Service\GitRepositoryFactory;
 use Chance\ReleaseScribe\Test\GitTestHelper;
 use PHPUnit\Framework\TestCase;
 use SplFileObject;
+use CzProject\GitPhp\GitException;
 
 class ChangeLogIntegrationTest extends TestCase
 {
@@ -90,7 +91,7 @@ class ChangeLogIntegrationTest extends TestCase
         $gitInfo = new GitInformation($factory);
         $service = new ChangeLogService($gitInfo);
 
-        $this->expectException(\CzProject\GitPhp\GitException::class);
+        $this->expectException(GitException::class);
         $service->getGitInformation()->getCurrentCommit();
     }
 

@@ -41,6 +41,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Exception\RuntimeException;
+use Throwable;
 
 #[AsCommand(name: 'init', description: 'initialize changelog for the project', help: 'This command allows you to initialize a changelog. It will generate a complete history if tags exist, or an initial release if no tags exist.')]
 class Init
@@ -92,18 +93,18 @@ class Init
             );
 
             return Command::SUCCESS;
-        } catch (GitException | RuntimeException | \RuntimeException $e) {
+        } catch (GitException | RuntimeException $e) {
             $this->renderError($output, $e);
 
             return Command::FAILURE;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->renderError($output, $e, 'An unexpected error occurred.');
 
             return Command::FAILURE;
         }
     }
 
-    private function renderError(OutputInterface $output, \Throwable $e, ?string $customMessage = null): void
+    private function renderError(OutputInterface $output, Throwable $e, ?string $customMessage = null): void
     {
         if ($e instanceof GitException) {
             $output->writeln(

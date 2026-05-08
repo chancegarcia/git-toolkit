@@ -9,6 +9,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
+use SplFileObject;
 
 class InitTest extends TestCase
 {
@@ -102,7 +103,7 @@ class InitTest extends TestCase
     {
         $this->changeLogServiceMock = $this->createMock(ChangeLogService::class);
         $this->gitInformationMock = $this->createMock(GitInformation::class);
-        $this->splFileObjectMock = $this->getMockBuilder(\SplFileObject::class)->setConstructorArgs(
+        $this->splFileObjectMock = $this->getMockBuilder(SplFileObject::class)->setConstructorArgs(
             ['php://memory', 'wb+']
         )->getMock()
         ;

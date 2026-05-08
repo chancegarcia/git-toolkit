@@ -5,6 +5,11 @@ namespace Chance\ReleaseScribe\Generator;
 use Chance\ReleaseScribe\Collector\CollectorInterface;
 use Chance\ReleaseScribe\Renderer\RendererInterface;
 use SplFileObject;
+use Chance\ReleaseScribe\Renderer\LegacyRenderer;
+use Chance\ReleaseScribe\Renderer\ConventionalMarkdownRenderer;
+use Chance\ReleaseScribe\Data\Section;
+use Chance\ReleaseScribe\Data\Release;
+use Chance\ReleaseScribe\Data\ChangeLogData;
 
 class LegacyGenerator implements GeneratorInterface
 {
@@ -24,16 +29,16 @@ class LegacyGenerator implements GeneratorInterface
         $data = $this->collector->collect($newTag, $previousTag, $fullHistory);
         $processedData = $this->processData($data);
 
-        if ($this->renderer instanceof \Chance\ReleaseScribe\Renderer\LegacyRenderer || $this->renderer instanceof \Chance\ReleaseScribe\Renderer\ConventionalMarkdownRenderer) {
+        if ($this->renderer instanceof LegacyRenderer || $this->renderer instanceof ConventionalMarkdownRenderer) {
             $content = $this->renderer->render($processedData, $this->mainHeader);
         } else {
             // Attempt to wrap in ChangeLogData for modern renderers
             $releases = [];
             foreach ($processedData as $tag => $commits) {
-                $sections = [new \Chance\ReleaseScribe\Data\Section('Commits', (array)$commits)];
-                $releases[] = new \Chance\ReleaseScribe\Data\Release($tag, $sections);
+                $sections = [new Section('Commits', (array)$commits)];
+                $releases[] = new Release($tag, $sections);
             }
-            $changeLogData = new \Chance\ReleaseScribe\Data\ChangeLogData($this->mainHeader, $releases);
+            $changeLogData = new ChangeLogData($this->mainHeader, $releases);
             $content = $this->renderer->render($changeLogData);
         }
 

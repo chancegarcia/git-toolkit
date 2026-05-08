@@ -37,21 +37,22 @@
       "php-coveralls/php-coveralls": "^2.7",
       "php-parallel-lint/php-parallel-lint": "^1.4",
       "php-parallel-lint/php-console-highlighter": "^1.0",
-      "phpstan/phpstan": "^1.12"
+      "phpstan/phpstan": "^1.12",
+      "slevomat/coding-standard": "^8.15"
     },
   "scripts": {
-    "test": "phpunit",
-    "test:coverage": "phpunit --coverage-html build/coverage",
-    "lint": "parallel-lint src tests",
-    "cs": "phpcs src tests --standard=PSR12",
-    "cs:fix": "phpcbf src tests --standard=PSR12",
-    "stan": "phpstan analyse src tests --level 5",
-    "qa": [
-      "@lint",
-      "@cs",
-      "@stan",
-      "@test"
-    ]
+      "test": "phpunit",
+      "test:coverage": "phpunit --coverage-html build/coverage",
+      "lint": "parallel-lint src tests",
+      "cs:check": "phpcs src tests --standard=phpcs.xml.dist",
+      "cs:fix": "phpcbf src tests --standard=phpcs.xml.dist",
+      "stan": "phpstan analyse src tests --level 5",
+      "qa": [
+        "@lint",
+        "@cs:check",
+        "@stan",
+        "@test"
+      ]
     },
     "bin": [
         "bin/release-scribe"
@@ -64,6 +65,11 @@
     "autoload-dev": {
         "psr-4": {
             "Chance\\ReleaseScribe\\Test\\": "tests"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
         }
     }
 }

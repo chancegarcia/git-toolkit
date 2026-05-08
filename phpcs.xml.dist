@@ -4,6 +4,28 @@
     <arg name="colors"/>
     <arg name="extensions" value="php"/>
     <rule ref="PSR12"/>
+
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+
+    <config name="installed_paths" value="vendor/slevomat/coding-standard"/>
+
+    <rule ref="SlevomatCodingStandard.Namespaces.UnusedUses">
+        <properties>
+            <property name="searchAnnotations" value="true"/>
+        </properties>
+    </rule>
+    <rule ref="SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly">
+        <properties>
+            <property name="allowFallbackGlobalFunctions" value="true"/>
+            <property name="allowFallbackGlobalConstants" value="true"/>
+            <property name="searchAnnotations" value="true"/>
+        </properties>
+    </rule>
+    <rule ref="SlevomatCodingStandard.Namespaces.UseFromSameNamespace"/>
+
+    <rule ref="Internal.NoCodeFound">
+        <severity>0</severity>
+    </rule>
     <file>src</file>
     <file>tests</file>
     <exclude-pattern>vendor/*</exclude-pattern>

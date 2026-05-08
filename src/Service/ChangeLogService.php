@@ -35,6 +35,7 @@ namespace Chance\ReleaseScribe\Service;
 use Chance\ReleaseScribe\Generator\GeneratorInterface;
 use Chance\ReleaseScribe\GitInformation;
 use SplFileObject;
+use RuntimeException;
 
 class ChangeLogService
 {
@@ -143,7 +144,7 @@ class ChangeLogService
         $this->fullHistory = $fullHistory;
     }
 
-    public function writeChangeLog(\SplFileObject $file, ?string $newTag = null, ?string $previousTag = null): void
+    public function writeChangeLog(SplFileObject $file, ?string $newTag = null, ?string $previousTag = null): void
     {
         $this->getGenerator()->generate($file, $newTag, $previousTag, $this->fullHistory);
     }
@@ -165,7 +166,7 @@ class ChangeLogService
 
         if (!is_dir($directory) && $directory !== '.' && $directory !== '') {
             if (!mkdir($directory, 0777, true) && !is_dir($directory)) {
-                throw new \RuntimeException(sprintf('Directory "%s" was not created', $directory));
+                throw new RuntimeException(sprintf('Directory "%s" was not created', $directory));
             }
         }
 
