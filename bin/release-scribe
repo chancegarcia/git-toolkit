@@ -87,7 +87,7 @@ use Chance\ReleaseScribe\Service\GitRepositoryFactory;
 use Chance\ReleaseScribe\Service\ReleaseRecommender;
 use Symfony\Component\Console\Command\Command;
 
-$application = new Application('ReleaseScribe', '1.0.0');
+$application = new Application('ReleaseScribe', '2.0.0');
 
 $gitRepoFactory = new GitRepositoryFactory($dir);
 $gitInformation = new GitInformation($gitRepoFactory);
