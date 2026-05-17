@@ -59,9 +59,9 @@ The tool analyzes commits since the last tag to recommend the next version bump 
 
 - **Command:** `release-scribe recommend`
 
-### Phase 5: AI-Assisted Release Communication (Planned)
+### Phase 5: AI-Assisted Release Communication (Planned — post-v2)
 
-AI will be used to enhance the quality of release communication by summarizing commits into human-readable prose.
+AI will be used to enhance the quality of release communication by summarizing commits into human-readable prose. This phase begins after the v2.0.0 release.
 
 **AI Principles:**
 

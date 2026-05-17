@@ -1,7 +1,12 @@
 # ReleaseScribe
 
 ![CI](https://github.com/chancegarcia/release-scribe/actions/workflows/ci.yml/badge.svg)
-[![Latest Stable Version](https://badgen.net/packagist/v/chancegarcia/release-scribe)](//packagist.org/packages/chancegarcia/release-scribe) ![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/chancegarcia/release-scribe) [![Total Downloads](https://poser.pugx.org/chancegarcia/release-scribe/downloads)](//packagist.org/packages/chancegarcia/release-scribe) [![Latest Unstable Version](https://poser.pugx.org/chancegarcia/release-scribe/v/unstable)](//packagist.org/packages/chancegarcia/release-scribe) [![License](https://poser.pugx.org/chancegarcia/release-scribe/license)](//packagist.org/packages/chancegarcia/release-scribe) [![PHP](https://badgen.net/packagist/php/chancegarcia/release-scribe)](//php.net)
+[![Latest Stable Version](https://badgen.net/packagist/v/chancegarcia/release-scribe)](//packagist.org/packages/chancegarcia/release-scribe) 
+![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/chancegarcia/release-scribe) 
+[![Total Downloads](https://poser.pugx.org/chancegarcia/release-scribe/downloads)](//packagist.org/packages/chancegarcia/release-scribe) 
+[![Latest Unstable Version](https://poser.pugx.org/chancegarcia/release-scribe/v/unstable)](//packagist.org/packages/chancegarcia/release-scribe) 
+[![License](https://poser.pugx.org/chancegarcia/release-scribe/license)](//packagist.org/packages/chancegarcia/release-scribe) 
+[![PHP](https://badgen.net/packagist/php/chancegarcia/release-scribe)](//php.net)
 
 ---
 
@@ -93,8 +98,8 @@ ReleaseScribe supports `.env` files.
 - `PROJECT_ROOT`: the directory where the repository resides.
 - `PROJECT_NAME`: The main header value.
 - `CHANGELOG_USE_CONVENTIONAL_COMMITS`: Whether to use Conventional Commits parsing (default: `true`).
-- `OUTPUT_FILENAME`: name of the markdown file to write out (default: `changelog.md`).
-- `OUTPUT_DIRECTORY`: path to where the markdown file should be written.
+- `OUTPUT_FILENAME`: name of the Markdown file to write out (default: `changelog.md`).
+- `OUTPUT_DIRECTORY`: path to where the Markdown file should be written.
 
 ### PHP Config file
 
@@ -108,9 +113,9 @@ return [
 ];
 ```
 
-## Future Roadmap: Phase 5 AI
+## Future Roadmap: Phase 5 AI (post-v2)
 
-AI-assisted release communication (e.g., summarizing commits into human-readable prose) is planned for **Phase 5**. ReleaseScribe's deterministic parsing and recommendation remain the authoritative foundation for these future AI features.
+AI-assisted release communication (e.g., summarizing commits into human-readable prose) is planned for **Phase 5**, after the v2.0.0 release. ReleaseScribe's deterministic parsing and recommendation remain the authoritative foundation for these future AI features. Phase 5 is not part of the v2 release.
 
 ## Migration from GitToolkit
 
@@ -130,7 +135,7 @@ No backward compatibility wrappers or aliases are provided for the old identity.
 
 ## Development
 
-For planned future direction, see [docs/roadmap.md](docs/roadmap.md).
+For our planned future direction, see [docs/roadmap.md](docs/roadmap.md).
 
 ### Coding Standards
 
