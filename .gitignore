@@ -46,3 +46,6 @@ Thumbs.db
 
 # Vagrant
 /.vagrant
+
+# Machine-specific Claude Code permissions
+.claude/settings.local.json
