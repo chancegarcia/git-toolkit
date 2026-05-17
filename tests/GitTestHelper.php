@@ -33,20 +33,24 @@ class GitTestHelper
 
     private function runGit(array $args): void
     {
-        $command = 'git ';
-        foreach ($args as $arg) {
-            $command .= escapeshellarg($arg) . ' ';
-        }
+        $command = 'git ' . implode(' ', array_map('escapeshellarg', $args));
 
         $process = proc_open($command, [
-            1 => ['pipe', 'w'],
+            0 => ['file', '/dev/null', 'r'],
+            1 => ['file', '/dev/null', 'w'],
             2 => ['pipe', 'w'],
-        ], $pipes, $this->repoPath);
+        ], $pipes, $this->repoPath, ['GIT_TERMINAL_PROMPT' => '0']);
 
-        if (is_resource($process)) {
-            fclose($pipes[1]);
-            fclose($pipes[2]);
-            proc_close($process);
+        if (!is_resource($process)) {
+            throw new \RuntimeException("Failed to start process: $command");
+        }
+
+        $stderr = stream_get_contents($pipes[2]);
+        fclose($pipes[2]);
+        $exitCode = proc_close($process);
+
+        if ($exitCode !== 0) {
+            throw new \RuntimeException("git command failed (exit $exitCode): $command\n$stderr");
         }
     }
 

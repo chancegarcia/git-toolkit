@@ -4,6 +4,7 @@ namespace Chance\ReleaseScribe\Tests\Service;
 
 use Chance\ReleaseScribe\Service\ConventionalCommitParser;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class ConventionalCommitParserTest extends TestCase
 {
@@ -61,9 +62,7 @@ class ConventionalCommitParserTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provideCommitMessages
-     */
+    #[DataProvider('provideCommitMessages')]
     public function testParse(
         string $message,
         ?string $expectedType,
