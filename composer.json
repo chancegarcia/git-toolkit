@@ -21,8 +21,10 @@
         }
     ],
     "support": {
+        "docs": "https://github.com/chancegarcia/release-scribe",
         "issues": "https://github.com/chancegarcia/release-scribe/issues",
         "source": "https://github.com/chancegarcia/release-scribe"
+
     },
     "require": {
       "php": ">=8.4",
