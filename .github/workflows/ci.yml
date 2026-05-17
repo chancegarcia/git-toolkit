@@ -49,5 +49,12 @@ jobs:
       - name: Run static analysis
         run: composer run-script stan
 
+      - name: Configure git for integration tests
+        run: |
+          git config --global safe.directory '*'
+          git config --global user.email "ci@example.com"
+          git config --global user.name "CI Runner"
+          git config --global init.defaultBranch main
+
       - name: Run tests
         run: composer run-script test
