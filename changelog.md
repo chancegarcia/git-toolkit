@@ -1,7 +1,105 @@
-# Git-Toolkit
+# ReleaseScribe
 
-## 1.1.1
-style: fix to adhere to psr12
+## v2.0.0
+
+### Summary
+
+- License changed from MIT (v1.x) to Apache 2.0 as part of the major version rebrand.
+- Complete rebrand from `git-toolkit` to `release-scribe` — new package name, binary, and namespace with no backward-compatibility shims.
+- Four new CLI commands: `whats-new`, `changelog`, `recommend`, and `init` replace the old single-command structure.
+- Conventional Commits parsing added for deterministic SemVer recommendations and structured changelog generation.
+- Renderer architecture overhauled with a `ChangeLogData` model, making custom output formats straightforward.
+- PHP 8.4 is now the minimum required version; CI migrated from Travis CI to GitHub Actions.
+
+### Developer Details
+
+#### Identity and Rebrand
+- License changed from MIT to Apache 2.0. Per-file license headers removed; a single `LICENSE` file now covers the entire project.
+- Package renamed from `chancegarcia/git-toolkit` to `chancegarcia/release-scribe`.
+- Binary renamed from `git-toolkit` to `release-scribe`.
+- All source namespaces migrated from the old root to `Chance\ReleaseScribe`.
+- ReleaseScribe is now a standalone tool; guided release workflow orchestration belongs to ReleasePilot (future planned product).
+
+#### New Commands
+- `whats-new` — generates release notes for the current or latest release.
+- `changelog` — generates a full-history changelog with support for range modes and `--full-history`.
+- `recommend` — outputs a deterministic SemVer release level (`major`, `minor`, or `patch`) based on commit history; impact mapping is configurable.
+- `init` — initializes a new changelog file for a project.
+- All commands wrapped with Symfony Console for consistent argument/option handling and help output.
+
+#### Conventional Commits
+- Added `ConventionalCommitsParser` for structured commit parsing.
+- `ReleaseRecommender` service derives a SemVer recommendation from parsed commit history.
+- Impact mapping between commit types and release levels is configurable.
+
+#### Data Models and Rendering
+- New `ChangeLogData` and release data models decouple generation from rendering.
+- `LegacyRenderer` and `LegacyGenerator` updated to support both modern `ChangeLogData` and legacy data structures for gradual migration.
+- Custom renderers can now be injected for alternative output formats.
+
+#### AI Generator (Experimental)
+- `AiGenerator` class and supporting infrastructure added as foundational plumbing for AI-powered release notes. Not yet production-ready; gated for post-v2.0.0 work.
+
+#### Configuration
+- `.env` file loading via `symfony/dotenv` for local configuration and credential management.
+- `GitRepositoryFactory` introduced for cleaner dependency injection of the Git client.
+
+#### Infrastructure
+- PHP minimum bumped to `>=8.4`.
+- CI migrated from Travis CI to GitHub Actions; matrix covers multiple PHP versions and OS targets.
+- Integration tests added for CLI commands, config loading, and behavior outside Git repositories.
+- Improved Git error handling and user-facing error messages in `changelog` and `init` commands.
+
+### Breaking Changes
+
+- **License changed**: v1.x was MIT. v2.0.0 and later is Apache 2.0. Review the new `LICENSE` file before upgrading.
+- **Package renamed**: `chancegarcia/git-toolkit` → `chancegarcia/release-scribe`. No compatibility aliases provided.
+- **Binary renamed**: `git-toolkit` → `release-scribe`. Existing scripts invoking `git-toolkit` will break.
+- **Namespace changed**: All classes moved to `Chance\ReleaseScribe`. Library consumers must update all `use` statements and fully qualified references.
+- **PHP 8.4 required**: Installations running PHP < 8.4 are no longer supported.
+
+### Migration Notes
+
+**Composer install**
+
+```bash
+# Before
+composer require chancegarcia/git-toolkit
+
+# After
+composer require chancegarcia/release-scribe
+```
+
+**Binary invocation**
+
+```bash
+# Before
+./vendor/bin/git-toolkit changelog
+
+# After
+./vendor/bin/release-scribe changelog
+```
+
+**Namespace updates (library use)**
+
+```php
+// Before
+use ChanceGarcia\GitToolkit\Service\ChangeLogService;
+
+// After
+use Chance\ReleaseScribe\Service\ChangeLogService;
+```
+
+## v1.1.2
+
+### Summary
+
+- Dependency maintenance release. No functional changes.
+
+### Developer Details
+
+- `czproject/git-php` bumped from `3.18.2` to `4.0.3` (runtime dependency).
+- `guzzlehttp/guzzle` bumped from `7.2.0` to `7.7.x-dev` (dev dependency).
 
 ## 1.1.1
 docs: final changelog update before release

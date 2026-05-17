@@ -1,15 +1,18 @@
 {
-    "name": "chancegarcia/git-toolkit",
-    "description": "create a change log based on your commit history and tags",
-    "minimum-stability": "dev",
+    "name": "chancegarcia/release-scribe",
+    "description": "ReleaseScribe: \"What's new\", changelog, release notes, and SemVer recommendation tool",
+  "minimum-stability": "stable",
+  "prefer-stable": true,
     "type": "project",
     "keywords": [
-        "git tags",
-        "commit history",
-        "change log"
+        "release notes",
+        "changelog",
+        "whats-new",
+        "semver",
+        "release recommendation"
     ],
-    "homepage": "https://github.com/chancegarcia/git-toolkit",
-    "license": "MIT",
+    "homepage": "https://github.com/chancegarcia/release-scribe",
+    "license": "Apache-2.0",
     "authors": [
         {
             "name": "chance garcia",
@@ -18,33 +21,55 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/chancegarcia/git-toolkit/issues",
-        "source": "https://github.com/chancegarcia/git-toolkit"
+        "issues": "https://github.com/chancegarcia/release-scribe/issues",
+        "source": "https://github.com/chancegarcia/release-scribe"
     },
     "require": {
-        "php": ">=7.3",
-        "symfony/console": "^7.4|^8",
-        "czproject/git-php": "^4"
+      "php": ">=8.4",
+      "symfony/console": "^7.4 || ^8.0",
+      "czproject/git-php": "^4.1",
+      "symfony/dotenv": "^8.0"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",
-        "phpunit/phpunit": "^9",
-        "squizlabs/php_codesniffer": "^3|^4",
-        "php-coveralls/php-coveralls": "dev-master",
-        "php-parallel-lint/php-parallel-lint": "dev-master",
-        "php-parallel-lint/php-console-highlighter": "dev-master"
+      "phpunit/phpunit": "^11.0",
+      "squizlabs/php_codesniffer": "^3.11",
+      "php-coveralls/php-coveralls": "^2.7",
+      "php-parallel-lint/php-parallel-lint": "^1.4",
+      "php-parallel-lint/php-console-highlighter": "^1.0",
+      "phpstan/phpstan": "^1.12",
+      "slevomat/coding-standard": "^8.15"
+    },
+  "scripts": {
+      "test": "phpunit",
+      "test:coverage": "phpunit --coverage-html build/coverage",
+      "lint": "parallel-lint src tests",
+      "cs:check": "phpcs src tests --standard=phpcs.xml.dist",
+      "cs:fix": "phpcbf src tests --standard=phpcs.xml.dist",
+      "stan": "phpstan analyse src tests --level 5",
+      "qa": [
+        "@lint",
+        "@cs:check",
+        "@stan",
+        "@test"
+      ]
     },
     "bin": [
-        "bin/toolkit"
+        "bin/release-scribe"
     ],
     "autoload": {
         "psr-4": {
-            "Chance\\GitToolkit\\": "src"
+            "Chance\\ReleaseScribe\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Chance\\GitToolkit\\Test\\": "tests"
+            "Chance\\ReleaseScribe\\Test\\": "tests"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
         }
     }
 }

@@ -1,324 +1,316 @@
 <?php
 
-/**
- * @package
- * @subpackage
- * @author      Chance Garcia <chance@garcia.codes>
- * @copyright   (C)Copyright 2013-2021 Chance Garcia, chancegarcia.com
- *
- *    The MIT License (MIT)
- *
- * Copyright (c) 2013-2021 Chance Garcia
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- *
- */
+namespace Chance\ReleaseScribe\Test\Command;
 
-namespace Chance\GitToolkit\Test\Command;
-
-use Chance\GitToolkit\Command\ChangeLog;
-use Chance\GitToolkit\GitInformation;
-use Chance\GitToolkit\Service\ChangeLogService;
-use Composer\Console\Application;
-use Cz\Git\GitException;
-use PHPUnit\Framework\MockObject\MockBuilder;
+use Chance\ReleaseScribe\Command\ChangeLog;
+use Chance\ReleaseScribe\Service\ChangeLogService;
+use CzProject\GitPhp\GitException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
+use SplFileObject;
+use Symfony\Component\Console\Command\Command;
 
 class ChangeLogTest extends TestCase
 {
-    /**
-     * @var MockBuilder|ChangeLogService
-     */
-    private $serviceMockBuilder;
-    /**
-     * @var \SplFileObject|MockBuilder
-     */
-    private $splFileObjectMockBuilder;
-
-    public function testExecute()
-    {
-        $fileMock = $this->splFileObjectMockBuilder->getMock();
-
-        // @formatter:off
-        /**
-         * @var ChangeLogService|MockObject $changeLogServiceMock
-         */
-        $changeLogServiceMock = $this->serviceMockBuilder->getMock();
-
-        $changeLogServiceMock->expects(self::never())
-                             ->method('setMainHeaderName')
-        ;
-        $changeLogServiceMock->expects(self::never())
-                             ->method('setChangeLogFilePath')
-        ;
-        $changeLogServiceMock->expects(self::never())
-                             ->method('setChangeLogFileName')
-        ;
-        $changeLogServiceMock->expects(self::once())
-                             ->method('getSplFileObject')
-                             ->willReturn($fileMock)
-        ;
-        $changeLogServiceMock->expects(self::once())
-                             ->method('writeChangeLog')
-                             ->with(
-                                 self::isInstanceOf(\SplFileObject::class),
-                                 self::isNull()
-                             )
-        ;
-
-        // @formatter:on
-
-        $changeLogCommand = new ChangeLog();
-        $changeLogCommand->setChangeLogService($changeLogServiceMock);
-
-        self::assertSame($changeLogServiceMock, $changeLogCommand->getChangeLogService());
-
-        $commandTester = new CommandTester($changeLogCommand);
-        $commandTester->execute([]);
-    }
-
-    /**
-     * @depends testExecute
-     */
-    public function testExecuteSuccessMessage()
-    {
-        $fileMock = $this->splFileObjectMockBuilder->getMock();
-
-        // @formatter:off
-        /**
-         * @var ChangeLogService|MockObject $changeLogServiceMock
-         */
-        $changeLogServiceMock = $this->serviceMockBuilder->getMock();
-
-        $changeLogServiceMock->expects(self::once())
-                             ->method('getSplFileObject')
-                             ->willReturn($fileMock)
-        ;
-
-        // @formatter:on
-
-        $changeLogCommand = new ChangeLog();
-        $changeLogCommand->setChangeLogService($changeLogServiceMock);
-
-        $commandTester = new CommandTester($changeLogCommand);
-        $commandTester->execute([]);
-
-        // the output of the command in the console
-        $output = $commandTester->getDisplay();
-        self::assertEquals(
-            sprintf(
-                "success: file '%s' has been created\n",
-                $changeLogServiceMock->getFullPath()
-            ),
-            $output
-        );
-    }
-
-    /**
-     * @depends testExecute
-     */
-    public function testExecuteWithHeaderArgument()
-    {
-        $headerValue = 'Toolkit Test';
-
-        // @formatter:off
-        $fileMock = $this->splFileObjectMockBuilder->getMock();
-        $changeLogServiceMock = $this->serviceMockBuilder->getMock();
-
-        $changeLogServiceMock->expects(self::once())
-                             ->method('getSplFileObject')
-                             ->willReturn($fileMock)
-        ;
-
-        $changeLogServiceMock->expects(self::once())
-                             ->method('setMainHeaderName')
-                             ->with(self::equalTo($headerValue))
-        ;
-
-        $changeLogCommand = new ChangeLog();
-        $changeLogCommand->setChangeLogService($changeLogServiceMock);
-
-        $commandTester = new CommandTester($changeLogCommand);
-        $commandTester->execute([
-            'header' => $headerValue,
-        ]);
-
-        // @formatter:on
-    }
-
-    /**
-     * @depends testExecute
-     */
-    public function testExecuteWithNewTagOption()
-    {
-        $tagName = '0.3.1';
-
-        // @formatter:off
-        $fileMock = $this->splFileObjectMockBuilder->getMock();
-        $changeLogServiceMock = $this->serviceMockBuilder->getMock();
-
-        $changeLogServiceMock->expects(self::once())
-                             ->method('getSplFileObject')
-                             ->willReturn($fileMock)
-        ;
-
-        $changeLogServiceMock->expects(self::once())
-                             ->method('writeChangeLog')
-                             ->with(
-                                 self::isInstanceOf(\SplFileObject::class),
-                                 self::equalTo($tagName)
-                             )
-        ;
-
-
-        $changeLogCommand = new ChangeLog();
-        $changeLogCommand->setChangeLogService($changeLogServiceMock);
-
-        $commandTester = new CommandTester($changeLogCommand);
-        $commandTester->execute([
-            '--new-tag' => $tagName,
-        ]);
-
-        // @formatter:on
-    }
-
-    /**
-     * @depends testExecute
-     */
-    public function testExecuteWithOutputDirOption()
-    {
-        $outputDir = '/tmp';
-
-        // @formatter:off
-        $fileMock = $this->splFileObjectMockBuilder->getMock();
-        $changeLogServiceMock = $this->serviceMockBuilder->getMock();
-
-        $changeLogServiceMock->expects(self::once())
-                             ->method('getSplFileObject')
-                             ->willReturn($fileMock)
-        ;
-
-        $changeLogServiceMock->expects(self::once())
-                             ->method('setChangeLogFilePath')
-                             ->with(self::equalTo($outputDir))
-        ;
-
-        $changeLogCommand = new ChangeLog();
-        $changeLogCommand->setChangeLogService($changeLogServiceMock);
-
-        $commandTester = new CommandTester($changeLogCommand);
-        $commandTester->execute([
-            '--output-dir' => $outputDir,
-        ]);
-
-        // @formatter:on
-    }
-
-    /**
-     * @depends testExecute
-     */
-    public function testExecuteWithFileNameOption()
-    {
-        $filename = 'i_am_not_a_cat.md';
-
-        // @formatter:off
-        $fileMock = $this->splFileObjectMockBuilder->getMock();
-        $changeLogServiceMock = $this->serviceMockBuilder->getMock();
-
-        $changeLogServiceMock->expects(self::once())
-                             ->method('getSplFileObject')
-                             ->willReturn($fileMock)
-        ;
-
-        $changeLogServiceMock->expects(self::once())
-                             ->method('setChangeLogFileName')
-                             ->with(self::equalTo($filename))
-        ;
-
-        $changeLogCommand = new ChangeLog();
-        $changeLogCommand->setChangeLogService($changeLogServiceMock);
-
-        $commandTester = new CommandTester($changeLogCommand);
-        $commandTester->execute([
-            '--filename' => $filename,
-        ]);
-
-        // @formatter:on
-    }
-
-    /**
-     * @depends testExecute
-     */
-    public function testExecuteWithGitException()
-    {
-        $fileMock = $this->splFileObjectMockBuilder->getMock();
-
-        // @formatter:off
-        /**
-         * @var ChangeLogService|MockObject $changeLogServiceMock
-         */
-        $changeLogServiceMock = $this->serviceMockBuilder->getMock();
-
-        $changeLogServiceMock->expects(self::once())
-                             ->method('getSplFileObject')
-                             ->willReturn($fileMock)
-        ;
-        $changeLogServiceMock->expects(self::once())
-                             ->method('writeChangeLog')
-                             ->willThrowException(new GitException('some git error happened'))
-        ;
-
-        // @formatter:on
-
-        $changeLogCommand = new ChangeLog();
-        $changeLogCommand->setChangeLogService($changeLogServiceMock);
-
-        self::assertSame($changeLogServiceMock, $changeLogCommand->getChangeLogService());
-
-        $commandTester = new CommandTester($changeLogCommand);
-        $commandTester->execute([]);
-
-        // the output of the command in the console
-        $output = $commandTester->getDisplay();
-        self::assertStringContainsString('error:', $output);
-        self::assertStringContainsString('error message:', $output);
-    }
+    private MockObject $changeLogServiceMock;
+    private MockObject $splFileObjectMock;
 
     protected function setUp(): void
     {
-        parent::setUp();
-
-        // @formatter:on
-        $this->splFileObjectMockBuilder = $this->getMockBuilder(\SplFileObject::class)
-                                               ->setConstructorArgs(['php://memory'])
-        ;
-
-        $this->serviceMockBuilder = $this->getMockBuilder(ChangeLogService::class)->disableOriginalConstructor();
-
-        // @formatter:off
+        $this->changeLogServiceMock = $this->createMock(ChangeLogService::class);
+        $this->splFileObjectMock = $this->getMockBuilder(SplFileObject::class)
+            ->setConstructorArgs(['php://memory', 'wb+'])
+            ->getMock();
     }
 
-    protected function tearDown(): void
+    private function getCommandTester(ChangeLog $command): CommandTester
     {
-        $this->serviceMockBuilder = null;
-        $this->splFileObjectMockBuilder = null;
+        $wrapper = new Command('whats-new');
+        $wrapper->setCode($command);
+        $command->configure($wrapper);
+        return new CommandTester($wrapper);
+    }
+
+    public function testExecute(): void
+    {
+        $this->changeLogServiceMock->expects(self::once())->method('changeLogFileExists')->willReturn(true)
+        ;
+        $this->changeLogServiceMock->expects(self::once())->method('setMainHeaderName')->with(
+            ChangeLogService::DEFAULT_WHATS_NEW_HEADER_NAME
+        )
+        ;
+        $this->changeLogServiceMock->expects(self::never())
+            ->method('setChangeLogFilePath');
+        $this->changeLogServiceMock->expects(self::never())
+            ->method('setChangeLogFileName');
+        $this->changeLogServiceMock->expects(self::once())
+                             ->method('getSplFileObject')
+            ->willReturn($this->splFileObjectMock);
+        $this->changeLogServiceMock->expects(self::once())
+                             ->method('writeChangeLog')
+            ->with($this->isInstanceOf(SplFileObject::class), null, null);
+
+        $changeLogCommand = new ChangeLog($this->changeLogServiceMock); // @phpstan-ignore-line
+
+        self::assertSame($this->changeLogServiceMock, $changeLogCommand->getChangeLogService());
+
+        $commandTester = $this->getCommandTester($changeLogCommand);
+        $commandTester->execute([]);
+    }
+
+    public function testExecuteSuccessMessage(): void
+    {
+        $this->changeLogServiceMock->expects(self::once())->method('changeLogFileExists')->willReturn(true)
+        ;
+        $this->changeLogServiceMock->expects(self::once())
+                             ->method('getSplFileObject')
+            ->willReturn($this->splFileObjectMock);
+
+        $this->changeLogServiceMock->expects(self::once())
+            ->method('getFullPath')
+            ->willReturn('some/path');
+
+        $changeLogCommand = new ChangeLog($this->changeLogServiceMock); // @phpstan-ignore-line
+
+        $commandTester = $this->getCommandTester($changeLogCommand);
+        $commandTester->execute([]);
+
+        $output = $commandTester->getDisplay();
+        self::assertStringContainsString("success: file 'some/path' has been created", $output);
+    }
+
+    public function testExecuteWithHeaderArgument(): void
+    {
+        $this->changeLogServiceMock->expects(self::once())->method('changeLogFileExists')->willReturn(true)
+        ;
+        $this->changeLogServiceMock->expects(self::once())
+            ->method('setMainHeaderName')
+            ->with('some project name');
+        $this->changeLogServiceMock->expects(self::once())
+                             ->method('getSplFileObject')
+            ->willReturn($this->splFileObjectMock);
+
+        $changeLogCommand = new ChangeLog($this->changeLogServiceMock); // @phpstan-ignore-line
+
+        $commandTester = $this->getCommandTester($changeLogCommand);
+        $commandTester->execute([
+            'header' => 'some project name',
+        ]);
+    }
+
+    public function testExecuteWithNewTagOption(): void
+    {
+        $this->changeLogServiceMock->expects(self::once())->method('changeLogFileExists')->willReturn(true)
+        ;
+        $this->changeLogServiceMock->expects(self::once())
+                             ->method('getSplFileObject')
+            ->willReturn($this->splFileObjectMock);
+        $this->changeLogServiceMock->expects(self::once())
+                             ->method('writeChangeLog')
+            ->with($this->isInstanceOf(SplFileObject::class), 'v1.0.0', null);
+
+        $changeLogCommand = new ChangeLog($this->changeLogServiceMock); // @phpstan-ignore-line
+
+        $commandTester = $this->getCommandTester($changeLogCommand);
+        $commandTester->execute([
+            '--new-tag' => 'v1.0.0',
+        ]);
+    }
+
+    public function testExecuteWithPreviousTagOption(): void
+    {
+        $this->changeLogServiceMock->expects(self::once())->method('changeLogFileExists')->willReturn(true)
+        ;
+        $this->changeLogServiceMock->expects(self::once())
+            ->method('getSplFileObject')
+            ->willReturn($this->splFileObjectMock);
+        $this->changeLogServiceMock->expects(self::once())
+            ->method('writeChangeLog')
+            ->with($this->isInstanceOf(SplFileObject::class), 'v2.0.0', 'v1.9.0');
+
+        $changeLogCommand = new ChangeLog($this->changeLogServiceMock); // @phpstan-ignore-line
+
+        $commandTester = $this->getCommandTester($changeLogCommand);
+        $commandTester->execute([
+            '--new-tag' => 'v2.0.0',
+            '--previous-tag' => 'v1.9.0',
+        ]);
+    }
+
+    public function testExecuteWithPreviousTagOptionWithoutNewTagFails(): void
+    {
+        $this->changeLogServiceMock->expects(self::never())
+            ->method('writeChangeLog');
+
+        $changeLogCommand = new ChangeLog($this->changeLogServiceMock); // @phpstan-ignore-line
+
+        $commandTester = $this->getCommandTester($changeLogCommand);
+        $commandTester->execute([
+            '--previous-tag' => 'v1.9.0',
+        ]);
+
+        $output = $commandTester->getDisplay();
+        self::assertStringContainsString('error: --previous-tag requires --new-tag', $output);
+        self::assertSame(1, $commandTester->getStatusCode());
+    }
+
+    public function testExecuteWithOutputDirOption(): void
+    {
+        $this->changeLogServiceMock->expects(self::once())->method('changeLogFileExists')->willReturn(true)
+        ;
+        $this->changeLogServiceMock->expects(self::once())
+                             ->method('setChangeLogFilePath')
+            ->with('some/path');
+        $this->changeLogServiceMock->expects(self::once())
+            ->method('getSplFileObject')
+            ->willReturn($this->splFileObjectMock);
+
+        $changeLogCommand = new ChangeLog($this->changeLogServiceMock); // @phpstan-ignore-line
+
+        $commandTester = $this->getCommandTester($changeLogCommand);
+        $commandTester->execute([
+            '--output-dir' => 'some/path',
+        ]);
+    }
+
+    public function testExecuteWithFileNameOption(): void
+    {
+        $this->changeLogServiceMock->expects(self::once())->method('changeLogFileExists')->willReturn(true)
+        ;
+        $this->changeLogServiceMock->expects(self::once())
+                             ->method('setChangeLogFileName')
+            ->with('some-file.md');
+        $this->changeLogServiceMock->expects(self::once())
+            ->method('getSplFileObject')
+            ->willReturn($this->splFileObjectMock);
+
+        $changeLogCommand = new ChangeLog($this->changeLogServiceMock); // @phpstan-ignore-line
+
+        $commandTester = $this->getCommandTester($changeLogCommand);
+        $commandTester->execute([
+            '--filename' => 'some-file.md',
+        ]);
+    }
+
+    public function testExecuteWithGitException(): void
+    {
+        $this->changeLogServiceMock->expects(self::once())->method('changeLogFileExists')->willReturn(true)
+        ;
+        $this->changeLogServiceMock->expects(self::once())
+                             ->method('getSplFileObject')
+            ->willThrowException(new GitException('some git error'));
+
+        $changeLogCommand = new ChangeLog($this->changeLogServiceMock); // @phpstan-ignore-line
+
+        $commandTester = $this->getCommandTester($changeLogCommand);
+        $commandTester->execute([]);
+
+        $output = $commandTester->getDisplay();
+        self::assertStringContainsString(
+            'Git error: The configured repository path may not be a valid Git repository or was not found.',
+            $output
+        );
+        self::assertStringContainsString('Details: some git error', $output);
+    }
+
+    public function testExecuteFailsWhenChangelogNotInitialized(): void
+    {
+        $this->changeLogServiceMock->expects(self::once())->method('changeLogFileExists')->willReturn(false)
+        ;
+
+        $changeLogCommand = new ChangeLog($this->changeLogServiceMock); // @phpstan-ignore-line
+
+        $commandTester = $this->getCommandTester($changeLogCommand);
+        $commandTester->execute([]);
+
+        $output = $commandTester->getDisplay();
+        self::assertStringContainsString('No changelog has been initialized for this project.', $output);
+        self::assertStringContainsString('Run "release-scribe init" to create one', $output);
+        self::assertSame(1, $commandTester->getStatusCode());
+    }
+
+    public function testExecuteWithModeFull(): void
+    {
+        $this->changeLogServiceMock->expects(self::once())->method('changeLogFileExists')->willReturn(true)
+        ;
+        $this->changeLogServiceMock->expects(self::once())->method('setFullHistory')->with(true)
+        ;
+        $this->changeLogServiceMock->expects(self::never())->method('setMainHeaderName')
+        ;
+        $this->changeLogServiceMock->expects(self::once())->method('getSplFileObject')->willReturn(
+            $this->splFileObjectMock
+        )
+        ;
+
+        $changeLogCommand = new ChangeLog($this->changeLogServiceMock); // @phpstan-ignore-line
+        $commandTester = $this->getCommandTester($changeLogCommand);
+        $commandTester->execute(['--mode' => 'full']);
+    }
+
+    public function testExecuteWithModeWhatsNew(): void
+    {
+        $this->changeLogServiceMock->expects(self::once())->method('changeLogFileExists')->willReturn(true)
+        ;
+        $this->changeLogServiceMock->expects(self::once())->method('setFullHistory')->with(false)
+        ;
+        $this->changeLogServiceMock->expects(self::once())->method('setMainHeaderName')->with(
+            ChangeLogService::DEFAULT_WHATS_NEW_HEADER_NAME
+        )
+        ;
+
+        $changeLogCommand = new ChangeLog($this->changeLogServiceMock); // @phpstan-ignore-line
+        $commandTester = $this->getCommandTester($changeLogCommand);
+        $commandTester->execute(['--mode' => 'whats-new']);
+    }
+
+    public function testExecuteWithModeAliasCurrent(): void
+    {
+        $this->changeLogServiceMock->expects(self::once())->method('changeLogFileExists')->willReturn(true)
+        ;
+        $this->changeLogServiceMock->expects(self::once())->method('setFullHistory')->with(false)
+        ;
+
+        $changeLogCommand = new ChangeLog($this->changeLogServiceMock); // @phpstan-ignore-line
+        $commandTester = $this->getCommandTester($changeLogCommand);
+        $commandTester->execute(['--mode' => 'current']);
+    }
+
+    public function testExecuteWithModeAliasHistory(): void
+    {
+        $this->changeLogServiceMock->expects(self::once())->method('changeLogFileExists')->willReturn(true)
+        ;
+        $this->changeLogServiceMock->expects(self::once())->method('setFullHistory')->with(true)
+        ;
+
+        $changeLogCommand = new ChangeLog($this->changeLogServiceMock); // @phpstan-ignore-line
+        $commandTester = $this->getCommandTester($changeLogCommand);
+        $commandTester->execute(['--mode' => 'history']);
+    }
+
+    public function testExecuteWithInvalidModeFails(): void
+    {
+        $changeLogCommand = new ChangeLog($this->changeLogServiceMock); // @phpstan-ignore-line
+        $commandTester = $this->getCommandTester($changeLogCommand);
+        $commandTester->execute(['--mode' => 'invalid']);
+
+        $output = $commandTester->getDisplay();
+        self::assertStringContainsString('error: invalid mode "invalid"', $output);
+        self::assertSame(1, $commandTester->getStatusCode());
+    }
+
+    public function testExecuteCreatesFileWhenNotInitializedButCustomTargetProvided(): void
+    {
+        $this->changeLogServiceMock->expects(self::once())->method('changeLogFileExists')->willReturn(false)
+        ;
+        $this->changeLogServiceMock->expects(self::once())->method('getSplFileObject')->willReturn(
+            $this->splFileObjectMock
+        )
+        ;
+
+        $changeLogCommand = new ChangeLog($this->changeLogServiceMock); // @phpstan-ignore-line
+        $commandTester = $this->getCommandTester($changeLogCommand);
+        $commandTester->execute(['--filename' => 'custom.md']);
+        self::assertSame(0, $commandTester->getStatusCode());
     }
 }

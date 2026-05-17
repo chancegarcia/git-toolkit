@@ -1,0 +1,136 @@
+#!/usr/bin/env php
+<?php
+/**
+ * @package
+ * @subpackage
+ * @author      Chance Garcia <chance@garcia.codes>
+ * @copyright   (C)Copyright 2013-2026 Chance Garcia, chancegarcia.com
+ *
+ *    The MIT License (MIT)
+ *
+ * Copyright (c) 2013-2026 Chance Garcia
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
+
+$currentDir = getcwd();
+
+require $currentDir . '/vendor/autoload.php';
+
+use Chance\ReleaseScribe\Environment;
+
+Environment::load($currentDir);
+
+$configFile = $currentDir . '/config/release_scribe.php';
+$dirConfigExists = false;
+$projectName = $_ENV['PROJECT_NAME'] ?? null;
+$outputFilename = $_ENV['OUTPUT_FILENAME'] ?? null;
+$outputPath = $_ENV['OUTPUT_DIRECTORY'] ?? null;
+$dir = $_ENV['PROJECT_ROOT'] ?? $currentDir;
+
+if (file_exists($configFile)) {
+    /**
+     * @var array $config
+     */
+    $config = require $configFile;
+    $dirConfigExists = array_key_exists('project_root', $config);
+    if (array_key_exists('project_name', $config)) {
+        $projectName = $config['project_name'];
+    }
+
+    if (array_key_exists('filename', $config)) {
+        $outputFilename = $config['filename'];
+    }
+
+    if (array_key_exists('output_directory', $config)) {
+        $outputPath = $config['output_directory'];
+    }
+
+    if ($dirConfigExists) {
+        $dir = $config['project_root'];
+    }
+}
+
+if (!$dirConfigExists && !isset($_ENV['PROJECT_ROOT'])) {
+    if (false !== strpos($currentDir, 'bin')) {
+        $dir = $currentDir . '/..';
+    }
+}
+
+use Symfony\Component\Console\Application;
+use Chance\ReleaseScribe\GitInformation;
+use Chance\ReleaseScribe\Command\ChangeLog;
+use Chance\ReleaseScribe\Command\FullChangeLog;
+use Chance\ReleaseScribe\Command\Init;
+use Chance\ReleaseScribe\Command\ReleaseRecommend;
+use Chance\ReleaseScribe\Service\ConfigReader;
+use Chance\ReleaseScribe\Service\GeneratorFactory;
+use Chance\ReleaseScribe\Service\ChangeLogService;
+use Chance\ReleaseScribe\Service\GitRepositoryFactory;
+use Chance\ReleaseScribe\Service\ReleaseRecommender;
+use Symfony\Component\Console\Command\Command;
+
+$application = new Application('ReleaseScribe', '2.0.0');
+
+$gitRepoFactory = new GitRepositoryFactory($dir);
+$gitInformation = new GitInformation($gitRepoFactory);
+
+$configMap = [];
+if (isset($config) && is_array($config)) {
+    $configMap = $config;
+}
+
+$configReader = new ConfigReader($configMap);
+$generatorFactory = new GeneratorFactory($configReader);
+$changeLogService = new ChangeLogService($gitInformation, $generatorFactory);
+
+$changeLogService->setChangeLogFileName($outputFilename);
+$changeLogService->setChangeLogFilePath($outputPath);
+$changeLogService->setMainHeaderName($projectName);
+
+// whats-new
+$whatsNewCommand = new ChangeLog($changeLogService);
+$whatsNewWrapper = new Command('whats-new');
+$whatsNewWrapper->setCode($whatsNewCommand);
+$whatsNewCommand->configure($whatsNewWrapper);
+
+// changelog
+$fullChangelogCommand = new FullChangeLog($whatsNewCommand);
+$fullChangelogWrapper = new Command('changelog');
+$fullChangelogWrapper->setCode($fullChangelogCommand);
+$fullChangelogCommand->configure($fullChangelogWrapper);
+
+// init
+$initCommand = new Init($changeLogService);
+$initWrapper = new Command('init');
+$initWrapper->setCode($initCommand);
+$initCommand->configure($initWrapper);
+
+// recommend
+$releaseRecommenderConfig = $config['release_recommendation']['type_impact'] ?? null;
+$releaseRecommender = new ReleaseRecommender($releaseRecommenderConfig);
+$recommendCommand = new ReleaseRecommend($gitInformation, $releaseRecommender);
+$recommendWrapper = new Command('recommend');
+$recommendWrapper->setCode($recommendCommand);
+$recommendCommand->configure($recommendWrapper);
+
+$application->addCommands([$whatsNewWrapper, $fullChangelogWrapper, $initWrapper, $recommendWrapper]);
+
+$application->run();

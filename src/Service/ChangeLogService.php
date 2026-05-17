@@ -1,94 +1,60 @@
 <?php
 
-/**
- * @package
- * @subpackage
- * @author      Chance Garcia <chance@garcia.codes>
- * @copyright   (C)Copyright 2013-2021 Chance Garcia, chancegarcia.com
- *
- *    The MIT License (MIT)
- *
- * Copyright (c) 2013-2021 Chance Garcia
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- *
- */
+namespace Chance\ReleaseScribe\Service;
 
-namespace Chance\GitToolkit\Service;
-
-use Chance\GitToolkit\Formatter\MarkdownFormatter;
-use Chance\GitToolkit\GitInformation;
+use Chance\ReleaseScribe\Generator\GeneratorInterface;
+use Chance\ReleaseScribe\GitInformation;
+use SplFileObject;
+use RuntimeException;
 
 class ChangeLogService
 {
-    public const DEFAULT_MAIN_HEADER_NAME = 'Projecty McProjectFace';
-    public const DEFAULT_FILE_NAME = 'changelog.md';
-    public const DEFAULT_FILE_PATH = '';
-    /**
-     * @var GitInformation
-     */
-    private $gitInformation;
+    public const string DEFAULT_MAIN_HEADER_NAME = 'Projecty McProjectFace';
+    public const string DEFAULT_WHATS_NEW_HEADER_NAME = "What's new?";
+    public const string DEFAULT_FILE_NAME = 'changelog.md';
+    public const string DEFAULT_FILE_PATH = '';
 
-    /**
-     * @var string
-     */
-    private $changeLogFileName = self::DEFAULT_FILE_NAME;
+    private string $changeLogFileName = self::DEFAULT_FILE_NAME;
+    private string $changeLogFilePath = self::DEFAULT_FILE_PATH;
+    private string $mainHeaderName = self::DEFAULT_MAIN_HEADER_NAME;
+    private bool $fullHistory = false;
+    private ?GeneratorInterface $generator = null;
 
-    /**
-     * @var string
-     */
-    private $changeLogFilePath = self::DEFAULT_FILE_PATH;
-
-    /**
-     * @var string
-     */
-    private $mainHeaderName = self::DEFAULT_MAIN_HEADER_NAME;
-
-    /**
-     * ChangeLogService constructor.
-     *
-     * @param GitInformation $gitInformation
-     */
-    public function __construct(GitInformation $gitInformation)
-    {
-        $this->gitInformation = $gitInformation;
+    public function __construct(
+        private readonly GitInformation $gitInformation,
+        private readonly GeneratorFactory $generatorFactory = new GeneratorFactory(new ConfigReader())
+    ) {
     }
 
-    /**
-     * @return GitInformation
-     */
+    public function getGenerator(): GeneratorInterface
+    {
+        if ($this->generator === null) {
+            $this->generator = $this->generatorFactory->createGenerator($this->gitInformation, $this->mainHeaderName);
+        }
+
+        return $this->generator;
+    }
+
+    public function setGenerator(GeneratorInterface $generator): void
+    {
+        $this->generator = $generator;
+    }
+
+    public function injectGenerator(?GeneratorInterface $generator): void
+    {
+        $this->generator = $generator;
+    }
+
     public function getGitInformation(): GitInformation
     {
         return $this->gitInformation;
     }
 
-    /**
-     * @return string
-     */
     public function getChangeLogFileName(): string
     {
         return $this->changeLogFileName;
     }
 
-    /**
-     * @param string|null $changeLogFileName
-     */
     public function setChangeLogFileName(?string $changeLogFileName): void
     {
         if (is_string($changeLogFileName)) {
@@ -98,46 +64,31 @@ class ChangeLogService
         }
     }
 
-    /**
-     * @return string
-     */
     public function getChangeLogFilePath(): string
     {
         return $this->changeLogFilePath;
     }
 
-    /**
-     * @param string|null $changeLogFilePath
-     */
     public function setChangeLogFilePath(?string $changeLogFilePath): void
     {
-        if (!is_string($changeLogFilePath)) {
+        if (null === $changeLogFilePath) {
             $this->changeLogFilePath = self::DEFAULT_FILE_PATH;
-        } else {
-            // '' is the same path as './'; empty string is treated as current working directory
-            if ('' === $changeLogFilePath) {
-                $this->changeLogFilePath = $changeLogFilePath;
-            } else {
-                if ('/' === substr($changeLogFilePath, -1)) {
-                    $this->changeLogFilePath = $changeLogFilePath;
-                } else {
-                    $this->changeLogFilePath = $changeLogFilePath . '/';
-                }
-            }
+            return;
         }
+
+        if ('' === $changeLogFilePath) {
+            $this->changeLogFilePath = $changeLogFilePath;
+            return;
+        }
+
+        $this->changeLogFilePath = rtrim($changeLogFilePath, '/') . '/';
     }
 
-    /**
-     * @return string
-     */
     public function getMainHeaderName(): string
     {
         return $this->mainHeaderName;
     }
 
-    /**
-     * @param string|null $mainHeaderName
-     */
     public function setMainHeaderName(?string $mainHeaderName): void
     {
         if (is_string($mainHeaderName)) {
@@ -145,92 +96,47 @@ class ChangeLogService
         } else {
             $this->mainHeaderName = self::DEFAULT_MAIN_HEADER_NAME;
         }
+
+        // invalidate generator to ensure mainHeaderName propagation
+        $this->generator = null;
     }
 
-    /**
-     * @param \SplFileObject $file
-     * @param string|null $newTag
-     *
-     * @throws \Cz\Git\GitException
-     */
-    public function writeChangeLog(\SplFileObject $file, string $newTag = null)
+    public function isFullHistory(): bool
     {
-        $tags = $this->gitInformation->getGitTags();
-        $tagCount = count($tags);
-
-        $file->fwrite(sprintf("# %s\n\n", $this->mainHeaderName));
-
-        $hasNewTag = false;
-        if (is_string($newTag)) {
-            $this->writeNewTag($file, $newTag);
-            $hasNewTag = true;
-        }
-
-        if (!$hasNewTag && 0 === $tagCount) {
-            // write current commit as a new tag
-            $this->writeNewTag($file, $this->gitInformation->getCurrentCommit());
-        }
-
-        if ($tagCount > 0) {
-            for ($i = 0; $i < $tagCount; $i++) {
-                if ($i + 1 === $tagCount) {
-                    [$current] = array_slice($tags, $i, 1);
-                    $previous = $this->gitInformation->getFirstCommit();
-                } else {
-                    [$current, $previous] = array_slice($tags, $i, 2);
-                }
-
-                $commits = MarkdownFormatter::escapeCommitsForMarkdown(
-                    $this->gitInformation->getCommits($previous, $current, true)
-                );
-                $commitString = implode("\n", $commits);
-
-                if ('' !== $commitString) {
-                    $tagName = $current;
-                    if ("" === $tagName) {
-                        $currentCommit = $this->gitInformation->getCurrentCommit();
-                        $tagName = sprintf('empty tag \(latest commit: %s\)', $currentCommit);
-                    }
-                    $this->writeTag($file, $tagName, $commitString);
-                }
-            }
-        }
-
-        // close file (https://stackoverflow.com/questions/22449822/how-to-close-a-splfileobject-file-handler/22822981)
-        $file = null;
+        return $this->fullHistory;
     }
 
-    public function getFullPath()
+    public function setFullHistory(bool $fullHistory): void
+    {
+        $this->fullHistory = $fullHistory;
+    }
+
+    public function writeChangeLog(SplFileObject $file, ?string $newTag = null, ?string $previousTag = null): void
+    {
+        $this->getGenerator()->generate($file, $newTag, $previousTag, $this->fullHistory);
+    }
+
+    public function getFullPath(): string
     {
         return $this->changeLogFilePath . $this->changeLogFileName;
     }
 
-    public function getSplFileObject(): \SplFileObject
+    public function changeLogFileExists(): bool
+    {
+        return file_exists($this->getFullPath());
+    }
+
+    public function getSplFileObject(): SplFileObject
     {
         $fullPath = $this->getFullPath();
+        $directory = dirname($fullPath);
 
-        return new \SplFileObject($fullPath, 'wb+');
-    }
+        if (!is_dir($directory) && $directory !== '.' && $directory !== '') {
+            if (!mkdir($directory, 0777, true) && !is_dir($directory)) {
+                throw new RuntimeException(sprintf('Directory "%s" was not created', $directory));
+            }
+        }
 
-    /**
-     * @param \SplFileObject $file file resource
-     * @param string $newTag
-     */
-    public function writeNewTag(\SplFileObject $file, string $newTag)
-    {
-        $latestCommits = MarkdownFormatter::escapeCommitsForMarkdown($this->gitInformation->getNewCommits());
-        $latestCommitsString = implode("\n", $latestCommits);
-        $this->writeTag($file, $newTag, $latestCommitsString);
-    }
-
-    /**
-     * @param \SplFileObject $file file resource
-     * @param string $tagName
-     * @param string $commits
-     */
-    public function writeTag(\SplFileObject $file, string $tagName, string $commits)
-    {
-        $file->fwrite(sprintf("## %s\n", $tagName));
-        $file->fwrite(sprintf("%s\n", $commits));
+        return new SplFileObject($fullPath, 'wb+');
     }
 }
