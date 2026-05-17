@@ -5,8 +5,6 @@ namespace Chance\ReleaseScribe\Collector;
 interface CollectorInterface
 {
     /**
-     * @param string|null $newTag
-     * @param string|null $previousTag
      * @param bool $fullHistory Whether to collect full history or just the newest/requested range
      *
      * @return array<string, array<string>> Map of tag to list of commit messages

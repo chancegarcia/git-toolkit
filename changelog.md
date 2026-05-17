@@ -4,6 +4,7 @@
 
 ### Summary
 
+- License changed from MIT (v1.x) to Apache 2.0 as part of the major version rebrand.
 - Complete rebrand from `git-toolkit` to `release-scribe` — new package name, binary, and namespace with no backward-compatibility shims.
 - Four new CLI commands: `whats-new`, `changelog`, `recommend`, and `init` replace the old single-command structure.
 - Conventional Commits parsing added for deterministic SemVer recommendations and structured changelog generation.
@@ -13,6 +14,7 @@
 ### Developer Details
 
 #### Identity and Rebrand
+- License changed from MIT to Apache 2.0. Per-file license headers removed; a single `LICENSE` file now covers the entire project.
 - Package renamed from `chancegarcia/git-toolkit` to `chancegarcia/release-scribe`.
 - Binary renamed from `git-toolkit` to `release-scribe`.
 - All source namespaces migrated from the old root to `Chance\ReleaseScribe`.
@@ -50,6 +52,7 @@
 
 ### Breaking Changes
 
+- **License changed**: v1.x was MIT. v2.0.0 and later is Apache 2.0. Review the new `LICENSE` file before upgrading.
 - **Package renamed**: `chancegarcia/git-toolkit` → `chancegarcia/release-scribe`. No compatibility aliases provided.
 - **Binary renamed**: `git-toolkit` → `release-scribe`. Existing scripts invoking `git-toolkit` will break.
 - **Namespace changed**: All classes moved to `Chance\ReleaseScribe`. Library consumers must update all `use` statements and fully qualified references.

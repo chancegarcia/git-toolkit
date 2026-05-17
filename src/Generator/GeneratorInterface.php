@@ -19,10 +19,5 @@ interface GeneratorInterface
         bool $fullHistory = true
     ): void;
 
-    /**
-     * @param array $rawData
-     *
-     * @return array
-     */
     public function processData(array $rawData): array;
 }

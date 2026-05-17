@@ -56,8 +56,6 @@ class ConventionalMarkdownRenderer implements RendererInterface
     }
 
     /**
-     * @param array $data
-     *
      * @return array<Release>
      */
     private function mapLegacyData(array $data): array

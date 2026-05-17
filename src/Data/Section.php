@@ -5,7 +5,6 @@ namespace Chance\ReleaseScribe\Data;
 class Section
 {
     /**
-     * @param string $label
      * @param array<ConventionalCommit|string> $items
      * @param string|null $type The commit type this section represents (if any)
      */

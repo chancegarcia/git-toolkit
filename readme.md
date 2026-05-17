@@ -133,6 +133,12 @@ ReleaseScribe is the successor to `chancegarcia/git-toolkit`.
 
 No backward compatibility wrappers or aliases are provided for the old identity.
 
+## License
+
+ReleaseScribe v2.0.0 and later is licensed under the **Apache License, Version 2.0**. See the [LICENSE](LICENSE) file for the full text.
+
+> **Note:** v1.x releases were distributed under the MIT License. The license changed as part of the v2.0.0 major release and rebrand from `git-toolkit`.
+
 ## Development
 
 For our planned future direction, see [docs/roadmap.md](docs/roadmap.md).

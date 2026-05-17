@@ -12,7 +12,7 @@
         "release recommendation"
     ],
     "homepage": "https://github.com/chancegarcia/release-scribe",
-    "license": "MIT",
+    "license": "Apache-2.0",
     "authors": [
         {
             "name": "chance garcia",

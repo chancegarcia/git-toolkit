@@ -11,7 +11,6 @@ class PromptTemplateLoader
 
     /**
      * @param array<string, array<string>> $data
-     * @return string
      */
     public function load(array $data): string
     {
