@@ -1,12 +1,12 @@
 # ReleaseScribe
 
 ![CI](https://github.com/chancegarcia/release-scribe/actions/workflows/ci.yml/badge.svg)
-[![Latest Stable Version](https://badgen.net/packagist/v/chancegarcia/release-scribe)](https://packagist.org/packages/chancegarcia/release-scribe) 
+[![Latest Stable Version](https://img.shields.io/packagist/v/chancegarcia/release-scribe?label=stable)](https://packagist.org/packages/chancegarcia/release-scribe) 
 ![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/chancegarcia/release-scribe) 
-[![Total Downloads](https://poser.pugx.org/chancegarcia/release-scribe/downloads)](https://packagist.org/packages/chancegarcia/release-scribe) 
-[![Latest Unstable Version](https://poser.pugx.org/chancegarcia/release-scribe/v/unstable)](/https:/packagist.org/packages/chancegarcia/release-scribe) 
-[![License](https://poser.pugx.org/chancegarcia/release-scribe/license)](https://packagist.org/packages/chancegarcia/release-scribe) 
-[![PHP](https://badgen.net/packagist/php/chancegarcia/release-scribe)](https://php.net)
+[![Total Downloads](https://img.shields.io/packagist/dt/chancegarcia/release-scribe)](https://packagist.org/packages/chancegarcia/release-scribe) 
+[![Latest Unstable Version](https://img.shields.io/packagist/v/chancegarcia/release-scribe?label=unstable&include_prereleases)](https://packagist.org/packages/chancegarcia/release-scribe) 
+[![License](https://img.shields.io/packagist/l/chancegarcia/release-scribe)](https://packagist.org/packages/chancegarcia/release-scribe) 
+[![PHP](https://img.shields.io/packagist/php-v/chancegarcia/release-scribe)](https://php.net)
 
 ---
 
