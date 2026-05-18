@@ -44,7 +44,7 @@
     },
   "scripts": {
       "test": "phpunit",
-      "test:coverage": "phpunit --coverage-html build/coverage",
+      "test:coverage": "XDEBUG_MODE=coverage phpunit --coverage-html build/coverage",
       "lint": "parallel-lint src tests",
       "cs:check": "phpcs src tests --standard=phpcs.xml.dist",
       "cs:fix": "phpcbf src tests --standard=phpcs.xml.dist",
